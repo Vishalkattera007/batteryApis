@@ -12,31 +12,33 @@ class DealerController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index(){
+    public function index()
+    {
         $allAdmins = dealerModel::all();
-        if($allAdmins->count()>0){
+        if ($allAdmins->count() > 0) {
             return response()->json([
-                'status'=>200,
-                'data'=>$allAdmins
-            ],200);
-        }else{
+                'status' => 200,
+                'data' => $allAdmins
+            ], 200);
+        } else {
             return response()->json([
-                'status'=>404,
-                'message'=>"No Dealer Found"
-            ],404);
+                'status' => 404,
+                'message' => "No Dealer Found"
+            ], 404);
         }
     }
 
 
-    public function create(Request $request){
+    public function create(Request $request)
+    {
         $admin = dealerModel::firstOrCreate([
-            'name'=>$request->name,
-            'email'=>$request->email,
-            'password'=>Hash::make($request->password),
-            'phone_number'=>$request->phone_number,
-            'address'=>$request->address,
-            'adhar'=>$request->adhar,
-            'profileimage'=>$request->phone_number
+            'name' => $request->name,
+            'email' => $request->email,
+            'password' => Hash::make($request->password),
+            'phone_number' => $request->phone_number,
+            'address' => $request->address,
+            'adhar' => $request->adhar,
+            'profileimage' => $request->phone_number
         ]);
 
         if ($admin->wasRecentlyCreated) {
@@ -53,35 +55,78 @@ class DealerController extends Controller
         }
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
+
+    public function show($id)
     {
-        //
+        $dealer = dealerModel::find($id);
+        if ($dealer) {
+            return response()->json([
+                'status' => 200,
+                'data' => $dealer
+            ], 200);
+        } else {
+            return response()->json([
+                'status' => 404,
+            ], 404);
+        }
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(string $id)
+    public function update(Request $request, $id)
     {
-        //
-    }
+        $dealer = dealerModel::find($id);
+        // Check if the dealer exists
+        if (!$dealer) {
+            return response()->json([
+                'status' => 404,
+                'message' => 'Dealer not found',
+            ], 404);
+        }
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, string $id)
-    {
-        //
-    }
+        // Update the dealer's details
+        $dealer->name = $request->input('name');
+        $dealer->email = $request->input('email');
+        $dealer->phone_number = $request->input('phone_number');
+        $dealer->address = $request->input('address');
+        $dealer->adhar = $request->input('adhar');
+        $dealer->profileimage = $request->input('profileimage');
 
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(string $id)
+        // Save the updated details
+        $dealer->save();
+
+        // Return a success response
+        return response()->json([
+            'status' => 200,
+            'message' => 'Dealer updated successfully',
+            'data' => $dealer
+        ], 200);
+    }
+    
+
+
+    public function destroy($id)
     {
-        //
+        $dealer = dealerModel::find($id);
+
+        if (!$dealer) {
+            return response()->json([
+                'status' => 404,
+                'message' => 'Dealer not found'
+            ], 404);
+        }
+
+        if($dealer)
+        {
+            $dealer->delete();
+            return response()->json([
+                'status' => 200,
+                'message' => 'Dealer deleted successfully'
+            ], 200);
+        }
+        else {
+            return response()->json([
+                'status' => 500,
+                'message' => 'Failed to delete request'
+            ], 500);
+        }
     }
 }

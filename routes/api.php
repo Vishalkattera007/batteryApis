@@ -24,3 +24,6 @@ Route::post('deleteadmin/{id}', [AdminController::class, 'delete']);
 // Route for Dealer
 Route::get('dealer', [DealerController::class, 'index']);
 Route::post('dealer', [DealerController::class, 'create']);
+Route::get('dealer/{id}', [DealerController::class, 'show']);
+Route::put('dealer/{id}', [DealerController::class, 'update']);
+Route::delete('dealer/{id}', [DealerController::class, 'destroy']);
