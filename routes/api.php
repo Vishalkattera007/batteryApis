@@ -14,7 +14,7 @@ Route::get('/admin', function (Request $request) {
 
 Route::get('admins', [AdminController::class, 'index']);
 Route::post('admins', [AdminController::class, 'create']);
-Route::post('admins/{id}', [AdminController::class, 'update']);
+Route::put('admins/{id}', [AdminController::class, 'update']);
 Route::post('deleteadmin/{id}', [AdminController::class, 'delete']);
 
 
