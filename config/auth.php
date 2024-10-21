@@ -40,6 +40,14 @@ return [
             'driver' => 'session',
             'provider' => 'users',
         ],
+        'admin' => [
+            'driver' => 'session',
+            'provider' => 'admins',
+        ],
+        'api' => [
+        'driver' => 'passport', // Set to passport
+        'provider' => 'admins',
+    ],
     ],
 
     /*
@@ -64,6 +72,11 @@ return [
             'driver' => 'eloquent',
             'model' => env('AUTH_MODEL', App\Models\User::class),
         ],
+        'admins' => [
+            'driver' => 'eloquent',
+            'model' => App\Models\adminModel::class, // Correctly referencing your model
+        ],
+
 
         // 'users' => [
         //     'driver' => 'database',
@@ -97,7 +110,14 @@ return [
             'expire' => 60,
             'throttle' => 60,
         ],
+        'admins' => [
+            'provider' => 'admins',
+            'table' => env('AUTH_PASSWORD_RESET_TOKEN_TABLE', 'admin_password_reset_tokens'), // You can use a different table if needed
+            'expire' => 60,
+            'throttle' => 60,
+        ],
     ],
+
 
     /*
     |--------------------------------------------------------------------------

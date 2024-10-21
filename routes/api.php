@@ -12,13 +12,12 @@ Route::get('/admin', function (Request $request) {
     return $request->user();
 })->middleware('auth:sanctum');
 
+// Route for Admin
 Route::get('admin/{id?}', [AdminController::class, 'index']);
 Route::post('admin', [AdminController::class, 'create']);
 Route::put('admin/{id}', [AdminController::class, 'update']);
 Route::delete('deleteadmin/{id}', [AdminController::class, 'delete']);
-
-
-
+Route::post('/admin/login', [AdminController::class, 'login']);
 
 
 // Route for Dealer
