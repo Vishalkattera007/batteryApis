@@ -17,11 +17,8 @@ Route::get('admin/{id?}', [AdminController::class, 'index']);
 Route::post('admin', [AdminController::class, 'create']);
 Route::put('admin/{id}', [AdminController::class, 'update']);
 Route::delete('deleteadmin/{id}', [AdminController::class, 'delete']);
-<<<<<<< HEAD
-=======
 Route::post('/admin/login', [AdminController::class, 'login']);
 
->>>>>>> 0c94dac93432e2c360c2b6ccfe40fea19173d6d1
 
 // Route for Dealer
 Route::get('dealer', [DealerController::class, 'index']);
