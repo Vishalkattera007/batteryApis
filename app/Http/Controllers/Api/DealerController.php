@@ -4,7 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use App\Models\Dealer;
+use App\Models\dealerModel;
 use Illuminate\Support\Facades\Hash;
 
 class DealerController extends Controller
@@ -12,10 +12,45 @@ class DealerController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
-    {
-        // Fetch all dealers
-        return response()->json(Dealer::all(), 200);
+    public function index(){
+        $allAdmins = dealerModel::all();
+        if($allAdmins->count()>0){
+            return response()->json([
+                'status'=>200,
+                'data'=>$allAdmins
+            ],200);
+        }else{
+            return response()->json([
+                'status'=>404,
+                'message'=>"No Admin Found"
+            ],404);
+        }
+    }
+
+
+    public function create(Request $request){
+        $admin = dealerModel::firstOrCreate([
+            'name'=>$request->name,
+            'email'=>$request->email,
+            'password'=>Hash::make($request->password),
+            'phone_number'=>$request->phone_number,
+            'address'=>$request->address,
+            'adhar'=>$request->adhar,
+            'profileimage'=>$request->phone_number
+        ]);
+
+        if ($admin->wasRecentlyCreated) {
+            return response()->json([
+                'status' => 200,
+                'message' => 'Admin created successfully',
+                'data' => $admin
+            ], 200);
+        } else {
+            return response()->json([
+                'status' => 409,  // 409 Conflict indicates that the resource already exists
+                'message' => 'Admin already exists',
+            ], 409);
+        }
     }
 
     /**
@@ -23,101 +58,30 @@ class DealerController extends Controller
      */
     public function store(Request $request)
     {
-        // Validate incoming request
-        $validatedData = $request->validate([
-            'name' => 'required|string|max:255',
-            'email' => 'required|email|unique:dealer,email',
-            'password' => 'required|string|min:6',
-            'phone_number' => 'required|string|max:15',
-            'address' => 'required|string|max:255',
-            'adhar' => 'required|string|max:255',
-            'profileImage' => 'required|string', // Assuming profileImage is stored as a string (path)
-        ]);
-
-        // Create a new dealer
-        $dealer = Dealer::create([
-            'name' => $validatedData['name'],
-            'email' => $validatedData['email'],
-            'password' => Hash::make($validatedData['password']),
-            'phone_number' => $validatedData['phone_number'],
-            'address' => $validatedData['address'],
-            'adhar' => $validatedData['adhar'],
-            'profileImage' => $validatedData['profileImage'],
-            'created_by' => 'API',
-        ]);
-
-        return response()->json($dealer, 201);
+        //
     }
 
     /**
      * Display the specified resource.
      */
-    public function show($id)
+    public function show(string $id)
     {
-        // Fetch a dealer by ID
-        $dealer = Dealer::find($id);
-
-        if (!$dealer) {
-            return response()->json(['message' => 'Dealer not found'], 404);
-        }
-
-        return response()->json($dealer, 200);
+        //
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, $id)
+    public function update(Request $request, string $id)
     {
-        // Fetch dealer by ID
-        $dealer = Dealer::find($id);
-
-        if (!$dealer) {
-            return response()->json(['message' => 'Dealer not found'], 404);
-        }
-
-        // Validate request
-        $validatedData = $request->validate([
-            'name' => 'sometimes|string|max:255',
-            'email' => 'sometimes|email|unique:dealer,email,' . $dealer->id,
-            'password' => 'sometimes|string|min:6',
-            'phone_number' => 'sometimes|string|max:15',
-            'address' => 'sometimes|string|max:255',
-            'adhar' => 'sometimes|string|max:255',
-            'profileImage' => 'sometimes|string', // Assuming profileImage is a string path
-        ]);
-
-        // Update dealer details
-        $dealer->update([
-            'name' => $validatedData['name'] ?? $dealer->name,
-            'email' => $validatedData['email'] ?? $dealer->email,
-            'password' => isset($validatedData['password']) ? Hash::make($validatedData['password']) : $dealer->password,
-            'phone_number' => $validatedData['phone_number'] ?? $dealer->phone_number,
-            'address' => $validatedData['address'] ?? $dealer->address,
-            'adhar' => $validatedData['adhar'] ?? $dealer->adhar,
-            'profileImage' => $validatedData['profileImage'] ?? $dealer->profileImage,
-            'updated_by' => 'API',
-            'updated_on' => now(),
-        ]);
-
-        return response()->json($dealer, 200);
+        //
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy($id)
+    public function destroy(string $id)
     {
-        // Fetch dealer by ID
-        $dealer = Dealer::find($id);
-
-        if (!$dealer) {
-            return response()->json(['message' => 'Dealer not found'], 404);
-        }
-
-        // Delete dealer
-        $dealer->delete();
-
-        return response()->json(['message' => 'Dealer deleted successfully'], 200);
+        //
     }
 }
