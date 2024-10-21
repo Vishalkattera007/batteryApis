@@ -12,10 +12,10 @@ Route::get('/admin', function (Request $request) {
     return $request->user();
 })->middleware('auth:sanctum');
 
-Route::get('admins', [AdminController::class, 'index']);
-Route::post('admins', [AdminController::class, 'create']);
-Route::put('admins/{id}', [AdminController::class, 'update']);
-Route::post('deleteadmin/{id}', [AdminController::class, 'delete']);
+Route::get('admin/{id?}', [AdminController::class, 'index']);
+Route::post('admin', [AdminController::class, 'create']);
+Route::put('admin/{id}', [AdminController::class, 'update']);
+Route::delete('deleteadmin/{id}', [AdminController::class, 'delete']);
 
 
 

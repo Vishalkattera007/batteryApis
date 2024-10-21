@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Models\adminModel;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 
@@ -11,20 +12,37 @@ class AdminController extends Controller
 {
     //
 
-    public function index()
+    public function index($id = null)
     {
-        $allAdmins = adminModel::all();
-        if ($allAdmins->count() > 0) {
+        if ($id !== null) {
+            try {
+                $admin = adminModel::findOrFail($id);
+            } catch (ModelNotFoundException $e) {
+                return response()->json([
+                    'status' => 404,
+                    'message' => "Given Id is not available",
+                ], 404);
+            }
+
             return response()->json([
                 'status' => 200,
-                'data' => $allAdmins,
+                'data' => $admin,
             ], 200);
         } else {
-            return response()->json([
-                'status' => 404,
-                'message' => "No Admin Found",
-            ], 404);
+            $allAdmins = adminModel::all();
+            if ($allAdmins->count() > 0) {
+                return response()->json([
+                    'status' => 200,
+                    'data' => $allAdmins,
+                ], 200);
+            } else {
+                return response()->json([
+                    'status' => 404,
+                    'message' => "No Admin Found",
+                ], 404);
+            }
         }
+
     }
 
     public function create(Request $request)
