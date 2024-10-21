@@ -22,7 +22,7 @@ class DealerController extends Controller
         }else{
             return response()->json([
                 'status'=>404,
-                'message'=>"No Admin Found"
+                'message'=>"No Dealer Found"
             ],404);
         }
     }
@@ -42,13 +42,13 @@ class DealerController extends Controller
         if ($admin->wasRecentlyCreated) {
             return response()->json([
                 'status' => 200,
-                'message' => 'Admin created successfully',
+                'message' => 'Dealer created successfully',
                 'data' => $admin
             ], 200);
         } else {
             return response()->json([
                 'status' => 409,  // 409 Conflict indicates that the resource already exists
-                'message' => 'Admin already exists',
+                'message' => 'Dealer already exists',
             ], 409);
         }
     }
