@@ -8,11 +8,10 @@ $baseDir = dirname($vendorDir);
 return array(
     'App\\Http\\Controllers\\Api\\AdminController' => $baseDir . '/app/Http/Controllers/Api/AdminController.php',
     'App\\Http\\Controllers\\Api\\DealerController' => $baseDir . '/app/Http/Controllers/Api/DealerController.php',
-    'App\\Http\\Controllers\\AuthController' => $baseDir . '/app/Http/Controllers/AuthController.php',
     'App\\Http\\Controllers\\Controller' => $baseDir . '/app/Http/Controllers/Controller.php',
-    'App\\Models\\Admin' => $baseDir . '/app/Models/Admin.php',
-    'App\\Models\\Dealer' => $baseDir . '/app/Models/Dealer.php',
     'App\\Models\\User' => $baseDir . '/app/Models/User.php',
+    'App\\Models\\adminModel' => $baseDir . '/app/Models/adminModel.php',
+    'App\\Models\\dealerModel' => $baseDir . '/app/Models/dealerModel.php',
     'App\\Providers\\AppServiceProvider' => $baseDir . '/app/Providers/AppServiceProvider.php',
     'Attribute' => $vendorDir . '/symfony/polyfill-php80/Resources/stubs/Attribute.php',
     'Brick\\Math\\BigDecimal' => $vendorDir . '/brick/math/src/BigDecimal.php',

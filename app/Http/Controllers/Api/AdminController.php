@@ -7,6 +7,8 @@ use App\Models\adminModel;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Auth;
+
 
 class AdminController extends Controller
 {
@@ -101,6 +103,43 @@ class AdminController extends Controller
         }
 
     }
+
+    public function login(Request $request)
+{
+    $credentials = $request->only('email', 'password');
+
+    // Validate the request
+    $request->validate([
+        'email' => 'required|email',
+        'password' => 'required',
+    ]);
+
+    // Attempt to authenticate the admin
+    if (auth()->guard('admin')->attempt($credentials)) {
+        // Authentication passed
+        $admin = auth()->guard('admin')->user();
+        
+        // Generate token for the authenticated admin
+        // $token = $admin->createToken('AdminToken')->plainTextToken;
+
+        return response()->json([
+            'status' => 200,
+            'message' => 'Login successful',
+            'data' => [
+                'admin' => $admin,
+                // 'token' => $token, // Include the generated token in the response
+            ],
+        ]);
+    }
+
+    return response()->json([
+        'status' => 401,
+        'message' => 'Unauthorized',
+    ], 401);
+}
+
+
+
 
     public function delete(Request $request, int $id)
     {
