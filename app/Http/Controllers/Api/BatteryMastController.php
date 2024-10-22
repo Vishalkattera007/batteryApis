@@ -50,6 +50,7 @@ class BatteryMastController extends Controller
             'category' => $request->category,
             'sub_category' => $request->sub_category,
             'MFD' => $request->MFD,
+            'warranty_period'=>$request->warranty_period,
             'created_by' => 'Backend Developer',
         ]);
 
@@ -78,6 +79,7 @@ class BatteryMastController extends Controller
                 'category' => $request->category,
                 'sub_category' => $request->sub_category,
                 'MFD' => $manufacture_date->toDateString(),
+                'warranty_period'=>$request->warranty_period,
                 'updated_by' => 'Frontend Developer',
             ]);
 
