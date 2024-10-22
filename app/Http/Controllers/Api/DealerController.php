@@ -32,7 +32,8 @@ class DealerController extends Controller
     public function create(Request $request)
     {
         $admin = dealerModel::firstOrCreate([
-            'name' => $request->name,
+            'FirstName' => $request->FirstName,
+            'LastName' => $request->LastName,
             'email' => $request->email,
             'password' => Hash::make($request->password),
             'phone_number' => $request->phone_number,
@@ -83,7 +84,8 @@ class DealerController extends Controller
         }
 
         // Update the dealer's details
-        $dealer->name = $request->input('name');
+        $dealer->FirstName = $request->input('FirstName');
+        $dealer->LastName = $request->input('LastName');
         $dealer->email = $request->input('email');
         $dealer->phone_number = $request->input('phone_number');
         $dealer->address = $request->input('address');
