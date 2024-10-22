@@ -63,7 +63,7 @@ Route::put('battery/{id}', [BatteryMastController::class, 'update']);
 Route::delete('deletebattery/{id}', [BatteryMastController::class, 'delete']);
 
 //Battery Assign
-Route::get('battery/{id?}', [AssignBatteryController::class, 'index']);
-Route::post('battery', [AssignBatteryController::class, 'create']);
-Route::put('battery/{id}', [AssignBatteryController::class, 'update']);
-Route::delete('deletebattery/{id}', [AssignBatteryController::class, 'delete']);
+Route::get('batteryAssign/{id?}', [AssignBatteryController::class, 'index']);
+Route::post('batteryAssign', [AssignBatteryController::class, 'create']);
+Route::put('batteryAssign/{id}', [AssignBatteryController::class, 'update']);
+Route::delete('deleteAssign/{id}', [AssignBatteryController::class, 'delete']);
