@@ -38,6 +38,10 @@ Route::post('batteryReg', [BatteryRegController::class, 'create']);
 Route::put('batteryReg/{id}', [BatteryRegController::class, 'update']);
 Route::delete('deletebatteryReg/{id}', [BatteryRegController::class, 'delete']);
 
+//customer login
+Route::post('customerFind',[BatteryRegController::class, 'findCustomer']);
+
+
 
 // Category Route
 Route::get('category/{id?}', [CategoryController::class, 'index']);

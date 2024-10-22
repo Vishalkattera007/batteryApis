@@ -169,4 +169,50 @@ class BatteryRegController extends Controller
                     'data' => $battery_reg_id], 200);
         }
     }
+
+    public function findCustomer(Request $request)
+    {
+        $customer_mno = $request->cmno;
+
+        $check_cmno = batteryRegModel::where('mobileNumber', $customer_mno)->get(['serialNo', 'firstName', 'lastName', 'BPD', 'warranty']);
+
+        if ($check_cmno->isNotEmpty()) {
+            $current_date = Carbon::now();
+
+            $battery_data = $check_cmno->map(function ($customer) use ($current_date) 
+            {
+                $warranty_date = Carbon::parse($customer->warranty);
+                $purchase_date = Carbon::parse($customer->BPD);
+
+                $remaining_warranty_days = $current_date->diffInDays($warranty_date, false);
+
+                $days_since_purchase = $purchase_date->diffInDays($current_date);
+
+                $warranty_status = $remaining_warranty_days > 0 ? 'Valid' : 'Expired';
+
+                return [
+                    'serialNo' => $customer->serialNo,
+                    'firstName' => $customer->firstName,
+                    'lastName' => $customer->lastName,
+                    'BPD' => $customer->BPD,
+                    'warranty' => $customer->warranty,
+                    'remaining_warranty_days' => $remaining_warranty_days > 0 ? $remaining_warranty_days : 0,
+                    'days_since_purchase' => $days_since_purchase,
+                    'warranty_status' => $warranty_status,
+                ];
+            });
+
+            return response()->json([
+                'status' => 200,
+                'message' => 'Customer found',
+                'data' => $battery_data,
+            ], 200);
+        } else {
+            return response()->json([
+                'status' => 404,
+                'message' => 'Customer not found',
+            ], 404);
+        }
+    }
+
 }
