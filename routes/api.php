@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Api\AdminController;
+use App\Http\Controllers\Api\AssignBatteryController;
 use App\Http\Controllers\Api\BatteryRegController;
 use App\Http\Controllers\Api\DealerController;
 use App\Http\Controllers\Api\categoryController;
@@ -39,13 +40,13 @@ Route::delete('deletebatteryReg/{id}', [BatteryRegController::class, 'delete']);
 
 
 // Category Route
-Route::get('category', [CategoryController::class, 'index']);
+Route::get('category/{id?}', [CategoryController::class, 'index']);
 Route::post('category', [CategoryController::class, 'create']);
 Route::put('category/{id}', [CategoryController::class, 'update']);
 Route::delete('deletecategory/{id}', [CategoryController::class, 'delete']);
 
 //filter - Subcategory by Category Id
-Route::get('category/{id?}',[categoryController::class, 'filterCate']);
+Route::get('categoryfilter/{id?}',[categoryController::class, 'filterCate']);
 
 // subCategory Route
 
@@ -61,3 +62,8 @@ Route::post('battery', [BatteryMastController::class, 'create']);
 Route::put('battery/{id}', [BatteryMastController::class, 'update']);
 Route::delete('deletebattery/{id}', [BatteryMastController::class, 'delete']);
 
+//Battery Assign
+Route::get('battery/{id?}', [AssignBatteryController::class, 'index']);
+Route::post('battery', [AssignBatteryController::class, 'create']);
+Route::put('battery/{id}', [AssignBatteryController::class, 'update']);
+Route::delete('deletebattery/{id}', [AssignBatteryController::class, 'delete']);
