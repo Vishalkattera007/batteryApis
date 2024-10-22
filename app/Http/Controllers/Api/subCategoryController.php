@@ -54,7 +54,7 @@ class subCategoryController extends Controller
         $subcategory = subCategoryModel::create([
             'categoryId' => $request->categoryId,
             'sub_category_name' => $request->sub_category_name,
-            'created_by' => 'Backend Developer',
+            'created_by' => $request->created_by,
         ]);
 
         return response()->json([
@@ -81,7 +81,7 @@ class subCategoryController extends Controller
         $subcategory->update([
             'categoryId' => $request->categoryId,
             'sub_category_name' => $request->sub_category_name,
-            'updated_by' => 'Frontend Developer',
+            'updated_by' => $request->updated_by,
         ]);
 
         return response()->json([

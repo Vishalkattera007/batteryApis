@@ -16,4 +16,9 @@ class subCategoryModel extends Model
         'created_at',
         'updated_at',
     ];
+
+    public function category()
+    {
+        return $this->belongsTo(CategoryModel::class, 'category_id');
+    }
 }

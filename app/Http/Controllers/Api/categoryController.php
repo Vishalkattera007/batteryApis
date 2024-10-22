@@ -12,10 +12,7 @@ use Illuminate\Support\Facades\Hash;
 
 class categoryController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
-    public function index($id = null)
+        public function index($id = null)
     {
         if ($id !== null) {
             try {
@@ -45,7 +42,6 @@ class categoryController extends Controller
                 ], 404);
             }
         }
-
     }
 
     /**
@@ -55,7 +51,7 @@ class categoryController extends Controller
     {
         $admin = categoryModel::firstOrCreate([
             'name' => $request->name,
-            'created_by' => 'Backend Developer',
+            'created_by' => $request->created_by,
         ]);
 
         if ($admin->wasRecentlyCreated) {
@@ -77,13 +73,12 @@ class categoryController extends Controller
      */
     public function update(Request $request, int $id)
     {
-
         $categoryId = categoryModel::find($id);
 
         if ($categoryId) {
             $categoryId->update([
                 'name' => $request->name,
-                'updated_by' => 'Frontend Developer',
+                'updated_by' => $request->updated_by,
             ]);
 
             return response()->json(
@@ -100,7 +95,6 @@ class categoryController extends Controller
                 'message' => 'Category Not exists',
             ], 404);
         }
-
     }
     public function delete(Request $request, int $id)
     {
@@ -139,6 +133,5 @@ class categoryController extends Controller
                 'message' => 'Oops No Subcategories...',
             ], 404);
         }
-
     }
 }
