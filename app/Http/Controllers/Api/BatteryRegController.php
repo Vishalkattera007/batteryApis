@@ -34,7 +34,7 @@ class BatteryRegController extends Controller
             if ($battery_registrations->count() > 0) {
                 return response()->json([
                     'status' => 200,
-                    'message' => "Working",
+                    'message' => $battery_registrations,
                 ], 200);
             } else {
                 return response()->json([
