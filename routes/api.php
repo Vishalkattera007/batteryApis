@@ -16,7 +16,7 @@ Route::get('admin/{id?}', [AdminController::class, 'index']);
 Route::post('admin', [AdminController::class, 'create']);
 Route::put('admin/{id}', [AdminController::class, 'update']);
 Route::delete('deleteadmin/{id}', [AdminController::class, 'delete']);
-// Route::post('/admin/login', [AdminController::class, 'login']);
+Route::post('/admin/login', [AdminController::class, 'login']);
 
 
 // Route for Dealer
@@ -25,3 +25,4 @@ Route::post('dealer', [DealerController::class, 'create']);
 Route::get('dealer/{id}', [DealerController::class, 'show']);
 Route::put('dealer/{id}', [DealerController::class, 'update']);
 Route::delete('dealer/{id}', [DealerController::class, 'destroy']);
+Route::post('/dealer/login', [DealerController::class, 'login']);
