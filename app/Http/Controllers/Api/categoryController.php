@@ -140,7 +140,5 @@ class categoryController extends Controller
             ], 404);
         }
 
-       
-
     }
 }
