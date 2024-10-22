@@ -5,7 +5,6 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Models\subCategoryModel;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
-use App\Models\CategoryModel; // Assuming categoryModel exists
 use Illuminate\Http\Request;
 
 class subCategoryController extends Controller
