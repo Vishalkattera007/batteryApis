@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Models\batteryRegModel;
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
 
@@ -48,30 +49,48 @@ class BatteryRegController extends Controller
 
     public function create(Request $request)
     {
-        $battery_create = batteryRegModel::firstOrCreate([
-            'serialNo' => $request->serialNo,
-            'type' => $request->type,
-            'firstName' => $request->firstName,
-            'lastName' => $request->lastName,
-            'pincode' => $request->pincode,
-            'mobileNumber' => $request->mobileNumber,
-            'BPD' => $request->BPD, //Battery Purchased Date
-            'VRN' => $request->VRN, //Vehicle Registarion Number
-            'Acceptance' => $request->Acceptance,
-            'created_by' => 'Backend Developer',
-        ]);
+        $dateOfRegistration = $request->BPD;
+        $calculated_date = Carbon::parse($dateOfRegistration)->addMonth(12);
+        $warranty_date = $calculated_date->toDateString();
 
-        if ($battery_create->wasRecentlyCreated) {
+        try {
+            // Create or find the battery registration
+            $battery_create = batteryRegModel::firstOrCreate([
+                'serialNo' => $request->serialNo,
+            ], [
+                'type' => $request->type,
+                'firstName' => $request->firstName,
+                'lastName' => $request->lastName,
+                'pincode' => $request->pincode,
+                'mobileNumber' => $request->mobileNumber,
+                'BPD' => $dateOfRegistration,
+                'VRN' => $request->VRN,
+                'warranty' => $warranty_date,
+                'Acceptance' => $request->Acceptance,
+                'created_by' => 'Backend Developer',
+            ]);
+
+            // Check if the record was recently created
+            if ($battery_create->wasRecentlyCreated) {
+                return response()->json([
+                    'status' => 200,
+                    'message' => 'Battery Registered successfully',
+                    'data' => $battery_create,
+                ], 200);
+            } else {
+                return response()->json([
+                    'status' => 409,
+                    'message' => 'Battery Already Registered',
+                ], 409);
+            }
+
+        } catch (\Exception $e) {
+            // Catch any unexpected error and return a 500 error
             return response()->json([
-                'status' => 200,
-                'message' => 'Battery Registered successfully',
-                'data' => $battery_create,
-            ], 200);
-        } else {
-            return response()->json([
-                'status' => 409, // 409 Conflict indicates that the resource already exists
-                'message' => 'Battery Already Registered',
-            ], 409);
+                'status' => 500,
+                'message' => 'An error occurred while registering the battery',
+                'error' => $e->getMessage(),
+            ], 500);
         }
     }
 
@@ -79,6 +98,10 @@ class BatteryRegController extends Controller
     {
 
         $battery_update = batteryRegModel::find($id);
+        $dateOfRegistration = $battery_update->BPD;
+        $calculated_date = Carbon::parse($dateOfRegistration)->addMonth(12);
+        $warranty_date = $calculated_date->toDateString();
+
 
         if ($battery_update) {
             $battery_update->update([
@@ -90,6 +113,7 @@ class BatteryRegController extends Controller
                 'mobileNumber' => $request->mobileNumber,
                 'BPD' => $request->BPD, //Battery Purchased Date
                 'VRN' => $request->VRN, //Vehicle Registarion Number
+                'warranty' => $warranty_date,
                 'Acceptance' => $request->Acceptance,
                 'updated_by' => 'Frontend Developer',
             ]);

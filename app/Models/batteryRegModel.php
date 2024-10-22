@@ -19,6 +19,7 @@ class batteryRegModel extends Model
             'mobileNumber',
             'BPD',//Battery Purchased Date
             'VRN', //Vehicle Registarion Number
+            'warranty',
             'Acceptance',
             'created_by',
             'updated_by'
