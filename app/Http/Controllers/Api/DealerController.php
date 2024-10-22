@@ -128,4 +128,33 @@ class DealerController extends Controller
             ], 500);
         }
     }
+
+    public function login(Request $request)
+    {
+        $credentials = $request->only('email', 'password');
+    
+        // Validate the request
+        $request->validate([
+            'email' => 'required|email',
+            'password' => 'required',
+        ]);
+    
+        // Attempt to authenticate the admin
+        if (auth()->guard('dealer')->attempt($credentials)) {
+            // Authentication passed
+            $dealers = auth()->guard('dealer')->user();
+            
+            // Generate token for the authenticated admin
+            // $token = $admin->createToken('AdminToken')->plainTextToken;
+    
+            return response()->json([
+                'status' => 200,
+                'message' => 'Login successful',
+                'data' => [
+                    'admin' => $dealers,
+                    // 'token' => $token, // Include the generated token in the response
+                ],
+            ]);
+        }
+    }
 }
