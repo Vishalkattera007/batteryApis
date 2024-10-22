@@ -54,9 +54,6 @@ class AdminController extends Controller
             'email' => $request->email,
             'password' => Hash::make($request->password),
             'phone_number' => $request->phone_number,
-            'address' => $request->address,
-            'adhar' => $request->adhar,
-            'profileimage' => $request->phone_number,
             'created_by' => 'Backend Developer',
         ]);
 
@@ -85,9 +82,6 @@ class AdminController extends Controller
                 'email' => $request->email,
                 'password' => Hash::make($request->password),
                 'phone_number' => $request->phone_number,
-                'address' => $request->address,
-                'adhar' => $request->adhar,
-                'profileimage' => $request->phone_number,
                 'updated_by' => 'Frontend Developer',
             ]);
 
