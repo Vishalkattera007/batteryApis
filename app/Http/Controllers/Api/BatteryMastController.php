@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Models\batteryMastModel;
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
 
@@ -70,13 +71,13 @@ class BatteryMastController extends Controller
     {
 
         $update_battery = batteryMastModel::find($id);
-
+        $manufacture_date = Carbon::parse($request->MFD);
         if ($update_battery) {
             $update_battery->update([
                 'serial_no' => $request->serial_no,
                 'category' => $request->category,
                 'sub_category' => $request->sub_category,
-                'MFD' => $request->MFD,
+                'MFD' => $manufacture_date->toDateString(),
                 'updated_by' => 'Frontend Developer',
             ]);
 
