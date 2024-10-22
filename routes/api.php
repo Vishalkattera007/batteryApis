@@ -3,9 +3,12 @@
 use App\Http\Controllers\Api\AdminController;
 use App\Http\Controllers\Api\BatteryRegController;
 use App\Http\Controllers\Api\DealerController;
+use App\Http\Controllers\Api\categoryController;
+use App\Http\Controllers\Api\subCategoryController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
+
 
 
 // Route::get('/admin', function (Request $request) {
@@ -34,3 +37,18 @@ Route::get('batteryReg/{id?}',[BatteryRegController::class, 'index']);
 Route::post('batteryReg', [BatteryRegController::class, 'create']);
 Route::put('batteryReg/{id}', [BatteryRegController::class, 'update']);
 Route::delete('deletebatteryReg/{id}', [BatteryRegController::class, 'delete']);
+
+
+// Category Route
+Route::get('category', [CategoryController::class, 'index']);
+Route::post('category', [CategoryController::class, 'create']);
+Route::put('category/{id}', [CategoryController::class, 'update']);
+Route::delete('deletecategory/{id}', [CategoryController::class, 'delete']);
+
+// subCategory Route
+
+Route::get('subcategory', [subCategoryController::class, 'index']);
+Route::post('subcategory', [subCategoryController::class, 'create']);
+Route::put('subcategory/{id}', [subCategoryController::class, 'update']);
+Route::delete('deletesubcategory/{id}', [subCategoryController::class, 'delete']);
+

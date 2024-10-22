@@ -12,8 +12,6 @@ use Illuminate\Support\Facades\Auth;
 
 class AdminController extends Controller
 {
-    //
-
     public function index($id = null)
     {
         if ($id !== null) {
@@ -86,9 +84,13 @@ class AdminController extends Controller
             ]);
 
             return response()->json(
-                ['status' => 200,
+                [
+                    'status' => 200,
                     'message' => $adminId->name . ' ' . 'Updated Successfully',
-                    'data' => $adminId], 200);
+                    'data' => $adminId
+                ],
+                200
+            );
         } else {
             return response()->json([
                 'status' => 404,
@@ -99,39 +101,37 @@ class AdminController extends Controller
     }
 
     public function login(Request $request)
-{
-    $credentials = $request->only('email', 'password');
+    {
+        $credentials = $request->only('email', 'password');
 
-    // Validate the request
-    $request->validate([
-        'email' => 'required|email',
-        'password' => 'required',
-    ]);
-
-    // Attempt to authenticate the admin
-    if (auth()->guard('admin')->attempt($credentials)) {
-        // Authentication passed
-        $admin = auth()->guard('admin')->user();
-        
-        // Generate token for the authenticated admin
-        // $token = $admin->createToken('AdminToken')->plainTextToken;
-
-        return response()->json([
-            'status' => 200,
-            'message' => 'Login successful',
-            'data' => [
-                'admin' => $admin,
-                // 'token' => $token, // Include the generated token in the response
-            ],
+        // Validate the request
+        $request->validate([
+            'email' => 'required|email',
+            'password' => 'required',
         ]);
-    }
-    
 
-    return response()->json([
-        'status' => 401,
-        'message' => 'Unauthorized',
-    ], 401);
-}
+        // Attempt to authenticate the admin
+        if (auth()->guard('admin')->attempt($credentials)) {
+            // Authentication passed
+            $admin = auth()->guard('admin')->user();
+
+            // Generate token for the authenticated admin
+            // $token = $admin->createToken('AdminToken')->plainTextToken;
+
+            return response()->json([
+                'status' => 200,
+                'message' => 'Login successful',
+                'data' => [
+                    'admin' => $admin,
+                    // 'token' => $token, // Include the generated token in the response
+                ],
+            ]);
+        }
+        return response()->json([
+            'status' => 401,
+            'message' => 'Unauthorized',
+        ], 401);
+    }
 
 
 
@@ -148,9 +148,13 @@ class AdminController extends Controller
         } else {
             $admin_id->delete();
             return response()->json(
-                ['status' => 200,
+                [
+                    'status' => 200,
                     'message' => $admin_id->name . ' ' . 'Deleted Successfully',
-                    'data' => $admin_id], 200);
+                    'data' => $admin_id
+                ],
+                200
+            );
         }
     }
 }
