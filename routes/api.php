@@ -8,8 +8,7 @@ use App\Http\Controllers\Api\subCategoryController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
-
-
+use App\Http\Controllers\BatteryMastController;
 
 // Route::get('/admin', function (Request $request) {
 //     return $request->user();
@@ -51,4 +50,11 @@ Route::get('subcategory', [subCategoryController::class, 'index']);
 Route::post('subcategory', [subCategoryController::class, 'create']);
 Route::put('subcategory/{id}', [subCategoryController::class, 'update']);
 Route::delete('deletesubcategory/{id}', [subCategoryController::class, 'delete']);
+
+
+//Battery_master
+Route::get('battery/{id?}', [BatteryMastController::class, 'index']);
+Route::post('battery', [BatteryMastController::class, 'create']);
+Route::put('battery/{id}', [BatteryMastController::class, 'update']);
+Route::delete('deletebattery/{id}', [BatteryMastController::class, 'delete']);
 
