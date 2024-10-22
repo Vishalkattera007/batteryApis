@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use App\Models\categoryModel;
+use App\Models\subCategoryModel;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 
@@ -121,5 +122,25 @@ class categoryController extends Controller
                 200
             );
         }
+    }
+
+    public function filterCate(Request $request, int $id){
+
+        $subcategory_data = subCategoryModel::where('categoryId', $id)->get(['id', 'sub_category_name']);
+
+        if($subcategory_data->count()>0){
+            return response()->json([
+                'status'=>200,
+                'data'=>$subcategory_data
+            ],200);
+        }else{
+            return response()->json([
+                'status' => 404,
+                'message' => 'Oops No Subcategories...',
+            ], 404);
+        }
+
+       
+
     }
 }
