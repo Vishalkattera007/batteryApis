@@ -38,7 +38,8 @@ class DealerController extends Controller
             'password' => Hash::make($request->password),
             'phone_number' => $request->phone_number,
             'address' => $request->address,
-            'adhar' => $request->adhar,
+            'firmRegNo' =>$request->firmRegNo,
+            'pancard' => $request->pancard,
             'profileimage' => $request->phone_number
         ]);
 
@@ -89,7 +90,8 @@ class DealerController extends Controller
         $dealer->email = $request->input('email');
         $dealer->phone_number = $request->input('phone_number');
         $dealer->address = $request->input('address');
-        $dealer->adhar = $request->input('adhar');
+        $dealer->firmRegNo = $request->input('firmRegNo');
+        $dealer->pancard = $request->input('pancard');
         $dealer->profileimage = $request->input('profileimage');
 
         // Save the updated details
