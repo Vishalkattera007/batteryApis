@@ -15,6 +15,22 @@ class assignBatteryModel extends Model
         'sub_category_id',
         'nof_batteries',
         'created_by',
-        'updated_by'
+        'updated_by',
     ];
+
+    public function dealer()
+    {
+        return $this->belongsTo(dealerModel::class, 'dealer_id');
+    }
+
+    public function category()
+    {
+        return $this->belongsTo(categoryModel::class, 'catergory_id');
+    }
+
+    public function subCategory()
+    {
+        return $this->belongsTo(subCategoryModel::class, 'sub_category_id');
+    }
+
 }

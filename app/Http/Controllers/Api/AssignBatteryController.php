@@ -4,7 +4,6 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Models\assignBatteryModel;
-use Carbon\Carbon;
 use Illuminate\Http\Request;
 
 class AssignBatteryController extends Controller
@@ -27,11 +26,29 @@ class AssignBatteryController extends Controller
             ], 200);
 
         } else {
-            $all_assignments = assignBatteryModel::all();
+            $all_assignments = assignBatteryModel::with(['dealer', 'category', 'subCategory'])->get();
+
             if ($all_assignments->count() > 0) {
                 return response()->json([
                     'status' => 200,
-                    'data' => $all_assignments,
+                    'data' => $all_assignments->map(function ($assignment) {
+
+                        $dealer_firstName = $assignment->dealer->FirstName;
+                        $dealer_lastName = $assignment->dealer->LastName;
+
+                        $dealer_Name = $dealer_firstName . $dealer_lastName;
+                        return [
+                            'id' => $assignment->id,
+                            'dealer_name' => $dealer_Name, // Assuming the dealer model has a 'name' attribute
+                            'category_name' => $assignment->category->name, // Assuming the category model has a 'name' attribute
+                            'sub_category_name' => $assignment->subCategory->sub_category_name, // Assuming the subcategory model has a 'name' attribute
+                            'nof_batteries' => $assignment->nof_batteries,
+                            'created_by' => $assignment->created_by,
+                            'updated_by' => $assignment->updated_by,
+                            'created_at' => $assignment->created_at,
+                            'updated_at' => $assignment->updated_at,
+                        ];
+                    }),
                 ], 200);
             } else {
                 return response()->json([
