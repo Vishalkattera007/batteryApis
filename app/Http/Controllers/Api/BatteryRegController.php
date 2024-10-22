@@ -196,8 +196,8 @@ class BatteryRegController extends Controller
                     'lastName' => $customer->lastName,
                     'BPD' => $customer->BPD,
                     'warranty' => $customer->warranty,
-                    'remaining_warranty_days' => $remaining_warranty_days > 0 ? $remaining_warranty_days : 0,
-                    'days_since_purchase' => $days_since_purchase,
+                    'remaining_warranty_days' => $remaining_warranty_days > 0 ? round($remaining_warranty_days) : 0,
+                    'days_since_purchase' => round($days_since_purchase),
                     'warranty_status' => $warranty_status,
                 ];
             });
