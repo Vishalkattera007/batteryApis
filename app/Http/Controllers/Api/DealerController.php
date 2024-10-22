@@ -102,7 +102,6 @@ class DealerController extends Controller
     }
     
 
-
     public function destroy($id)
     {
         $dealer = dealerModel::find($id);

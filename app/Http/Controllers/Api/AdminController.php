@@ -104,39 +104,39 @@ class AdminController extends Controller
 
     }
 
-    public function login(Request $request)
-{
-    $credentials = $request->only('email', 'password');
+//     public function login(Request $request)
+// {
+//     $credentials = $request->only('email', 'password');
 
-    // Validate the request
-    $request->validate([
-        'email' => 'required|email',
-        'password' => 'required',
-    ]);
+//     // Validate the request
+//     $request->validate([
+//         'email' => 'required|email',
+//         'password' => 'required',
+//     ]);
 
-    // Attempt to authenticate the admin
-    if (auth()->guard('admin')->attempt($credentials)) {
-        // Authentication passed
-        $admin = auth()->guard('admin')->user();
+//     // Attempt to authenticate the admin
+//     if (auth()->guard('admin')->attempt($credentials)) {
+//         // Authentication passed
+//         $admin = auth()->guard('admin')->user();
         
-        // Generate token for the authenticated admin
-        $token = $admin->createToken('AdminToken')->plainTextToken;
+//         // Generate token for the authenticated admin
+//         $token = $admin->createToken('AdminToken')->plainTextToken;
 
-        return response()->json([
-            'status' => 200,
-            'message' => 'Login successful',
-            'data' => [
-                'admin' => $admin,
-                'token' => $token, // Include the generated token in the response
-            ],
-        ]);
-    }
+//         return response()->json([
+//             'status' => 200,
+//             'message' => 'Login successful',
+//             'data' => [
+//                 'admin' => $admin,
+//                 'token' => $token, // Include the generated token in the response
+//             ],
+//         ]);
+//     }
 
-    return response()->json([
-        'status' => 401,
-        'message' => 'Unauthorized',
-    ], 401);
-}
+//     return response()->json([
+//         'status' => 401,
+//         'message' => 'Unauthorized',
+//     ], 401);
+// }
 
 
 
