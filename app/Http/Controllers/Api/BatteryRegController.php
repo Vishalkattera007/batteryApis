@@ -14,7 +14,7 @@ class BatteryRegController extends Controller
     public function index($id = null)
     {
 
-        if ($id == null) {
+        if (!$id == null) {
             try {
                 $battery_reg_id = batteryRegModel::findOrFail($id);
             } catch (ModelNotFoundException $e) {
