@@ -31,10 +31,25 @@ class subCategoryController extends Controller
         } else {
             $allSubCategories = subCategoryModel::with('category')->get();
             if ($allSubCategories->count() > 0) {
+
                 return response()->json([
                     'status' => 200,
-                    'data' => $allSubCategories,
-                ], 200);
+                    'data' => $allSubCategories->map(function ($subcategory) {
+                        
+                        $category_name = $subcategory->category->name;
+                        $subcategory_name = $subcategory->sub_category_name;
+
+                        return [
+                            "id"=>$subcategory->id,
+                            "category_name"=> $category_name,
+                            "sub_category_name"=>$subcategory_name,
+                        ];
+                    })
+                ],200);
+                // return response()->json([
+                //     'status' => 200,
+                //     'data' => $allSubCategories,
+                // ], 200);
             } else {
                 return response()->json([
                     'status' => 404,
