@@ -54,7 +54,7 @@ Route::get('categoryfilter/{id?}',[categoryController::class, 'filterCate']);
 
 // subCategory Route
 
-Route::get('subcategory', [subCategoryController::class, 'index']);
+Route::get('subcategory/{id?}', [subCategoryController::class, 'index']);
 Route::post('subcategory', [subCategoryController::class, 'create']);
 Route::put('subcategory/{id}', [subCategoryController::class, 'update']);
 Route::delete('deletesubcategory/{id}', [subCategoryController::class, 'delete']);
