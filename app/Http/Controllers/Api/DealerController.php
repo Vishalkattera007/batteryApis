@@ -136,21 +136,21 @@ class DealerController extends Controller
     public function login(Request $request)
     {
         $credentials = $request->only('email', 'password');
-
+    
         // Validate the request
         $request->validate([
             'email' => 'required|email',
             'password' => 'required',
         ]);
-
+    
         // Attempt to authenticate the admin
         if (auth()->guard('dealer')->attempt($credentials)) {
             // Authentication passed
             $dealers = auth()->guard('dealer')->user();
-
+    
             // Generate token for the authenticated admin
             // $token = $admin->createToken('AdminToken')->plainTextToken;
-
+    
             return response()->json([
                 'status' => 200,
                 'message' => 'Login successful',
@@ -159,9 +159,15 @@ class DealerController extends Controller
                     // 'token' => $token, // Include the generated token in the response
                 ],
             ]);
+        } else {
+            // Authentication failed
+            return response()->json([
+                'status' => 401,
+                'message' => 'Invalid credentials. Please check your email and password.',
+            ], 401);
         }
     }
-
+    
     public function count()
 {
     // Use the count method on the dealerModel to get the total number of dealers
