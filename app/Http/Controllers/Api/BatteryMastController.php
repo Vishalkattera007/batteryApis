@@ -75,7 +75,7 @@ class BatteryMastController extends Controller
     {
         $create_battery = BatteryMastModel::firstOrCreate([
             'serial_no' => $request->serial_no,
-            'category' => $request->category,
+            'categoryId' => $request->categoryId,
             'sub_category' => $request->sub_category,
             'MFD' => $request->MFD,
             'warranty_period' => $request->warranty_period,

@@ -3,7 +3,8 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
-use App\Models\assignBatteryModel;
+use App\Models\AssignBatteryModel;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
 
 class AssignBatteryController extends Controller
@@ -13,8 +14,8 @@ class AssignBatteryController extends Controller
 
         if (!$id == null) {
             try {
-                $check_battery_id = assignBatteryModel::findOrFail($id);
-            } catch (assignBatteryModel $e) {
+                $check_battery_id = AssignBatteryModel::findOrFail($id);
+            } catch (ModelNotFoundException $e) {
                 return response()->json([
                     'status' => 404,
                     'message' => "Given Id is not available",
@@ -26,7 +27,7 @@ class AssignBatteryController extends Controller
             ], 200);
 
         } else {
-            $all_assignments = assignBatteryModel::with(['dealer', 'category', 'subCategory'])->get();
+            $all_assignments = AssignBatteryModel::with(['dealer', 'category', 'subCategory'])->get();
 
             if ($all_assignments->count() > 0) {
                 return response()->json([
@@ -61,11 +62,12 @@ class AssignBatteryController extends Controller
 
     public function create(Request $request)
     {
-        $create_battery_assign = assignBatteryModel::firstOrCreate([
+        $create_battery_assign = AssignBatteryModel::firstOrCreate([
             'dealer_id' => $request->dealer_id,
             'catergory_id' => $request->catergory_id,
             'sub_category_id' => $request->sub_category_id,
             'nof_batteries' => $request->nof_batteries,
+            
             'created_by' => 'Backend Developer',
         ]);
 
@@ -86,7 +88,7 @@ class AssignBatteryController extends Controller
     public function update(Request $request, int $id)
     {
 
-        $update_assignment = assignBatteryModel::find($id);
+        $update_assignment = AssignBatteryModel::find($id);
         if ($update_assignment) {
             $update_assignment->update([
                 'dealer_id' => $request->dealer_id,
@@ -111,7 +113,7 @@ class AssignBatteryController extends Controller
 
     public function delete(Request $request, int $id)
     {
-        $detele_assignement = assignBatteryModel::find($id);
+        $detele_assignement = AssignBatteryModel::find($id);
 
         if (!$detele_assignement) {
             return response()->json([
