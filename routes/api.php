@@ -29,7 +29,9 @@ Route::post('dealer', [DealerController::class, 'create']);
 Route::get('dealer/{id}', [DealerController::class, 'show']);
 Route::put('dealer/{id}', [DealerController::class, 'update']);
 Route::delete('dealer/{id}', [DealerController::class, 'destroy']);
-Route::post('/dealer/login', [DealerController::class, 'login']);
+Route::post('dealer/login', [DealerController::class, 'login']);
+Route::get('dealers/count', [DealerController::class, 'count']);
+
 
 
 //Battery Reg
@@ -37,6 +39,7 @@ Route::get('batteryReg/{id?}',[BatteryRegController::class, 'index']);
 Route::post('batteryReg', [BatteryRegController::class, 'create']);
 Route::put('batteryReg/{id}', [BatteryRegController::class, 'update']);
 Route::delete('deletebatteryReg/{id}', [BatteryRegController::class, 'delete']);
+Route::get('batteriesReg/counts', [BatteryRegController::class, 'count']);
 
 //customer login
 Route::get('customerFind',[BatteryRegController::class, 'findCustomer']);
@@ -65,6 +68,8 @@ Route::get('battery/{id?}', [BatteryMastController::class, 'index']);
 Route::post('battery', [BatteryMastController::class, 'create']);
 Route::put('battery/{id}', [BatteryMastController::class, 'update']);
 Route::delete('deletebattery/{id}', [BatteryMastController::class, 'delete']);
+Route::get('batteries/count', [BatteryMastController::class, 'count']);
+
 
 //Battery Assign
 Route::get('batteryAssign/{id?}', [AssignBatteryController::class, 'index']);

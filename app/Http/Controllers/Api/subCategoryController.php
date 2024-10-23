@@ -4,7 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
-use App\Models\subCategoryModel;
+use App\Models\SubCategoryModel;
 use App\Http\Controllers\Controller;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 
@@ -17,7 +17,7 @@ class subCategoryController extends Controller
     {
         if ($id) {
             try {
-                $subcategory = subCategoryModel::with('category')->findOrFail($id);
+                $subcategory = SubCategoryModel::with('category')->findOrFail($id);
             } catch (ModelNotFoundException $e) {
                 return response()->json([
                     'status' => Response::HTTP_NOT_FOUND,
@@ -30,7 +30,7 @@ class subCategoryController extends Controller
                 'data' => $subcategory,
             ], Response::HTTP_OK);
         } else {
-            $allSubCategories = subCategoryModel::with('category')->get();
+            $allSubCategories = SubCategoryModel::with('category')->get();
             if ($allSubCategories->count() > 0) {
     
                 return response()->json([
@@ -63,7 +63,7 @@ class subCategoryController extends Controller
     public function create(Request $request)
     {
 
-        $subcategory = subCategoryModel::create([
+        $subcategory = SubCategoryModel::create([
             'categoryId' => $request->categoryId,
             'sub_category_name' => $request->sub_category_name,
             'created_by' => $request->created_by,
@@ -81,7 +81,7 @@ class subCategoryController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $subcategory = subCategoryModel::find($id);
+        $subcategory = SubCategoryModel::find($id);
 
         if (!$subcategory) {
             return response()->json([
@@ -108,7 +108,7 @@ class subCategoryController extends Controller
      */
     public function delete($id)
     {
-        $subcategory = subCategoryModel::find($id);
+        $subcategory = SubCategoryModel::find($id);
 
         if (!$subcategory) {
             return response()->json([

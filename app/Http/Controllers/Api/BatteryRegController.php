@@ -3,8 +3,8 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
-use App\Models\batteryMastModel;
-use App\Models\batteryRegModel;
+use App\Models\BatteryMastModel;
+use App\Models\BatteryRegModel;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
@@ -18,7 +18,7 @@ class BatteryRegController extends Controller
 
         if (!$id == null) {
             try {
-                $battery_reg_id = batteryRegModel::findOrFail($id);
+                $battery_reg_id = BatteryRegModel::findOrFail($id);
             } catch (ModelNotFoundException $e) {
                 return response()->json([
                     'status' => 404,
@@ -31,7 +31,7 @@ class BatteryRegController extends Controller
                 'data' => $battery_reg_id,
             ], 200);
         } else {
-            $battery_registrations = batteryRegModel::all();
+            $battery_registrations = BatteryRegModel::all();
 
             if ($battery_registrations->count() > 0) {
                 return response()->json([
@@ -57,7 +57,7 @@ class BatteryRegController extends Controller
         $bat_sp_no = $request->serialNo;
 
         // Search for the battery in the batteryMastModel
-        $match_spec_no = batteryMastModel::where('serial_no', $bat_sp_no)->first();
+        $match_spec_no = BatteryMastModel::where('serial_no', $bat_sp_no)->first();
 
         if ($match_spec_no) {
             // Get the warranty period from the matched battery
@@ -69,7 +69,7 @@ class BatteryRegController extends Controller
 
             try {
                 // Create or find the battery registration
-                $battery_create = batteryRegModel::firstOrCreate([
+                $battery_create = BatteryRegModel::firstOrCreate([
                     'serialNo' => $bat_sp_no, // Check for uniqueness by serial number
                 ], [
                     'type' => $request->type,
@@ -119,7 +119,7 @@ class BatteryRegController extends Controller
     public function update(Request $request, int $id)
     {
 
-        $battery_update = batteryRegModel::find($id);
+        $battery_update = BatteryRegModel::find($id);
         $dateOfRegistration = $battery_update->BPD;
         $calculated_date = Carbon::parse($dateOfRegistration)->addMonth(12);
         $warranty_date = $calculated_date->toDateString();
@@ -154,7 +154,7 @@ class BatteryRegController extends Controller
 
     public function delete(Request $request, int $id)
     {
-        $battery_reg_id = batteryRegModel::find($id);
+        $battery_reg_id = BatteryRegModel::find($id);
 
         if (!$battery_reg_id) {
             return response()->json([
@@ -174,7 +174,7 @@ class BatteryRegController extends Controller
     {
         $customer_mno = $request->cmno;
 
-        $check_cmno = batteryRegModel::where('mobileNumber', $customer_mno)->get(['serialNo', 'firstName', 'lastName', 'BPD', 'warranty']);
+        $check_cmno = BatteryRegModel::where('mobileNumber', $customer_mno)->get(['serialNo', 'firstName', 'lastName', 'BPD', 'warranty']);
 
         if ($check_cmno->isNotEmpty()) {
             $current_date = Carbon::now();
@@ -213,6 +213,18 @@ class BatteryRegController extends Controller
                 'message' => 'Customer not found',
             ], 404);
         }
+    }
+
+    public function count()
+    {
+        // Use the count method on the dealerModel to get the total number of dealers
+        $totalBatteryReg = BatteryRegModel::count();
+    
+        // Return the count in a JSON response
+        return response()->json([
+            'status' => 200,
+            'count' => $totalBatteryReg,
+        ], 200);
     }
 
 }

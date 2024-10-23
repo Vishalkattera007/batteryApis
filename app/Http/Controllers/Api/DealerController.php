@@ -161,4 +161,17 @@ class DealerController extends Controller
             ]);
         }
     }
+
+    public function count()
+{
+    // Use the count method on the dealerModel to get the total number of dealers
+    $totalDealers = dealerModel::count();
+
+    // Return the count in a JSON response
+    return response()->json([
+        'status' => 200,
+        'count' => $totalDealers,
+    ], 200);
+}
+
 }

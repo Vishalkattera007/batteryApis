@@ -22,5 +22,6 @@ class categoryModel extends Model
     public function batteries(){
         return $this->hasMany(batteryMastModel::class, 'category', 'id');
     }
+    
 
 }
