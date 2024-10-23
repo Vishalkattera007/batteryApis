@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
-use App\Models\BatteryMastModel; // Ensure the model is correctly named
+use App\Models\batteryMastModel; // Ensure the model is correctly named
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
@@ -15,7 +15,7 @@ class BatteryMastController extends Controller
     if ($id != null) {
         try {
             // Fetch battery info with category and subCategory relationships
-            $battery_info = BatteryMastModel::with(['category', 'subCategory'])->findOrFail($id);
+            $battery_info = batteryMastModel::with(['category', 'subCategory'])->findOrFail($id);
 
             return response()->json([
                 'status' => 200,
@@ -42,7 +42,7 @@ class BatteryMastController extends Controller
         }
     } else {
         // Fetch all batteries with category and subCategory relationships
-        $all_batteries = BatteryMastModel::with(['category', 'subCategory'])->get();
+        $all_batteries = batteryMastModel::with(['category', 'subCategory'])->get();
 
         if ($all_batteries->count() > 0) {
             $batteries_data = $all_batteries->map(function ($battery) {
@@ -73,7 +73,7 @@ class BatteryMastController extends Controller
 
     public function create(Request $request)
     {
-        $create_battery = BatteryMastModel::firstOrCreate([
+        $create_battery = batteryMastModel::firstOrCreate([
             'serial_no' => $request->serial_no,
             'category' => $request->category,
             'sub_category' => $request->sub_category,
@@ -98,7 +98,7 @@ class BatteryMastController extends Controller
 
     public function update(Request $request, int $id)
     {
-        $update_battery = BatteryMastModel::find($id);
+        $update_battery = batteryMastModel::find($id);
         $manufacture_date = Carbon::parse($request->MFD);
         if ($update_battery) {
             $update_battery->update([
@@ -125,7 +125,7 @@ class BatteryMastController extends Controller
 
     public function delete(Request $request, int $id)
     {
-        $delete_battery = BatteryMastModel::find($id);
+        $delete_battery = batteryMastModel::find($id);
 
         if (!$delete_battery) {
             return response()->json([
