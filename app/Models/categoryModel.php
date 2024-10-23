@@ -11,6 +11,7 @@ class categoryModel extends Model
 
     // Fillable attributes for mass assignment
     protected $fillable = [
+        'id',
         'name',
         'created_by',
         'updated_by',
@@ -18,15 +19,8 @@ class categoryModel extends Model
         'updated_at',
     ];
 
-    // Relationship with BatteryMastModel
-    public function batteries()
-    {
-        return $this->hasMany(BatteryMastModel::class, 'category', 'id'); // Correct if 'category' is the foreign key
+    public function batteries(){
+        return $this->hasMany(batteryMastModel::class, 'category', 'id');
     }
 
-    // Relationship with SubCategoryModel
-    public function subCategories()
-    {
-        return $this->hasMany(SubCategoryModel::class, 'category_id', 'id'); // Adjust 'category_id' if your foreign key is named differently
-    }
 }

@@ -20,15 +20,14 @@ class batteryMastModel extends Model
         'updated_by',
     ];
 
-    // Relationship with CategoryModel
     public function category()
     {
-        return $this->belongsTo(CategoryModel::class, 'categoryId'); // Foreign key in battery_master
+        return $this->belongsTo(categoryModel::class, 'categoryId','id');
     }
 
-    // Relationship with SubCategoryModel
     public function subCategory()
     {
-        return $this->belongsTo(SubCategoryModel::class, 'sub_category'); // Foreign key in battery_master
+        return $this->belongsTo(subCategoryModel::class, 'sub_category');
     }
+
 }

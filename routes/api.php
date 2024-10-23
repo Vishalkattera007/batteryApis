@@ -8,7 +8,7 @@ use App\Http\Controllers\Api\categoryController;
 use App\Http\Controllers\Api\subCategoryController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\AuthController;
+// use App\Http\Controllers\AuthController;
 use App\Http\Controllers\Api\BatteryMastController;
 
 // Route::get('/admin', function (Request $request) {
@@ -54,7 +54,7 @@ Route::get('categoryfilter/{id?}',[categoryController::class, 'filterCate']);
 
 // subCategory Route
 
-Route::get('subcategory', [subCategoryController::class, 'index']);
+Route::get('subcategory/{id?}', [subCategoryController::class, 'index']);
 Route::post('subcategory', [subCategoryController::class, 'create']);
 Route::put('subcategory/{id}', [subCategoryController::class, 'update']);
 Route::delete('deletesubcategory/{id}', [subCategoryController::class, 'delete']);
