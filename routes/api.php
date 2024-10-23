@@ -39,7 +39,7 @@ Route::put('batteryReg/{id}', [BatteryRegController::class, 'update']);
 Route::delete('deletebatteryReg/{id}', [BatteryRegController::class, 'delete']);
 
 //customer login
-Route::get('customerFind',[BatteryRegController::class, 'findCustomer']);
+Route::post('customerFind',[BatteryRegController::class, 'findCustomer']);
 
 
 
