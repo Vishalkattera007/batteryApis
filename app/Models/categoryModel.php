@@ -13,6 +13,7 @@ class categoryModel extends Model
     protected $fillable = [
         'id',
         'name',
+        'shortcode',
         'created_by',
         'updated_by',
         'created_at',

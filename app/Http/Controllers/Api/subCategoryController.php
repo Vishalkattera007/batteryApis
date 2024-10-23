@@ -2,11 +2,11 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Http\Controllers\Controller;
+use App\Models\SubCategoryModel;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
-use App\Models\SubCategoryModel;
-use App\Http\Controllers\Controller;
-use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 class subCategoryController extends Controller
 {
@@ -24,7 +24,7 @@ class subCategoryController extends Controller
                     'message' => "Given SubCategory Id is not available",
                 ], Response::HTTP_NOT_FOUND);
             }
-    
+
             return response()->json([
                 'status' => Response::HTTP_OK,
                 'data' => $subcategory,
@@ -32,20 +32,20 @@ class subCategoryController extends Controller
         } else {
             $allSubCategories = SubCategoryModel::with('category')->get();
             if ($allSubCategories->count() > 0) {
-    
+
                 return response()->json([
                     'status' => Response::HTTP_OK,
                     'data' => $allSubCategories->map(function ($subcategory) {
                         // Check if category exists to avoid null reference errors
                         $category_name = $subcategory->category ? $subcategory->category->name : null;
                         $subcategory_name = $subcategory->sub_category_name;
-    
+
                         return [
                             "id" => $subcategory->id,
                             "category_name" => $category_name,
                             "sub_category_name" => $subcategory_name,
                         ];
-                    })
+                    }),
                 ], 200);
             } else {
                 return response()->json([
@@ -55,18 +55,40 @@ class subCategoryController extends Controller
             }
         }
     }
-    
 
     /**
      * Store a newly created subcategory.
      */
     public function create(Request $request)
     {
+        $sub_category_name = $request->sub_category_name;
+
+        $intoWords = explode(' ', $sub_category_name);
+
+        if (count($intoWords) == 1) {
+            $shortcode = substr($intoWords[0], 0, 3);
+        } else {
+            $shortcode = '';
+            foreach ($intoWords as $words) {
+                $shortcode .= substr($words, 0, 1);
+            }
+        }
+
+        $subcategory_check_duplicate = SubCategoryModel::where('categoryId', $request->categoryId)->where('sub_category_name', $request->sub_category_name)->first();
+
+        if($subcategory_check_duplicate){
+            return response()->json([
+                'status'=>409,
+                'message'=>"Subcategory already existed",
+                'data'=>$subcategory_check_duplicate
+            ],409);
+        }
 
         $subcategory = SubCategoryModel::create([
             'categoryId' => $request->categoryId,
-            'sub_category_name' => $request->sub_category_name,
-            'created_by' => $request->created_by,
+            'sub_category_name' => $sub_category_name,
+            'shortcode' => $shortcode,
+            'created_by' => "Backend Developer",
         ]);
 
         return response()->json([

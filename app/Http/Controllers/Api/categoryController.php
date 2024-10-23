@@ -49,16 +49,44 @@ class categoryController extends Controller
      */
     public function create(Request $request)
     {
-        $admin = categoryModel::firstOrCreate([
-            'name' => $request->name,
-            'created_by' => $request->created_by,
+
+        $category_name = $request->name;
+
+        $intoWords = explode(' ',$category_name);
+
+        if(count($intoWords)==1){
+            $shortcode = substr($intoWords[0],0,3);
+        }else{
+            $shortcode='';
+            foreach($intoWords as $words){
+                $shortcode .= substr($words,0,1);
+            }
+        }
+
+        $category_duplication = categoryModel::where('name', $category_name)->first();
+
+        if($category_duplication){
+            return response()->json([
+                'status'=>409,
+                'message'=>"Category already existed",
+                'data'=>$category_duplication
+            ],409);
+        }
+
+        $category = categoryModel::firstOrCreate([
+            'name' => $category_name,
+            'created_by' => "Backend Develoepr",
+            'shortcode'=>  $shortcode
         ]);
 
-        if ($admin->wasRecentlyCreated) {
+        if ($category->wasRecentlyCreated) {
             return response()->json([
                 'status' => 200,
                 'message' => 'Category created successfully',
-                'data' => $admin,
+                'data' => [
+                   'category'=>$category_name,
+                   'shortcode'=>$shortcode
+                ]
             ], 200);
         } else {
             return response()->json([
@@ -118,9 +146,9 @@ class categoryController extends Controller
         }
     }
 
-    public function filterCate(Request $request, int $id){
+    public function filterCate(int $id){
 
-        $subcategory_data = SubCategoryModel::where('categoryId', $id)->get(['id', 'sub_category_name']);
+        $subcategory_data = SubCategoryModel::where('categoryId', $id)->get(['id', 'sub_category_name','shortcode']);
 
         if($subcategory_data->count()>0){
             return response()->json([
