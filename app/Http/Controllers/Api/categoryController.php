@@ -4,7 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
-use App\Models\CategoryModel;
+use App\Models\categoryModel;
 use App\Models\SubCategoryModel;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
@@ -16,7 +16,7 @@ class categoryController extends Controller
     {
         if ($id !== null) {
             try {
-                $category = CategoryModel::findOrFail($id);
+                $category = categoryModel::findOrFail($id);
             } catch (ModelNotFoundException $e) {
                 return response()->json([
                     'status' => 404,
@@ -29,7 +29,7 @@ class categoryController extends Controller
                 'data' => $category,
             ], 200);
         } else {
-            $allCategory = CategoryModel::all();
+            $allCategory = categoryModel::all();
             if ($allCategory->count() > 0) {
                 return response()->json([
                     'status' => 200,
@@ -49,7 +49,7 @@ class categoryController extends Controller
      */
     public function create(Request $request)
     {
-        $admin = CategoryModel::firstOrCreate([
+        $admin = categoryModel::firstOrCreate([
             'name' => $request->name,
             'created_by' => $request->created_by,
         ]);
@@ -73,7 +73,7 @@ class categoryController extends Controller
      */
     public function update(Request $request, int $id)
     {
-        $categoryId = CategoryModel::find($id);
+        $categoryId = categoryModel::find($id);
 
         if ($categoryId) {
             $categoryId->update([
@@ -98,7 +98,7 @@ class categoryController extends Controller
     }
     public function delete(Request $request, int $id)
     {
-        $categoryId = CategoryModel::find($id);
+        $categoryId = categoryModel::find($id);
 
         if (!$categoryId) {
             return response()->json([

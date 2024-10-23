@@ -20,7 +20,7 @@ class subCategoryModel extends Model
     // Define the relationship with CategoryModel
     public function category()
     {
-        return $this->belongsTo(CategoryModel::class, 'category_id', 'id'); // Ensure the foreign key is correct
+        return $this->belongsTo(categoryModel::class, 'category_id', 'id'); // Ensure the foreign key is correct
     }
 
     // Define the relationship with BatteryMastModel
