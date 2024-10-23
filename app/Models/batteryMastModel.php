@@ -17,4 +17,15 @@ class batteryMastModel extends Model
         'created_by',
         'updated_by',
     ];
+
+    public function category()
+    {
+        return $this->belongsTo(categoryModel::class, 'category','id');
+    }
+
+    public function subCategory()
+    {
+        return $this->belongsTo(subCategoryModel::class, 'sub_category','id');
+    }
+
 }

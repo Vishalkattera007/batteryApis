@@ -2,10 +2,11 @@
 
 namespace App\Http\Controllers\Api;
 
-use App\Http\Controllers\Controller;
-use App\Models\subCategoryModel;
-use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
+use App\Models\subCategoryModel;
+use App\Http\Controllers\Controller;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 class subCategoryController extends Controller
 {
@@ -14,50 +15,47 @@ class subCategoryController extends Controller
      */
     public function index($id = null)
     {
-        if ($id !== null) {
+        if ($id) {
             try {
                 $subcategory = subCategoryModel::with('category')->findOrFail($id);
             } catch (ModelNotFoundException $e) {
                 return response()->json([
-                    'status' => 404,
+                    'status' => Response::HTTP_NOT_FOUND,
                     'message' => "Given SubCategory Id is not available",
-                ], 404);
+                ], Response::HTTP_NOT_FOUND);
             }
-
+    
             return response()->json([
-                'status' => 200,
+                'status' => Response::HTTP_OK,
                 'data' => $subcategory,
-            ], 200);
+            ], Response::HTTP_OK);
         } else {
             $allSubCategories = subCategoryModel::with('category')->get();
             if ($allSubCategories->count() > 0) {
-
+    
                 return response()->json([
-                    'status' => 200,
+                    'status' => Response::HTTP_OK,
                     'data' => $allSubCategories->map(function ($subcategory) {
-                        
-                        $category_name = $subcategory->category->name;
+                        // Check if category exists to avoid null reference errors
+                        $category_name = $subcategory->category ? $subcategory->category->name : null;
                         $subcategory_name = $subcategory->sub_category_name;
-
+    
                         return [
-                            "id"=>$subcategory->id,
-                            "category_name"=> $category_name,
-                            "sub_category_name"=>$subcategory_name,
+                            "id" => $subcategory->id,
+                            "category_name" => $category_name,
+                            "sub_category_name" => $subcategory_name,
                         ];
                     })
-                ],200);
-                // return response()->json([
-                //     'status' => 200,
-                //     'data' => $allSubCategories,
-                // ], 200);
+                ], 200);
             } else {
                 return response()->json([
-                    'status' => 404,
+                    'status' => Response::HTTP_NOT_FOUND,
                     'message' => "No SubCategories Found",
-                ], 404);
+                ], Response::HTTP_NOT_FOUND);
             }
         }
     }
+    
 
     /**
      * Store a newly created subcategory.

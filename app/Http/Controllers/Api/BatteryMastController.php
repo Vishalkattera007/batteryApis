@@ -13,7 +13,7 @@ class BatteryMastController extends Controller
     public function index($id = null)
     {
 
-        if (!$id == null) {
+        if ($id !== null) {
             try {
                 $battery_info = batteryMastModel::findOrFail($id);
             } catch (ModelNotFoundException $e) {
@@ -28,13 +28,31 @@ class BatteryMastController extends Controller
             ], 200);
 
         } else {
-            $all_batteries = batteryMastModel::all();
-            if ($all_batteries->count() > 0) {
+            // $all_batteries = batteryMastModel::all();
+            $all_batteries = batteryMastModel::with(['category', 'subCategory'])->get();
+
+            if($all_batteries->count()>0){
                 return response()->json([
-                    'status' => 200,
-                    'data' => $all_batteries,
-                ], 200);
-            } else {
+                    'status'=>200,
+                    'data'=> $all_batteries->map(function($batteries){
+                        $category_name = $batteries->category->name;
+                        $sub_category_name = $batteries->subCategory->name;
+
+                        return[
+                            'categoryName'=>$sub_category_name
+                        ];
+                    }),
+                    
+                ],200);
+            }
+
+            // if ($all_batteries->count() > 0) {
+            //     return response()->json([
+            //         'status' => 200,
+            //         'data' => $all_batteries,
+            //     ], 200);
+            // } 
+            else {
                 return response()->json([
                     'status' => 404,
                     'message' => "No Batteries Found",

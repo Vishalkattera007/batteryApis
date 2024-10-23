@@ -8,7 +8,7 @@ use App\Http\Controllers\Api\categoryController;
 use App\Http\Controllers\Api\subCategoryController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\AuthController;
+// use App\Http\Controllers\AuthController;
 use App\Http\Controllers\Api\BatteryMastController;
 
 // Route::get('/admin', function (Request $request) {
