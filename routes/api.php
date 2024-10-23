@@ -42,7 +42,7 @@ Route::delete('deletebatteryReg/{id}', [BatteryRegController::class, 'delete']);
 Route::get('batteriesReg/counts', [BatteryRegController::class, 'count']);
 
 //customer login
-Route::get('customerFind',[BatteryRegController::class, 'findCustomer']);
+Route::post('customerFind',[BatteryRegController::class, 'findCustomer']);
 
 
 
