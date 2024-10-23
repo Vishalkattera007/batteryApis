@@ -31,19 +31,24 @@ class BatteryMastController extends Controller
             // $all_batteries = batteryMastModel::all();
             $all_batteries = batteryMastModel::with(['category', 'subCategory'])->get();
 
-            if($all_batteries->count()>0){
+            if ($all_batteries->count() > 0) {
                 return response()->json([
-                    'status'=>200,
-                    'data'=> $all_batteries->map(function($batteries){
-                        $category_name = $batteries->category->name;
-                        $sub_category_name = $batteries->subCategory->name;
+                    'status' => 200,
+                    'data' => $all_batteries->map(function ($battery) {
+                        $category_name = $battery->category->name; // Access category name
+                        $sub_category_name = $battery->subCategory->sub_category_name; // Access sub-category name
 
-                        return[
-                            'categoryName'=>$sub_category_name
+                        return [
+                            'serialNo' => $battery->serial_no,
+                            'categoryName' => $category_name,
+                            'subCategoryName' => $sub_category_name,
+                            'warranty_period' => $battery->warranty_period,
+                            'MFD' => $battery->MFD,
+                            'created_by' => $battery->created_by,
+                            'updated_by' => $battery->updated_by,
                         ];
                     }),
-                    
-                ],200);
+                ], 200);
             }
 
             // if ($all_batteries->count() > 0) {
@@ -51,7 +56,7 @@ class BatteryMastController extends Controller
             //         'status' => 200,
             //         'data' => $all_batteries,
             //     ], 200);
-            // } 
+            // }
             else {
                 return response()->json([
                     'status' => 404,
@@ -68,7 +73,7 @@ class BatteryMastController extends Controller
             'category' => $request->category,
             'sub_category' => $request->sub_category,
             'MFD' => $request->MFD,
-            'warranty_period'=>$request->warranty_period,
+            'warranty_period' => $request->warranty_period,
             'created_by' => 'Backend Developer',
         ]);
 
@@ -97,7 +102,7 @@ class BatteryMastController extends Controller
                 'category' => $request->category,
                 'sub_category' => $request->sub_category,
                 'MFD' => $manufacture_date->toDateString(),
-                'warranty_period'=>$request->warranty_period,
+                'warranty_period' => $request->warranty_period,
                 'updated_by' => 'Frontend Developer',
             ]);
 

@@ -10,7 +10,7 @@ class batteryMastModel extends Model
 
     protected $fillable = [
         'serial_no',
-        'category',
+        'categoryId',
         'sub_category',
         'MFD',
         'warranty_period',
@@ -20,12 +20,12 @@ class batteryMastModel extends Model
 
     public function category()
     {
-        return $this->belongsTo(categoryModel::class, 'category','id');
+        return $this->belongsTo(categoryModel::class, 'categoryId','id');
     }
 
     public function subCategory()
     {
-        return $this->belongsTo(subCategoryModel::class, 'sub_category','id');
+        return $this->belongsTo(subCategoryModel::class, 'sub_category');
     }
 
 }
