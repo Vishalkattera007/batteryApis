@@ -121,73 +121,63 @@ class DealerController extends Controller
 
     public function update(Request $request, $id)
 {
-    // Find the dealer by ID
-    $dealer = DealerModel::find($id);
-    
-    // Check if dealer exists
-    if ($dealer) {
-        // Log incoming request data for debugging
-        \Log::info('Update Request Data: ', $request->all());
+    // Find the existing dealer record by ID
+    $admin = DealerModel::find($id);
 
-        // Retrieve inputs
-        $FirstName = $request->input('FirstName');
-        $LastName = $request->input('LastName');
-        $FullName = trim($FirstName . ' ' . $LastName); // Trim to avoid unnecessary spaces
-
-        // Initialize the path variable
-        $profileImagePath = $dealer->profileImage; // Default to existing path
-
-        // Handle profile image upload if provided
-        if ($request->hasFile('profileImage')) { // Ensure this matches your input field name
-            // Validate the uploaded file if needed (optional)
-            $request->validate([
-                'profileimage' => 'image|mimes:jpeg,png,jpg,gif|max:2048' // Limit size and types
-            ]);
-
-            // Upload and save the profile image
-            $profileImage = $request->file('profileImage');
-            $path = 'profilePhoto/';
-            $fileName = time() . '_' . uniqid() . '.' . $profileImage->getClientOriginalExtension();
-            $profileImage->move(public_path($path), $fileName); // Use public_path for file storage
-            $profileImagePath = $path . $fileName; // Set the new image path
-        }
-
-        // Prepare data for update
-        $updateData = [
-            'FirstName' => $FirstName,
-            'LastName' => $LastName,
-            'email' => $request->input('email'),
-            'phone_number' => $request->input('phone_number'),
-            'address' => $request->input('address'),
-            'firmRegNo' => $request->input('firmRegNo'),
-            'pancard' => $request->input('pancard'),
-            'profileImage' => $profileImagePath, // Ensure this matches the field name in your model
-            'updated_by' => "Frontend Developer",
-        ];
-
-        // Hash the password only if it is provided
-        if ($request->filled('password')) {
-            $updateData['password'] = Hash::make($request->input('password'));
-        }
-
-        // Update the dealer's details
-        $dealer->update($updateData);
-
-        return response()->json(
-            [
-                'status' => 200,
-                'message' => $FullName . ' Updated Successfully',
-                'data' => $dealer,
-            ],
-            200
-        );
-    } else {
+    if (!$admin) {
         return response()->json([
             'status' => 404,
-            'message' => 'Dealer does not exist',
+            'message' => 'Dealer not found.',
         ], 404);
     }
+
+    if ($request->hasFile('profileImage')) {
+        // Upload and save the profile image
+        $profileImage = $request->file('profileImage');
+        $path = 'uploads/profilePhoto';
+        $fileName = time() . '_' . uniqid() . '.' . $profileImage->getClientOriginalExtension();
+        $profileImage->move($path, $fileName);
+        $profileImagePath = $path . $fileName;
+    } else {
+        // If no profile image is provided, keep the existing profile image path
+        $profileImagePath = $admin->profileImage;
+    }
+
+    // Update only fields that are passed in the request
+    $admin->update([
+        'FirstName' => $request->input('FirstName', $admin->FirstName), // Use the new value or retain the old one
+        'LastName' => $request->input('LastName', $admin->LastName),    // Update or retain
+        'email' => $request->input('email', $admin->email), // Update email if provided
+        'phone_number' => $request->input('phone_number', $admin->phone_number),
+        'address' => $request->input('address', $admin->address),
+        'firmRegNo' => $request->input('firmRegNo', $admin->firmRegNo),
+        'pancard' => $request->input('pancard', $admin->pancard),
+        'profileImage' => $profileImagePath,  // Update image path or keep old one
+    ]);
+
+    // Prepare the response data
+    $responseData = [
+        'FirstName' => $admin->FirstName,
+        'LastName' => $admin->LastName,
+        'email' => $admin->email,
+        'phone_number' => $admin->phone_number,
+        'address' => $admin->address,
+        'firmRegNo' => $admin->firmRegNo,
+        'pancard' => $admin->pancard,
+        'profileImage' => asset($admin->profileImage), // Include the full URL to the profile image
+        'updated_at' => $admin->updated_at,
+        'created_at' => $admin->created_at,
+        'id' => $admin->id,
+    ];
+
+    // Return success response
+    return response()->json([
+        'status' => 200,
+        'message' => 'Dealer updated successfully',
+        'data' => $responseData,
+    ], 200);
 }
+
 
 
     public function destroy($id)
