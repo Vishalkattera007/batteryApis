@@ -38,6 +38,7 @@ Route::get('dealers/count', [DealerController::class, 'count']);
 //Battery Reg
 Route::get('batteryReg/{id?}',[BatteryRegController::class, 'index']);
 Route::post('batteryReg', [BatteryRegController::class, 'create']);
+Route::post('verifyandfetch', [BatteryRegController::class, 'verifyandfetch']);
 Route::put('batteryReg/{id}', [BatteryRegController::class, 'update']);
 Route::delete('deletebatteryReg/{id}', [BatteryRegController::class, 'delete']);
 Route::get('batteriesReg/counts', [BatteryRegController::class, 'count']);
@@ -81,7 +82,7 @@ Route::put('dist/{id}', [DistributionBatteryController::class, 'update']);
 Route::delete('distdelete/{id}', [DistributionBatteryController::class, 'delete']);
 
 //Battery Assign
-Route::get('batteryAssign/{id?}', [AssignBatteryController::class, 'index']);
-Route::post('batteryAssign', [AssignBatteryController::class, 'create']);
-Route::put('batteryAssign/{id}', [AssignBatteryController::class, 'update']);
-Route::delete('deleteAssign/{id}', [AssignBatteryController::class, 'delete']);
+// Route::get('batteryAssign/{id?}', [AssignBatteryController::class, 'index']);
+// Route::post('batteryAssign', [AssignBatteryController::class, 'create']);
+// Route::put('batteryAssign/{id}', [AssignBatteryController::class, 'update']);
+// Route::delete('deleteAssign/{id}', [AssignBatteryController::class, 'delete']);

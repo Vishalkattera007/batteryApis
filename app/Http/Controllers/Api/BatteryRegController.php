@@ -5,6 +5,8 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Models\BatteryMastModel;
 use App\Models\BatteryRegModel;
+use App\Models\categoryModel;
+use App\Models\DistributionBatteryModel;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
@@ -48,73 +50,93 @@ class BatteryRegController extends Controller
 
     }
 
-    public function create(Request $request)
+    public function verifyandfetch(Request $request)
     {
-        // Get the Battery Purchase Date from request
-        $dateOfRegistration = $request->BPD;
-
-        // Get the serial number from the request
         $bat_sp_no = $request->serialNo;
 
-        // Search for the battery in the batteryMastModel
-        $match_spec_no = BatteryMastModel::where('serial_no', $bat_sp_no)->first();
+        // Search for the battery in the DistributionBatteryModel
+        $match_spec_no = DistributionBatteryModel::where('specification_no', $bat_sp_no)->first();
 
+        // Check if the battery exists
         if ($match_spec_no) {
-            // Get the warranty period from the matched battery
-            $warranty_period = $match_spec_no->warranty_period;
-            $battery_category = $match_spec_no->categoryId;
-            return $battery_category;
+            $spec_no = $match_spec_no->specification_no;
 
-            // Calculate the warranty end date by adding warranty period months to the registration date
-            $calculated_date = Carbon::parse($dateOfRegistration)->addMonths($warranty_period);
-            $warranty_date = $calculated_date->toDateString();
+            // Check if the specification number matches
+            if ($spec_no === $bat_sp_no) {
+                // Fetch battery details from BatteryMastModel
+                $match_in_battery_master = BatteryMastModel::where('serial_no', $bat_sp_no)->first();
 
-            try {
-                // Create or find the battery registration
-                $battery_create = BatteryRegModel::firstOrCreate([
-                    'serialNo' => $bat_sp_no, // Check for uniqueness by serial number
-                ], [
-                    'type' => $request->type,
-                    'firstName' => $request->firstName,
-                    'lastName' => $request->lastName,
-                    'pincode' => $request->pincode,
-                    'mobileNumber' => $request->mobileNumber,
-                    'BPD' => $dateOfRegistration, // Battery Purchase Date
-                    'VRN' => $request->VRN, // Vehicle Registration Number
-                    'warranty' => $warranty_date, // Calculated warranty date
-                    'Acceptance' => $request->Acceptance,
-                    'created_by' => 'Backend Developer',
-                ]);
+                if ($match_in_battery_master) {
+                    $category_id = $match_in_battery_master->categoryId;
+                    $warranty_period = $match_in_battery_master->warranty_period;
 
-                // Check if the battery was recently created
-                if ($battery_create->wasRecentlyCreated) {
+                    // Fetch category name
+                    $fetch_cat_name = categoryModel::where('id', $category_id)->first();
+                    $cat_name = $fetch_cat_name ? $fetch_cat_name->name : 'Unknown';
+
                     return response()->json([
                         'status' => 200,
-                        'message' => 'Battery Registered successfully',
-                        'data' => $battery_create,
-                    ], 200);
+                        'message' => 'Battery found',
+                        'data' => [
+                            'categoryName' => $cat_name,
+                            'warranty_period' => $warranty_period, // corrected typo
+                        ],
+                    ]);
                 } else {
                     return response()->json([
-                        'status' => 409,
-                        'message' => 'Battery Already Registered',
-                    ], 409);
+                        'status' => 404,
+                        'message' => 'No matching battery in master record',
+                    ]);
                 }
-
-            } catch (\Exception $e) {
-                // Catch any unexpected error and return a 500 error
-                return response()->json([
-                    'status' => 500,
-                    'message' => 'An error occurred while registering the battery',
-                    'error' => $e->getMessage(),
-                ], 500);
             }
+        }
 
-        } else {
-            // If no match is found for the serial number, return a 404 response
+        // Return a response indicating no match was found
+        return response()->json([
+            'status' => 404,
+            'message' => 'No matching battery found',
+        ]);
+    }
+
+    public function create(Request $request)
+    {
+        try {
+            // Create or find the battery registration
+            $battery_create = BatteryRegModel::firstOrCreate([
+                'serialNo' => $request->serialNo,
+            ], [
+                'type' => $request->type,
+                'firstName' => $request->firstName,
+                'lastName' => $request->lastName,
+                'pincode' => $request->pincode,
+                'mobileNumber' => $request->mobileNumber,
+                'BPD' => $request->BPD,
+                'VRN' => $request->VRN,
+                'warranty' => $request->warranty,
+                'Acceptance' => $request->Acceptance,
+                'created_by' => 'Backend Developer',
+            ]);
+
+            // Check if the battery was recently created
+            if ($battery_create->wasRecentlyCreated) {
+                return response()->json([
+                    'status' => 200,
+                    'message' => 'Battery Registered successfully',
+                    'data' => $battery_create,
+                ], 200);
+            } else {
+                return response()->json([
+                    'status' => 409,
+                    'message' => 'Battery Already Registered',
+                ], 409);
+            }
+        } catch (\Exception $e) {
+            // Catch any unexpected error and return a 500 error
             return response()->json([
-                'status' => 404,
-                'message' => 'Serial number not found.',
-            ], 404);
+                'status' => 500,
+                'message' => 'An error occurred while registering the battery',
+                'error' => $e->getMessage(),
+            ], 500);
         }
     }
 
@@ -181,8 +203,7 @@ class BatteryRegController extends Controller
         if ($check_cmno->isNotEmpty()) {
             $current_date = Carbon::now();
 
-            $battery_data = $check_cmno->map(function ($customer) use ($current_date) 
-            {
+            $battery_data = $check_cmno->map(function ($customer) use ($current_date) {
                 $warranty_date = Carbon::parse($customer->warranty);
                 $purchase_date = Carbon::parse($customer->BPD);
 
@@ -221,7 +242,7 @@ class BatteryRegController extends Controller
     {
         // Use the count method on the dealerModel to get the total number of dealers
         $totalBatteryReg = BatteryRegModel::count();
-    
+
         // Return the count in a JSON response
         return response()->json([
             'status' => 200,
