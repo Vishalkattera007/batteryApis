@@ -10,6 +10,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 // use App\Http\Controllers\AuthController;
 use App\Http\Controllers\Api\BatteryMastController;
+use App\Http\Controllers\DistributionBatteryController;
 
 // Route::get('/admin', function (Request $request) {
 //     return $request->user();
@@ -73,7 +74,11 @@ Route::get('batteries/count', [BatteryMastController::class, 'count']);
 
 //find battery specification
 
-Route::get('findSpec/{shortcode}',[BatteryMastController::class, 'find']);
+Route::get('findSpec/{shortcode}',[DistributionBatteryController::class, 'find']);
+Route::get('dist/{id?}', [DistributionBatteryController::class, 'index']);
+Route::post('dist', [DistributionBatteryController::class, 'create']);
+Route::put('dist/{id}', [DistributionBatteryController::class, 'update']);
+Route::delete('distdelete/{id}', [DistributionBatteryController::class, 'delete']);
 
 //Battery Assign
 Route::get('batteryAssign/{id?}', [AssignBatteryController::class, 'index']);

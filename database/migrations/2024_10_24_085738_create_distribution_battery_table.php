@@ -13,6 +13,11 @@ return new class extends Migration
     {
         Schema::create('distribution_battery', function (Blueprint $table) {
             $table->id();
+            $table->bigInteger('dealer_id')->nullable();
+            $table->string('specification_no')->unique()->nullable();
+            $table->string('type_of_distribution')->nullable();
+            $table->string('created_by')->nullable();
+            $table->string('updated_by')->nullable();
             $table->timestamps();
         });
     }

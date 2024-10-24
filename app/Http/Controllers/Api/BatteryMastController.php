@@ -153,26 +153,6 @@ class BatteryMastController extends Controller
         ], 200);
     }
 
-//Find Battery Specification
-
-    public function find($shortcode)
-    {
-        // Search for records in battery_master where serial_no contains the $shortcode
-        $find_spec_code = BatteryMastModel::where('serial_no', 'LIKE', $shortcode . '%')->get(['id','serial_no']);
-
-        // Check if any records are found
-        if ($find_spec_code->count() > 0) {
-            return response()->json([
-                'status' => 200,
-                'count'=>count($find_spec_code),
-                'data' => $find_spec_code, // Return all found records
-            ], 200);
-        } else {
-            return response()->json([
-                'status' => 404, // Change status code to 404 since nothing was found
-                'message' => "not found",
-            ], 404);
-        }
-    }
+    
 
 }

@@ -3,16 +3,18 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
-use Illuminate\Database\Eloquent\ModelNotFoundException;
 use App\Models\categoryModel;
 use App\Models\SubCategoryModel;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Hash;
-
 
 class categoryController extends Controller
 {
-        public function index($id = null)
+
+    
+
+
+    public function index($id = null)
     {
         if ($id !== null) {
             try {
@@ -52,31 +54,31 @@ class categoryController extends Controller
 
         $category_name = $request->name;
 
-        $intoWords = explode(' ',$category_name);
+        $intoWords = explode(' ', $category_name);
 
-        if(count($intoWords)==1){
-            $shortcode = substr($intoWords[0],0,3);
-        }else{
-            $shortcode='';
-            foreach($intoWords as $words){
-                $shortcode .= substr($words,0,1);
+        if (count($intoWords) == 1) {
+            $shortcode = substr($intoWords[0], 0, 3);
+        } else {
+            $shortcode = '';
+            foreach ($intoWords as $words) {
+                $shortcode .= substr($words, 0, 1);
             }
         }
 
         $category_duplication = categoryModel::where('name', $category_name)->first();
 
-        if($category_duplication){
+        if ($category_duplication) {
             return response()->json([
-                'status'=>409,
-                'message'=>"Category already existed",
-                'data'=>$category_duplication
-            ],409);
+                'status' => 409,
+                'message' => "Category already existed",
+                'data' => $category_duplication,
+            ], 409);
         }
 
         $category = categoryModel::firstOrCreate([
             'name' => $category_name,
             'created_by' => "Backend Develoepr",
-            'shortcode'=>  $shortcode
+            'shortcode' => $shortcode,
         ]);
 
         if ($category->wasRecentlyCreated) {
@@ -84,9 +86,9 @@ class categoryController extends Controller
                 'status' => 200,
                 'message' => 'Category created successfully',
                 'data' => [
-                   'category'=>$category_name,
-                   'shortcode'=>$shortcode
-                ]
+                    'category' => $category_name,
+                    'shortcode' => $shortcode,
+                ],
             ], 200);
         } else {
             return response()->json([
@@ -113,7 +115,7 @@ class categoryController extends Controller
                 [
                     'status' => 200,
                     'message' => $categoryId->name . ' ' . 'Updated Successfully',
-                    'data' => $categoryId
+                    'data' => $categoryId,
                 ],
                 200
             );
@@ -139,23 +141,24 @@ class categoryController extends Controller
                 [
                     'status' => 200,
                     'message' => $categoryId->name . ' ' . 'Deleted Successfully',
-                    'data' => $categoryId
+                    'data' => $categoryId,
                 ],
                 200
             );
         }
     }
 
-    public function filterCate(int $id){
+    public function filterCate(int $id)
+    {
 
-        $subcategory_data = SubCategoryModel::where('categoryId', $id)->get(['id', 'sub_category_name','shortcode']);
+        $subcategory_data = SubCategoryModel::where('categoryId', $id)->get(['id', 'sub_category_name', 'shortcode']);
 
-        if($subcategory_data->count()>0){
+        if ($subcategory_data->count() > 0) {
             return response()->json([
-                'status'=>200,
-                'data'=>$subcategory_data
-            ],200);
-        }else{
+                'status' => 200,
+                'data' => $subcategory_data,
+            ], 200);
+        } else {
             return response()->json([
                 'status' => 404,
                 'message' => 'Oops No Subcategories...',

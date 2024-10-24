@@ -84,7 +84,7 @@ class subCategoryController extends Controller
             ],409);
         }
 
-        $subcategory = SubCategoryModel::create([
+        $subcategory = SubCategoryModel::firstOrCreate([
             'categoryId' => $request->categoryId,
             'sub_category_name' => $sub_category_name,
             'shortcode' => $shortcode,
