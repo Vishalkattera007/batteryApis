@@ -71,6 +71,10 @@ Route::delete('deletebattery/{id}', [BatteryMastController::class, 'delete']);
 Route::get('batteries/count', [BatteryMastController::class, 'count']);
 
 
+//find battery specification
+
+Route::get('findSpec/{shortcode}',[BatteryMastController::class, 'find']);
+
 //Battery Assign
 Route::get('batteryAssign/{id?}', [AssignBatteryController::class, 'index']);
 Route::post('batteryAssign', [AssignBatteryController::class, 'create']);

@@ -11,65 +11,64 @@ use Illuminate\Http\Request;
 class BatteryMastController extends Controller
 {
     public function index($id = null)
-{
-    if ($id != null) {
-        try {
-            // Fetch battery info with category and subCategory relationships
-            $battery_info = BatteryMastModel::with(['category', 'subCategory'])->findOrFail($id);
+    {
+        if ($id != null) {
+            try {
+                // Fetch battery info with category and subCategory relationships
+                $battery_info = BatteryMastModel::with(['category', 'subCategory'])->findOrFail($id);
 
-            return response()->json([
-                'status' => 200,
-                'data' => [
-                    'id' => $battery_info->id,
-                    'serial_no' => $battery_info->serial_no,
-                    'category_id' => $battery_info->category ? $battery_info->category->id : null, // Include category ID
-                    'category_name' => $battery_info->category ? $battery_info->category->name : 'N/A', // Handle null case
-                    'sub_category' => $battery_info->subCategory ? $battery_info->subCategory->sub_category_name : 'N/A', // Handle null case
-                    'MFD' => $battery_info->MFD,
-                    'warranty_period' => $battery_info->warranty_period,
-                ],
-            ], 200);
-        } catch (ModelNotFoundException $e) {
-            return response()->json([
-                'status' => 404,
-                'message' => "Given Id is not available",
-            ], 404);
-        } catch (\Exception $e) {
-            return response()->json([
-                'status' => 500,
-                'message' => "An error occurred: " . $e->getMessage(),
-            ], 500);
-        }
-    } else {
-        // Fetch all batteries with category and subCategory relationships
-        $all_batteries = BatteryMastModel::with(['category', 'subCategory'])->get();
-
-        if ($all_batteries->count() > 0) {
-            $batteries_data = $all_batteries->map(function ($battery) {
-                return [
-                    'id' => $battery->id,
-                    'serial_no' => $battery->serial_no,
-                    'category_id' => $battery->category ? $battery->category->id : null, // Include category ID
-                    'category_name' => $battery->category ? $battery->category->name : 'N/A', // Handle null case
-                    'sub_category' => $battery->subCategory ? $battery->subCategory->sub_category_name : 'N/A', // Handle null case
-                    'MFD' => $battery->MFD,
-                    'warranty_period' => $battery->warranty_period,
-                ];
-            });
-
-            return response()->json([
-                'status' => 200,
-                'data' => $batteries_data,
-            ], 200);
+                return response()->json([
+                    'status' => 200,
+                    'data' => [
+                        'id' => $battery_info->id,
+                        'serial_no' => $battery_info->serial_no,
+                        'category_id' => $battery_info->category ? $battery_info->category->id : null, // Include category ID
+                        'category_name' => $battery_info->category ? $battery_info->category->name : 'N/A', // Handle null case
+                        'sub_category' => $battery_info->subCategory ? $battery_info->subCategory->sub_category_name : 'N/A', // Handle null case
+                        'MFD' => $battery_info->MFD,
+                        'warranty_period' => $battery_info->warranty_period,
+                    ],
+                ], 200);
+            } catch (ModelNotFoundException $e) {
+                return response()->json([
+                    'status' => 404,
+                    'message' => "Given Id is not available",
+                ], 404);
+            } catch (\Exception $e) {
+                return response()->json([
+                    'status' => 500,
+                    'message' => "An error occurred: " . $e->getMessage(),
+                ], 500);
+            }
         } else {
-            return response()->json([
-                'status' => 404,
-                'message' => "No Batteries Found",
-            ], 404);
+            // Fetch all batteries with category and subCategory relationships
+            $all_batteries = BatteryMastModel::with(['category', 'subCategory'])->get();
+
+            if ($all_batteries->count() > 0) {
+                $batteries_data = $all_batteries->map(function ($battery) {
+                    return [
+                        'id' => $battery->id,
+                        'serial_no' => $battery->serial_no,
+                        'category_id' => $battery->category ? $battery->category->id : null, // Include category ID
+                        'category_name' => $battery->category ? $battery->category->name : 'N/A', // Handle null case
+                        'sub_category' => $battery->subCategory ? $battery->subCategory->sub_category_name : 'N/A', // Handle null case
+                        'MFD' => $battery->MFD,
+                        'warranty_period' => $battery->warranty_period,
+                    ];
+                });
+
+                return response()->json([
+                    'status' => 200,
+                    'data' => $batteries_data,
+                ], 200);
+            } else {
+                return response()->json([
+                    'status' => 404,
+                    'message' => "No Batteries Found",
+                ], 404);
+            }
         }
     }
-}
-
 
     public function create(Request $request)
     {
@@ -143,14 +142,37 @@ class BatteryMastController extends Controller
     }
 
     public function count()
-{
-    // Use the count method on the dealerModel to get the total number of dealers
-    $totalBattery = BatteryMastModel::count();
+    {
+        // Use the count method on the dealerModel to get the total number of dealers
+        $totalBattery = BatteryMastModel::count();
 
-    // Return the count in a JSON response
-    return response()->json([
-        'status' => 200,
-        'count' => $totalBattery,
-    ], 200);
-}
+        // Return the count in a JSON response
+        return response()->json([
+            'status' => 200,
+            'count' => $totalBattery,
+        ], 200);
+    }
+
+//Find Battery Specification
+
+    public function find($shortcode)
+    {
+        // Search for records in battery_master where serial_no contains the $shortcode
+        $find_spec_code = BatteryMastModel::where('serial_no', 'LIKE', $shortcode . '%')->get(['id','serial_no']);
+
+        // Check if any records are found
+        if ($find_spec_code->count() > 0) {
+            return response()->json([
+                'status' => 200,
+                'count'=>count($find_spec_code),
+                'data' => $find_spec_code, // Return all found records
+            ], 200);
+        } else {
+            return response()->json([
+                'status' => 404, // Change status code to 404 since nothing was found
+                'message' => "not found",
+            ], 404);
+        }
+    }
+
 }

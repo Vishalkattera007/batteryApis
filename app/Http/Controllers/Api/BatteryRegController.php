@@ -62,6 +62,8 @@ class BatteryRegController extends Controller
         if ($match_spec_no) {
             // Get the warranty period from the matched battery
             $warranty_period = $match_spec_no->warranty_period;
+            $battery_category = $match_spec_no->categoryId;
+            return $battery_category;
 
             // Calculate the warranty end date by adding warranty period months to the registration date
             $calculated_date = Carbon::parse($dateOfRegistration)->addMonths($warranty_period);
