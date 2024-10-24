@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Auth\Authenticatable;
 
 
-class dealerModel extends Model implements AuthenticatableContract
+class DealerModel extends Model implements AuthenticatableContract
 {
     use Authenticatable, HasFactory; // Add HasApiTokens here
     use HasFactory;
