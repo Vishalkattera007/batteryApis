@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
-use App\Models\dealerModel;
+use App\Models\DealerModel;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 
@@ -14,7 +14,7 @@ class DealerController extends Controller
      */
     public function index()
     {
-        $allAdmins = dealerModel::all();
+        $allAdmins = DealerModel::all();
         if ($allAdmins->count() > 0) {
             return response()->json([
                 'status' => 200,
@@ -30,35 +30,70 @@ class DealerController extends Controller
 
     public function create(Request $request)
     {
-        $admin = dealerModel::firstOrCreate([
-            'FirstName' => $request->FirstName,
-            'LastName' => $request->LastName,
-            'email' => $request->email,
-            'password' => Hash::make($request->password),
-            'phone_number' => $request->phone_number,
-            'address' => $request->address,
-            'firmRegNo' => $request->firmRegNo,
-            'pancard' => $request->pancard,
-            'profileimage' => $request->phone_number,
+
+        // Initialize the path variable
+        $path = null;
+
+        // Check if a file has been uploaded
+        if ($request->hasFile('profileImage')) {
+            $file = $request->file('profileImage');
+
+            // Ensure the file is valid
+            if ($file->isValid()) {
+                // Store the file in 'storage/app/public/profilePhoto' and get the path
+                $path = $file->store('profilePhoto', 'public');
+            } else {
+                return response()->json([
+                    'status' => 422,
+                    'message' => 'Invalid file upload.',
+                ], 422);
+            }
+        }
+
+        // Create or update the dealer
+        $admin = DealerModel::firstOrNew([
+            'email' => $request->email, // Use email to check for existing dealer
         ]);
 
-        if ($admin->wasRecentlyCreated) {
-            return response()->json([
-                'status' => 200,
-                'message' => 'Dealer created successfully',
-                'data' => $admin,
-            ], 200);
-        } else {
-            return response()->json([
-                'status' => 409, // 409 Conflict indicates that the resource already exists
-                'message' => 'Dealer already exists',
-            ], 409);
-        }
+        // Set the dealer attributes
+        $admin->FirstName = $request->FirstName;
+        $admin->LastName = $request->LastName;
+        $admin->password = Hash::make($request->password);
+        $admin->phone_number = $request->phone_number;
+        $admin->address = $request->address;
+        $admin->firmRegNo = $request->firmRegNo;
+        $admin->pancard = $request->pancard;
+        $admin->profileImage = $path; // Store the path of the uploaded image if exists
+
+        // Save the dealer record
+        $admin->save();
+
+        // Prepare the response data
+        $responseData = [
+            'FirstName' => $admin->FirstName,
+            'LastName' => $admin->LastName,
+            'email' => $admin->email,
+            'phone_number' => $admin->phone_number,
+            'address' => $admin->address,
+            'firmRegNo' => $admin->firmRegNo,
+            'pancard' => $admin->pancard,
+            'profileImage' => $admin->profileimage, // Include the profile image path
+            'updated_at' => $admin->updated_at,
+            'created_at' => $admin->created_at,
+            'id' => $admin->id,
+        ];
+
+        // Return success response
+        return response()->json([
+            'status' => 200,
+            'message' => 'Dealer created successfully',
+            'data' => $responseData,
+        ], 200);
     }
 
     public function show($id)
     {
-        $dealer = dealerModel::find($id);
+        $dealer = DealerModel::find($id);
         if ($dealer) {
             return response()->json([
                 'status' => 200,
@@ -72,45 +107,79 @@ class DealerController extends Controller
     }
 
     public function update(Request $request, $id)
-    {
-        $dealer = dealerModel::find($id);
-        $FirstName = $request->FirstName;
-        $LastName = $request->LastName;
-        $FullName = $FirstName.''.$LastName;
-        if ($dealer) {
-            $dealer->update([
-                'FirstName' => $FirstName,
-                'LastName' => $LastName,
-                'email' => $request->email,
-                'password' => Hash::make($request->password),
-                'phone_number' => $request->phone_number,
-                'address' => $request->address,
-                'firmRegNo' => $request->firmRegNo,
-                'pancard' => $request->pancard,
-                'profileimage' => $request->phone_number,
-                'updated_by'=>"Frontend Develoepr"
+{
+    // Find the dealer by ID
+    $dealer = DealerModel::find($id);
+    
+    // Check if dealer exists
+    if ($dealer) {
+        // Log incoming request data for debugging
+        \Log::info('Update Request Data: ', $request->all());
+
+        // Retrieve inputs
+        $FirstName = $request->input('FirstName');
+        $LastName = $request->input('LastName');
+        $FullName = trim($FirstName . ' ' . $LastName); // Trim to avoid unnecessary spaces
+
+        // Initialize the path variable
+        $profileImagePath = $dealer->profileImage; // Default to existing path
+
+        // Handle profile image upload if provided
+        if ($request->hasFile('profileImage')) { // Ensure this matches your input field name
+            // Validate the uploaded file if needed (optional)
+            $request->validate([
+                'profileimage' => 'image|mimes:jpeg,png,jpg,gif|max:2048' // Limit size and types
             ]);
 
-            return response()->json(
-                [
-                    'status' => 200,
-                    'message' => $dealer->$FullName . ' ' . 'Updated Successfully',
-                    'data' => $dealer,
-                ],
-                200
-            );
-        } else {
-            return response()->json([
-                'status' => 404,
-                'message' => 'Admin Not exists',
-            ], 404);
+            // Upload and save the profile image
+            $profileImage = $request->file('profileImage');
+            $path = 'profilePhoto/';
+            $fileName = time() . '_' . uniqid() . '.' . $profileImage->getClientOriginalExtension();
+            $profileImage->move(public_path($path), $fileName); // Use public_path for file storage
+            $profileImagePath = $path . $fileName; // Set the new image path
         }
 
+        // Prepare data for update
+        $updateData = [
+            'FirstName' => $FirstName,
+            'LastName' => $LastName,
+            'email' => $request->input('email'),
+            'phone_number' => $request->input('phone_number'),
+            'address' => $request->input('address'),
+            'firmRegNo' => $request->input('firmRegNo'),
+            'pancard' => $request->input('pancard'),
+            'profileImage' => $profileImagePath, // Ensure this matches the field name in your model
+            'updated_by' => "Frontend Developer",
+        ];
+
+        // Hash the password only if it is provided
+        if ($request->filled('password')) {
+            $updateData['password'] = Hash::make($request->input('password'));
+        }
+
+        // Update the dealer's details
+        $dealer->update($updateData);
+
+        return response()->json(
+            [
+                'status' => 200,
+                'message' => $FullName . ' Updated Successfully',
+                'data' => $dealer,
+            ],
+            200
+        );
+    } else {
+        return response()->json([
+            'status' => 404,
+            'message' => 'Dealer does not exist',
+        ], 404);
     }
+}
+
 
     public function destroy($id)
     {
-        $dealer = dealerModel::find($id);
+        $dealer = DealerModel::find($id);
 
         if (!$dealer) {
             return response()->json([
@@ -171,7 +240,7 @@ class DealerController extends Controller
     public function count()
 {
     // Use the count method on the dealerModel to get the total number of dealers
-    $totalDealers = dealerModel::count();
+    $totalDealers = DealerModel::count();
 
     // Return the count in a JSON response
     return response()->json([
