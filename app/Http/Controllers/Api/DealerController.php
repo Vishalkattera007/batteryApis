@@ -35,8 +35,8 @@ class DealerController extends Controller
         $path = null;
 
         // Check if a file has been uploaded
-        if ($request->hasFile('profileimage')) {
-            $file = $request->file('profileimage');
+        if ($request->hasFile('profileImage')) {
+            $file = $request->file('profileImage');
 
             // Ensure the file is valid
             if ($file->isValid()) {
@@ -63,7 +63,7 @@ class DealerController extends Controller
         $admin->address = $request->address;
         $admin->firmRegNo = $request->firmRegNo;
         $admin->pancard = $request->pancard;
-        $admin->profileimage = $path; // Store the path of the uploaded image if exists
+        $admin->profileImage = $path; // Store the path of the uploaded image if exists
 
         // Save the dealer record
         $admin->save();
@@ -77,7 +77,7 @@ class DealerController extends Controller
             'address' => $admin->address,
             'firmRegNo' => $admin->firmRegNo,
             'pancard' => $admin->pancard,
-            'profileimage' => $admin->profileimage, // Include the profile image path
+            'profileImage' => $admin->profileimage, // Include the profile image path
             'updated_at' => $admin->updated_at,
             'created_at' => $admin->created_at,
             'id' => $admin->id,
@@ -108,69 +108,67 @@ class DealerController extends Controller
 
     public function update(Request $request, $id)
 {
-    // Log the incoming request data for debugging
-    \Log::info($request->all());
-
     // Find the dealer by ID
     $dealer = DealerModel::find($id);
-
+    
+    // Check if dealer exists
     if ($dealer) {
-        // Initialize the profile image path with the existing image path
-        $profileImagePath = $dealer->profileimage; // Use the existing image path
+        // Log incoming request data for debugging
+        \Log::info('Update Request Data: ', $request->all());
 
-        // Check if a new profile image has been uploaded
-        if ($request->hasFile('profileImage')) {
-            // Upload and save the new profile image
+        // Retrieve inputs
+        $FirstName = $request->input('FirstName');
+        $LastName = $request->input('LastName');
+        $FullName = trim($FirstName . ' ' . $LastName); // Trim to avoid unnecessary spaces
+
+        // Initialize the path variable
+        $profileImagePath = $dealer->profileImage; // Default to existing path
+
+        // Handle profile image upload if provided
+        if ($request->hasFile('profileImage')) { // Ensure this matches your input field name
+            // Validate the uploaded file if needed (optional)
+            $request->validate([
+                'profileimage' => 'image|mimes:jpeg,png,jpg,gif|max:2048' // Limit size and types
+            ]);
+
+            // Upload and save the profile image
             $profileImage = $request->file('profileImage');
-
-            // Define the path where the file will be stored (relative to public directory)
-            $path = 'profilePhoto'; // Directory in 'public/profilePhoto'
-
-            // Generate a unique file name
+            $path = 'profilePhoto/';
             $fileName = time() . '_' . uniqid() . '.' . $profileImage->getClientOriginalExtension();
-
-            // Move the uploaded file to the specified path
-            $profileImage->move(public_path($path), $fileName); 
-
-            // Update the profile image path with the relative path
-            $profileImagePath = $path . '/' . $fileName; // Correctly set the path
+            $profileImage->move(public_path($path), $fileName); // Use public_path for file storage
+            $profileImagePath = $path . $fileName; // Set the new image path
         }
 
-        // Prepare the update data
+        // Prepare data for update
         $updateData = [
-            'FirstName' => $request->input('FirstName'),
-            'LastName' => $request->input('LastName'),
+            'FirstName' => $FirstName,
+            'LastName' => $LastName,
             'email' => $request->input('email'),
             'phone_number' => $request->input('phone_number'),
             'address' => $request->input('address'),
             'firmRegNo' => $request->input('firmRegNo'),
             'pancard' => $request->input('pancard'),
-            'profileimage' => $profileImagePath, // Use the new path or the existing one
+            'profileImage' => $profileImagePath, // Ensure this matches the field name in your model
             'updated_by' => "Frontend Developer",
         ];
 
-        // Hash the password only if it is provided in the request
+        // Hash the password only if it is provided
         if ($request->filled('password')) {
-            $updateData['password'] = Hash::make($request->password);
+            $updateData['password'] = Hash::make($request->input('password'));
         }
-
-        // Log update data for debugging
-        \Log::info('Update Data: ', $updateData);
 
         // Update the dealer's details
         $dealer->update($updateData);
 
-        // Return success response
         return response()->json(
             [
                 'status' => 200,
-                'message' => $dealer->FirstName . ' ' . $dealer->LastName . ' Updated Successfully',
+                'message' => $FullName . ' Updated Successfully',
                 'data' => $dealer,
             ],
             200
         );
     } else {
-        // Dealer not found
         return response()->json([
             'status' => 404,
             'message' => 'Dealer does not exist',
@@ -179,9 +177,6 @@ class DealerController extends Controller
 }
 
 
-    
-
-    
     public function destroy($id)
     {
         $dealer = DealerModel::find($id);
