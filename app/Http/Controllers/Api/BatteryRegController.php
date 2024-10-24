@@ -104,7 +104,6 @@ class BatteryRegController extends Controller
             // Create or find the battery registration
             $battery_create = BatteryRegModel::firstOrCreate([
                 'serialNo' => $request->serialNo,
-            ], [
                 'type' => $request->type,
                 'firstName' => $request->firstName,
                 'lastName' => $request->lastName,
@@ -113,7 +112,6 @@ class BatteryRegController extends Controller
                 'BPD' => $request->BPD,
                 'VRN' => $request->VRN,
                 'warranty' => $request->warranty,
-                'Acceptance' => $request->Acceptance,
                 'created_by' => 'Backend Developer',
             ]);
 
