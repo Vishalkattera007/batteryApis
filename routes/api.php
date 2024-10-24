@@ -80,6 +80,7 @@ Route::get('dist/{id?}', [DistributionBatteryController::class, 'index']);
 Route::post('dist', [DistributionBatteryController::class, 'create']);
 Route::put('dist/{id}', [DistributionBatteryController::class, 'update']);
 Route::delete('distdelete/{id}', [DistributionBatteryController::class, 'delete']);
+Route::get('dealerbattery/{dealer_id}', [DistributionBatteryController::class, 'dealerLogin']);
 
 //Battery Assign
 // Route::get('batteryAssign/{id?}', [AssignBatteryController::class, 'index']);
