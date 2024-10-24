@@ -29,67 +29,80 @@ class DealerController extends Controller
     }
 
     public function create(Request $request)
-    {
+{
+    // Initialize the path variable
+    $path = null;
 
-        // Initialize the path variable
-        $path = null;
+    // Check if a file has been uploaded
+    if ($request->hasFile('profileImage')) {
+        $file = $request->file('profileImage');
 
-        // Check if a file has been uploaded
-        if ($request->hasFile('profileImage')) {
-            $file = $request->file('profileImage');
+        // Ensure the file is valid
+        if ($file->isValid()) {
+            // Define the path where the image will be stored
+            $path = 'uploads/profilePhoto'; // Adjust the directory as needed
 
-            // Ensure the file is valid
-            if ($file->isValid()) {
-                // Store the file in 'storage/app/public/profilePhoto' and get the path
-                $path = $file->store('profilePhoto', 'public');
-            } else {
-                return response()->json([
-                    'status' => 422,
-                    'message' => 'Invalid file upload.',
-                ], 422);
+            // Create the directory if it doesn't exist
+            if (!file_exists(public_path($path))) {
+                mkdir(public_path($path), 0755, true);
             }
+
+            // Generate a unique filename
+            $filename = uniqid() . '.' . $file->getClientOriginalExtension();
+
+            // Move the file to the public directory
+            $file->move(public_path($path), $filename);
+
+            // Set the path for saving in the database
+            $path = $path . '/' . $filename;
+        } else {
+            return response()->json([
+                'status' => 422,
+                'message' => 'Invalid file upload.',
+            ], 422);
         }
-
-        // Create or update the dealer
-        $admin = DealerModel::firstOrNew([
-            'email' => $request->email, // Use email to check for existing dealer
-        ]);
-
-        // Set the dealer attributes
-        $admin->FirstName = $request->FirstName;
-        $admin->LastName = $request->LastName;
-        $admin->password = Hash::make($request->password);
-        $admin->phone_number = $request->phone_number;
-        $admin->address = $request->address;
-        $admin->firmRegNo = $request->firmRegNo;
-        $admin->pancard = $request->pancard;
-        $admin->profileImage = $path; // Store the path of the uploaded image if exists
-
-        // Save the dealer record
-        $admin->save();
-
-        // Prepare the response data
-        $responseData = [
-            'FirstName' => $admin->FirstName,
-            'LastName' => $admin->LastName,
-            'email' => $admin->email,
-            'phone_number' => $admin->phone_number,
-            'address' => $admin->address,
-            'firmRegNo' => $admin->firmRegNo,
-            'pancard' => $admin->pancard,
-            'profileImage' => $admin->profileimage, // Include the profile image path
-            'updated_at' => $admin->updated_at,
-            'created_at' => $admin->created_at,
-            'id' => $admin->id,
-        ];
-
-        // Return success response
-        return response()->json([
-            'status' => 200,
-            'message' => 'Dealer created successfully',
-            'data' => $responseData,
-        ], 200);
     }
+
+    // Create or update the dealer
+    $admin = DealerModel::firstOrNew([
+        'email' => $request->email, // Use email to check for existing dealer
+    ]);
+
+    // Set the dealer attributes
+    $admin->FirstName = $request->FirstName;
+    $admin->LastName = $request->LastName;
+    $admin->password = Hash::make($request->password);
+    $admin->phone_number = $request->phone_number;
+    $admin->address = $request->address;
+    $admin->firmRegNo = $request->firmRegNo;
+    $admin->pancard = $request->pancard;
+    $admin->profileImage = $path; // Store the path of the uploaded image if exists
+
+    // Save the dealer record
+    $admin->save();
+
+    // Prepare the response data
+    $responseData = [
+        'FirstName' => $admin->FirstName,
+        'LastName' => $admin->LastName,
+        'email' => $admin->email,
+        'phone_number' => $admin->phone_number,
+        'address' => $admin->address,
+        'firmRegNo' => $admin->firmRegNo,
+        'pancard' => $admin->pancard,
+        'profileImage' => asset($admin->profileImage), // Include the full URL to the profile image
+        'updated_at' => $admin->updated_at,
+        'created_at' => $admin->created_at,
+        'id' => $admin->id,
+    ];
+
+    // Return success response
+    return response()->json([
+        'status' => 200,
+        'message' => 'Dealer created successfully',
+        'data' => $responseData,
+    ], 200);
+}
 
     public function show($id)
     {
