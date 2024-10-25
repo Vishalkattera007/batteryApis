@@ -61,8 +61,7 @@ class subCategoryController extends Controller
      */
     public function create(Request $request)
     {
-        $sub_category_name = $request->sub_category_name;
-        $shortcode = $request->shortCode;
+        
 
         // $intoWords = explode(' ', $sub_category_name);
 
@@ -87,8 +86,8 @@ class subCategoryController extends Controller
 
         $subcategory = SubCategoryModel::firstOrCreate([
             'categoryId' => $request->categoryId,
-            'sub_category_name' => $sub_category_name,
-            'shortcode' => $shortcode,
+            'sub_category_name' => $request->sub_category_name,
+            'shortcode' => $request->shortCode,
             'created_by' => "Backend Developer",
         ]);
 
