@@ -227,7 +227,7 @@ class DealerController extends Controller
                 'status' => 200,
                 'message' => 'Login successful',
                 'data' => [
-                    'admin' => $dealers,
+                    'dealer' => $dealers,
                     // 'token' => $token, // Include the generated token in the response
                 ],
             ]);
