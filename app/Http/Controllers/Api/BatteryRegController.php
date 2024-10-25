@@ -273,7 +273,7 @@ class BatteryRegController extends Controller
         ];
     
         if ($customers->isEmpty()) {
-            $response['message'] = 'No customers found for this dealer.';
+            // $response['message'] = 'No customers found for this dealer.';
         } else {
             $response['message'] = 'Customer details retrieved successfully.';
         }
