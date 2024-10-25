@@ -281,6 +281,4 @@ class BatteryRegController extends Controller
         'data' => $customers,
     ], 200);
 }
-
-
 }
