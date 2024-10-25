@@ -250,35 +250,35 @@ class BatteryRegController extends Controller
     }
 
     public function getDealerCustomerDetails(Request $request, int $id)
-{
-    // Fetch dealer details
-    $dealer = DealerModel::find($id); // Replace with your actual dealer model
-
-    // Check if dealer exists
-    if (!$dealer) {
-        return response()->json([
-            'status' => 404,
-            'message' => 'Dealer not found.',
-        ], 404);
+    {
+        // Fetch dealer details
+        $dealer = DealerModel::find($id);
+    
+        // Check if dealer exists
+        if (!$dealer) {
+            return response()->json([
+                'status' => 404,
+                'message' => 'Dealer not found.',
+            ], 404);
+        }
+    
+        // Fetch all customers created by the dealer with the given ID
+        $customers = BatteryRegModel::where('created_by', $id)->get();
+    
+        // Prepare the response data
+        $response = [
+            'status' => $customers->isEmpty() ? 404 : 200,
+            'dealer' => $dealer,
+            'data' => $customers->isEmpty() ? [] : $customers,
+        ];
+    
+        if ($customers->isEmpty()) {
+            $response['message'] = 'No customers found for this dealer.';
+        } else {
+            $response['message'] = 'Customer details retrieved successfully.';
+        }
+    
+        return response()->json($response, $response['status']);
     }
-
-    // Fetch all customers created by the dealer with the given ID
-    $customers = BatteryRegModel::where('created_by', $id)->get();
-
-    // Check if any customers were found
-    if ($customers->isEmpty()) {
-        return response()->json([
-            'status' => 404,
-            'message' => 'No customers found for this dealer.',
-            'dealer' => $dealer, // Include dealer information even if no customers found
-        ], 404);
-    }
-
-    return response()->json([
-        'status' => 200,
-        'message' => 'Customer details retrieved successfully.',
-        'dealer' => $dealer, // Include dealer information
-        'data' => $customers,
-    ], 200);
-}
+    
 }
