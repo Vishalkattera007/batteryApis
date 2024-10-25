@@ -87,7 +87,7 @@ class subCategoryController extends Controller
         $subcategory = SubCategoryModel::firstOrCreate([
             'categoryId' => $request->categoryId,
             'sub_category_name' => $request->sub_category_name,
-            'shortcode' => $request->shortCode,
+            'short_code' => $request->shortCode,
             'created_by' => "Backend Developer",
         ]);
 
