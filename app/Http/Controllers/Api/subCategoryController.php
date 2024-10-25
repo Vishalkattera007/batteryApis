@@ -61,19 +61,6 @@ class subCategoryController extends Controller
      */
     public function create(Request $request)
     {
-        $sub_category_name = $request->sub_category_name;
-
-        $intoWords = explode(' ', $sub_category_name);
-
-        if (count($intoWords) == 1) {
-            $shortcode = substr($intoWords[0], 0, 3);
-        } else {
-            $shortcode = '';
-            foreach ($intoWords as $words) {
-                $shortcode .= substr($words, 0, 1);
-            }
-        }
-
         $subcategory_check_duplicate = SubCategoryModel::where('categoryId', $request->categoryId)->where('sub_category_name', $request->sub_category_name)->first();
 
         if($subcategory_check_duplicate){
@@ -86,15 +73,23 @@ class subCategoryController extends Controller
 
         $subcategory = SubCategoryModel::firstOrCreate([
             'categoryId' => $request->categoryId,
-            'sub_category_name' => $sub_category_name,
-            'shortcode' => $shortcode,
+            'sub_category_name' => $request->sub_category_name,
+            'short_code' => $request->shortCode,
             'created_by' => "Backend Developer",
         ]);
 
         return response()->json([
             'status' => 200,
             'message' => 'SubCategory created successfully',
-            'data' => $subcategory,
+            'data' => [
+                'categoryId' => $subcategory->categoryId,
+                'sub_category_name' => $subcategory->sub_category_name,
+                'short_code' => $subcategory->short_code, // Access the correct property
+                'created_by' => $subcategory->created_by,
+                'updated_at' => $subcategory->updated_at,
+                'created_at' => $subcategory->created_at,
+                'id' => $subcategory->id,
+            ],
         ], 200);
     }
 
