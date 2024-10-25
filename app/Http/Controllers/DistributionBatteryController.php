@@ -3,8 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\batteryMastModel;
-use App\Models\DistributionBatteryModel;
 use App\Models\BatteryRegModel;
+use App\Models\DistributionBatteryModel;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
 
@@ -66,7 +66,7 @@ class DistributionBatteryController extends Controller
     {
         $dealerId = $request->dealer_id;
         $typeOfDistribution = $request->type_of_distribution;
-        $specifications = $request->specification_no; // Assuming it's an array from the frontend
+        $specifications = $request->specification_no; // Array from frontend
         $createdBy = "Backend Developer";
 
         $successfullyDistributed = [];
@@ -81,23 +81,19 @@ class DistributionBatteryController extends Controller
             ]);
 
             if ($addDist->wasRecentlyCreated) {
-                $successfullyDistributed[] = $addDist;
-                return response()->json([
-                    'status' => 200,
-                    'message' => 'Distribution process completed',
-                    'successfully_distributed' => $successfullyDistributed,
-                ], 200);
+                $successfullyDistributed[] = $specification;
             } else {
-                $alreadyDistributed[] = $specifications;
-                return response()->json([
-                    'status' => 200,
-                    'message' => 'Distribution process already completed',
-                    'already_distributed' => $alreadyDistributed,
-                ], 200);
+                $alreadyDistributed[] = $specification;
             }
         }
 
-        
+        // Return response after the loop completes
+        return response()->json([
+            'status' => 200,
+            'message' => 'Distribution process completed',
+            'successfully_distributed' => $successfullyDistributed,
+            'already_distributed' => $alreadyDistributed,
+        ], 200);
     }
 
     public function update(Request $request, int $id)
@@ -153,27 +149,27 @@ class DistributionBatteryController extends Controller
     }
 
     public function dealerLogin($dealer_id)
-{
-    // Get all specification_no from the battery_reg table
-    $batteryRegSpecifications = BatteryRegModel::pluck('serialNo')->toArray();
-    
-    // Fetch distribution data for the dealer, excluding those that exist in battery_reg table
-    $distributions = DistributionBatteryModel::where('dealer_id', $dealer_id)
-                    ->whereNotIn('specification_no', $batteryRegSpecifications)
-                    ->get();
-    
-    // Check if any distributions exist after filtering
-    if ($distributions->isEmpty()) {
-        return response()->json([
-            'status' => 404,
-            'message' => 'No Distributions Found',
-        ], 404);
-    } else {
-        return response()->json([
-            'status' => 200,
-            'data' => $distributions,
-        ], 200);
+    {
+        // Get all specification_no from the battery_reg table
+        $batteryRegSpecifications = BatteryRegModel::pluck('serialNo')->toArray();
+
+        // Fetch distribution data for the dealer, excluding those that exist in battery_reg table
+        $distributions = DistributionBatteryModel::where('dealer_id', $dealer_id)
+            ->whereNotIn('specification_no', $batteryRegSpecifications)
+            ->get();
+
+        // Check if any distributions exist after filtering
+        if ($distributions->isEmpty()) {
+            return response()->json([
+                'status' => 404,
+                'message' => 'No Distributions Found',
+            ], 404);
+        } else {
+            return response()->json([
+                'status' => 200,
+                'data' => $distributions,
+            ], 200);
+        }
     }
-}
 
 }
