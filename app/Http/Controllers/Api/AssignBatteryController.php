@@ -129,4 +129,73 @@ class AssignBatteryController extends Controller
         }
     }
 
+    public function customerList(Request $request)
+{
+    // Get the dealer ID from the request query parameter, if provided
+    $dealerId = $request->query('dealer_id');
+
+    if ($dealerId) {
+        // Fetch assignments based on the dealer ID
+        $dealerAssignments = AssignBatteryModel::where('dealer_id', $dealerId)
+            ->with(['dealer', 'category', 'subCategory'])
+            ->get();
+
+        if ($dealerAssignments->isEmpty()) {
+            return response()->json([
+                'status' => 404,
+                'message' => "No assignments found for the given dealer ID",
+            ], 404);
+        }
+
+        return response()->json([
+            'status' => 200,
+            'data' => $dealerAssignments->map(function ($assignment) {
+                $dealerName = $assignment->dealer->FirstName . ' ' . $assignment->dealer->LastName;
+
+                return [
+                    'id' => $assignment->id,
+                    'dealer_name' => $dealerName,
+                    'category_name' => $assignment->category->name,
+                    'sub_category_name' => $assignment->subCategory->sub_category_name,
+                    'nof_batteries' => $assignment->nof_batteries,
+                    'created_by' => $assignment->created_by,
+                    'updated_by' => $assignment->updated_by,
+                    'created_at' => $assignment->created_at,
+                    'updated_at' => $assignment->updated_at,
+                ];
+            }),
+        ], 200);
+    }
+
+    // If no dealer ID is specified, fetch all assignments
+    $allAssignments = AssignBatteryModel::with(['dealer', 'category', 'subCategory'])->get();
+
+    if ($allAssignments->isEmpty()) {
+        return response()->json([
+            'status' => 404,
+            'message' => "No Batteries Assignments Found",
+        ], 404);
+    }
+
+    return response()->json([
+        'status' => 200,
+        'data' => $allAssignments->map(function ($assignment) {
+            $dealerName = $assignment->dealer->FirstName . ' ' . $assignment->dealer->LastName;
+
+            return [
+                'id' => $assignment->id,
+                'dealer_name' => $dealerName,
+                'category_name' => $assignment->category->name,
+                'sub_category_name' => $assignment->subCategory->sub_category_name,
+                'nof_batteries' => $assignment->nof_batteries,
+                'created_by' => $assignment->created_by,
+                'updated_by' => $assignment->updated_by,
+                'created_at' => $assignment->created_at,
+                'updated_at' => $assignment->updated_at,
+            ];
+        }),
+    ], 200);
+}
+
+
 }

@@ -4,7 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class assignBatteryModel extends Model
+class AssignBatteryModel extends Model
 {
     //
     protected $table = 'assigned_batteries';
