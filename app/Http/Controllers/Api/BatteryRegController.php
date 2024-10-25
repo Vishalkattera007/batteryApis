@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\BatteryMastModel;
 use App\Models\BatteryRegModel;
 use App\Models\categoryModel;
+use App\Models\DealerModel;
 use App\Models\DistributionBatteryModel;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
@@ -247,5 +248,39 @@ class BatteryRegController extends Controller
             'count' => $totalBatteryReg,
         ], 200);
     }
+
+    public function getDealerCustomerDetails(Request $request, int $id)
+{
+    // Fetch dealer details
+    $dealer = DealerModel::find($id); // Replace with your actual dealer model
+
+    // Check if dealer exists
+    if (!$dealer) {
+        return response()->json([
+            'status' => 404,
+            'message' => 'Dealer not found.',
+        ], 404);
+    }
+
+    // Fetch all customers created by the dealer with the given ID
+    $customers = BatteryRegModel::where('created_by', $id)->get();
+
+    // Check if any customers were found
+    if ($customers->isEmpty()) {
+        return response()->json([
+            'status' => 404,
+            'message' => 'No customers found for this dealer.',
+            'dealer' => $dealer, // Include dealer information even if no customers found
+        ], 404);
+    }
+
+    return response()->json([
+        'status' => 200,
+        'message' => 'Customer details retrieved successfully.',
+        'dealer' => $dealer, // Include dealer information
+        'data' => $customers,
+    ], 200);
+}
+
 
 }

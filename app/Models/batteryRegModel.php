@@ -4,7 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class batteryRegModel extends Model
+class BatteryRegModel extends Model
 {
     //
 
