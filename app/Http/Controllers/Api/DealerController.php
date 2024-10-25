@@ -14,11 +14,11 @@ class DealerController extends Controller
      */
     public function index()
     {
-        $allAdmins = DealerModel::all();
-        if ($allAdmins->count() > 0) {
+        $allDealers = DealerModel::all();
+        if ($allDealers->count() > 0) {
             return response()->json([
                 'status' => 200,
-                'data' => $allAdmins,
+                'data' => $allDealers,
             ], 200);
         } else {
             return response()->json([
@@ -64,36 +64,36 @@ class DealerController extends Controller
     }
 
     // Create or update the dealer
-    $admin = DealerModel::firstOrNew([
+    $dealers = DealerModel::firstOrNew([
         'email' => $request->email, // Use email to check for existing dealer
     ]);
 
     // Set the dealer attributes
-    $admin->FirstName = $request->FirstName;
-    $admin->LastName = $request->LastName;
-    $admin->password = Hash::make($request->password);
-    $admin->phone_number = $request->phone_number;
-    $admin->address = $request->address;
-    $admin->firmRegNo = $request->firmRegNo;
-    $admin->pancard = $request->pancard;
-    $admin->profileImage = $path; // Store the path of the uploaded image if exists
+    $dealers->FirstName = $request->FirstName;
+    $dealers->LastName = $request->LastName;
+    $dealers->password = Hash::make($request->password);
+    $dealers->phone_number = $request->phone_number;
+    $dealers->address = $request->address;
+    $dealers->firmRegNo = $request->firmRegNo;
+    $dealers->pancard = $request->pancard;
+    $dealers->profileImage = $path; // Store the path of the uploaded image if exists
 
     // Save the dealer record
-    $admin->save();
+    $dealers->save();
 
     // Prepare the response data
     $responseData = [
-        'FirstName' => $admin->FirstName,
-        'LastName' => $admin->LastName,
-        'email' => $admin->email,
-        'phone_number' => $admin->phone_number,
-        'address' => $admin->address,
-        'firmRegNo' => $admin->firmRegNo,
-        'pancard' => $admin->pancard,
-        'profileImage' => asset($admin->profileImage), // Include the full URL to the profile image
-        'updated_at' => $admin->updated_at,
-        'created_at' => $admin->created_at,
-        'id' => $admin->id,
+        'FirstName' => $dealers->FirstName,
+        'LastName' => $dealers->LastName,
+        'email' => $dealers->email,
+        'phone_number' => $dealers->phone_number,
+        'address' => $dealers->address,
+        'firmRegNo' => $dealers->firmRegNo,
+        'pancard' => $dealers->pancard,
+        'profileImage' => asset($dealers->profileImage), // Include the full URL to the profile image
+        'updated_at' => $dealers->updated_at,
+        'created_at' => $dealers->created_at,
+        'id' => $dealers->id,
     ];
 
     // Return success response
@@ -122,9 +122,9 @@ class DealerController extends Controller
     public function update(Request $request, $id)
 {
     // Find the existing dealer record by ID
-    $admin = DealerModel::find($id);
+    $dealers = DealerModel::find($id);
 
-    if (!$admin) {
+    if (!$dealers) {
         return response()->json([
             'status' => 404,
             'message' => 'Dealer not found.',
@@ -140,34 +140,34 @@ class DealerController extends Controller
         $profileImagePath = $path . $fileName;
     } else {
         // If no profile image is provided, keep the existing profile image path
-        $profileImagePath = $admin->profileImage;
+        $profileImagePath = $dealers->profileImage;
     }
 
     // Update only fields that are passed in the request
-    $admin->update([
-        'FirstName' => $request->input('FirstName', $admin->FirstName), // Use the new value or retain the old one
-        'LastName' => $request->input('LastName', $admin->LastName),    // Update or retain
-        'email' => $request->input('email', $admin->email), // Update email if provided
-        'phone_number' => $request->input('phone_number', $admin->phone_number),
-        'address' => $request->input('address', $admin->address),
-        'firmRegNo' => $request->input('firmRegNo', $admin->firmRegNo),
-        'pancard' => $request->input('pancard', $admin->pancard),
+    $dealers->update([
+        'FirstName' => $request->input('FirstName', $dealers->FirstName), // Use the new value or retain the old one
+        'LastName' => $request->input('LastName', $dealers->LastName),    // Update or retain
+        'email' => $request->input('email', $dealers->email), // Update email if provided
+        'phone_number' => $request->input('phone_number', $dealers->phone_number),
+        'address' => $request->input('address', $dealers->address),
+        'firmRegNo' => $request->input('firmRegNo', $dealers->firmRegNo),
+        'pancard' => $request->input('pancard', $dealers->pancard),
         'profileImage' => $profileImagePath,  // Update image path or keep old one
     ]);
 
     // Prepare the response data
     $responseData = [
-        'FirstName' => $admin->FirstName,
-        'LastName' => $admin->LastName,
-        'email' => $admin->email,
-        'phone_number' => $admin->phone_number,
-        'address' => $admin->address,
-        'firmRegNo' => $admin->firmRegNo,
-        'pancard' => $admin->pancard,
-        'profileImage' => asset($admin->profileImage), // Include the full URL to the profile image
-        'updated_at' => $admin->updated_at,
-        'created_at' => $admin->created_at,
-        'id' => $admin->id,
+        'FirstName' => $dealers->FirstName,
+        'LastName' => $dealers->LastName,
+        'email' => $dealers->email,
+        'phone_number' => $dealers->phone_number,
+        'address' => $dealers->address,
+        'firmRegNo' => $dealers->firmRegNo,
+        'pancard' => $dealers->pancard,
+        'profileImage' => asset($dealers->profileImage), // Include the full URL to the profile image
+        'updated_at' => $dealers->updated_at,
+        'created_at' => $dealers->created_at,
+        'id' => $dealers->id,
     ];
 
     // Return success response
@@ -227,7 +227,7 @@ class DealerController extends Controller
                 'status' => 200,
                 'message' => 'Login successful',
                 'data' => [
-                    'admin' => $dealers,
+                    'dealer' => $dealers,
                     // 'token' => $token, // Include the generated token in the response
                 ],
             ]);
