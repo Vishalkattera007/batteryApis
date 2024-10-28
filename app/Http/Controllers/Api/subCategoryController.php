@@ -60,38 +60,43 @@ class subCategoryController extends Controller
      * Store a newly created subcategory.
      */
     public function create(Request $request)
-    {
-        $subcategory_check_duplicate = SubCategoryModel::where('categoryId', $request->categoryId)->where('sub_category_name', $request->sub_category_name)->first();
+{
+    // Check for duplicates based on categoryId and sub_category_name
+    $subcategory_check_duplicate = SubCategoryModel::where('categoryId', $request->categoryId)
+        ->where('sub_category_name', $request->sub_category_name)
+        ->first();
 
-        if($subcategory_check_duplicate){
-            return response()->json([
-                'status'=>409,
-                'message'=>"Subcategory already existed",
-                'data'=>$subcategory_check_duplicate
-            ],409);
-        }
-
-        $subcategory = SubCategoryModel::firstOrCreate([
-            'categoryId' => $request->categoryId,
-            'sub_category_name' => $request->sub_category_name,
-            'shortcode' => $request->shortCode,
-            'created_by' => "Backend Developer",
-        ]);
-
+    if ($subcategory_check_duplicate) {
         return response()->json([
-            'status' => 200,
-            'message' => 'SubCategory created successfully',
-            'data' => [
-                'categoryId' => $subcategory->categoryId,
-                'sub_category_name' => $subcategory->sub_category_name,
-                'shortcode' => $subcategory->short_code, // Access the correct property
-                'created_by' => $subcategory->created_by,
-                'updated_at' => $subcategory->updated_at,
-                'created_at' => $subcategory->created_at,
-                'id' => $subcategory->id,
-            ],
-        ], 200);
+            'status' => 409,
+            'message' => "Subcategory already existed",
+            'data' => $subcategory_check_duplicate
+        ], 409);
     }
+
+    // Create a new subcategory with a dynamic shortcode value from the request
+    $subcategory = SubCategoryModel::firstOrCreate([
+        'categoryId' => $request->categoryId,
+        'sub_category_name' => $request->sub_category_name,
+    ], [
+        'shortcode' => $request->shortcode,  // Use the shortcode from the request
+        'created_by' => "Backend Developer",
+    ]);
+
+    return response()->json([
+        'status' => 200,
+        'message' => 'SubCategory created successfully',
+        'data' => [
+            'categoryId' => $subcategory->categoryId,
+            'sub_category_name' => $subcategory->sub_category_name,
+            'shortcode' => $subcategory->shortcode, 
+            'created_by' => $subcategory->created_by,
+            'updated_at' => $subcategory->updated_at,
+            'created_at' => $subcategory->created_at,
+            'id' => $subcategory->id,
+        ],
+    ], 200);
+}
 
     /**
      * Update the specified subcategory.
