@@ -161,12 +161,12 @@ class DistributionBatteryController extends Controller
         ], 404);
     }
 
-    // Map the results to include battery information
+    // Map and filter results to include only those with matching battery details
     $data = $distributions->map(function ($distribution) {
         // Find the battery details based on the specification_no
         $battery = BatteryMastModel::where('serial_no', $distribution->specification_no)->first();
 
-        // If battery is found, include its details
+        // Only include distribution data if battery details are found
         if ($battery) {
             return [
                 'id' => $distribution->id,
@@ -186,21 +186,16 @@ class DistributionBatteryController extends Controller
                 ],
             ];
         }
-
-        // If no battery is found, return the distribution data with null battery details
-        return [
-            'id' => $distribution->id,
-            'dealer_id' => $distribution->dealer_id,
-            'specification_no' => $distribution->specification_no,
-            'battery_details' => $battery, // No matching battery found
-        ];
-    });
+        // Return null if no battery details were found
+        return null;
+    })->filter()->values(); // Filter out null values and reindex array
 
     return response()->json([
         'status' => 200,
-        'data' => $data, // Return the mapped data
+        'data' => $data,
     ], 200);
 }
+
 
 
 public function AssignBatteryDealer($dealer_id)
