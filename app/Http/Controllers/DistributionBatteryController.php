@@ -4,7 +4,9 @@ namespace App\Http\Controllers;
 
 use App\Models\batteryMastModel;
 use App\Models\BatteryRegModel;
+use App\Models\categoryModel;
 use App\Models\DistributionBatteryModel;
+use App\Models\subCategoryModel;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
 
@@ -196,26 +198,32 @@ class DistributionBatteryController extends Controller
     ], 200);
 }
 
+public function categorySubcategoryId($categoryId, $subcategoryId)
+{
+    // Fetch all records where categoryId and sub_category match the provided IDs
+    $batteries = batteryMastModel::where('categoryId', $categoryId)
+                ->where('sub_category', $subcategoryId)
+                ->get();
 
+    // Check if any records were found
+    if ($batteries->isNotEmpty()) {
+        // Collect id and serial_no for each matching record
+        $batteryDetails = $batteries->map(function ($battery) {
+            return [
+                'id' => $battery->id,
+                'serial_no' => $battery->serial_no
+            ];
+        });
 
-// public function AssignBatteryDealer($dealer_id)
-// {
-//     // Retrieve all distribution records for the specified dealer
-//     $distributions = DistributionBatteryModel::where('dealer_id', $dealer_id)->get();
-
-//     // Check if there are any records in the distribution model for the dealer
-//     if ($distributions->isEmpty()) {
-//         return response()->json([
-//             'status' => 404,
-//             'message' => 'No Distributions Found for this Dealer',
-//         ], 404);
-//     }
-
-//     // Return only the distribution data
-//     return response()->json([
-//         'status' => 200,
-//         'data' => $distributions, // Returning the distribution data only
-//     ], 200);
-// }
+        return response()->json([
+            'message' => 'Category and Subcategory matched',
+            'battery_details' => $batteryDetails
+        ]);
+    } else {
+        return response()->json([
+            'message' => 'Category and Subcategory do not match'
+        ], 404);
+    }
+}
 
 }
