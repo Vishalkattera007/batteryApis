@@ -149,27 +149,78 @@ class DistributionBatteryController extends Controller
     }
 
     public function dealerLogin($dealer_id)
-    {
-        // Get all specification_no from the battery_reg table
-        $batteryRegSpecifications = BatteryRegModel::pluck('serialNo')->toArray();
+{
+    // Fetch distribution data for the dealer
+    $distributions = DistributionBatteryModel::where('dealer_id', $dealer_id)->get();
 
-        // Fetch distribution data for the dealer, excluding those that exist in battery_reg table
-        $distributions = DistributionBatteryModel::where('dealer_id', $dealer_id)
-            ->whereNotIn('specification_no', $batteryRegSpecifications)
-            ->get();
-
-        // Check if any distributions exist after filtering
-        if ($distributions->isEmpty()) {
-            return response()->json([
-                'status' => 404,
-                'message' => 'No Distributions Found',
-            ], 404);
-        } else {
-            return response()->json([
-                'status' => 200,
-                'data' => $distributions,
-            ], 200);
-        }
+    // Check if any distributions exist
+    if ($distributions->isEmpty()) {
+        return response()->json([
+            'status' => 404,
+            'message' => 'No Distributions Found',
+        ], 404);
     }
+
+    // Map the results to include battery information
+    $data = $distributions->map(function ($distribution) {
+        // Find the battery details based on the specification_no
+        $battery = BatteryMastModel::where('serial_no', $distribution->specification_no)->first();
+
+        // If battery is found, include its details
+        if ($battery) {
+            return [
+                'id' => $distribution->id,
+                'dealer_id' => $distribution->dealer_id,
+                'specification_no' => $distribution->specification_no,
+                'battery_details' => [
+                    'id' => $battery->id,
+                    'serial_no' => $battery->serial_no,
+                    'categoryId' => $battery->categoryId,
+                    'sub_category' => $battery->sub_category,
+                    'MFD' => $battery->MFD,
+                    'warranty_period' => $battery->warranty_period,
+                    'created_by' => $battery->created_by,
+                    'updated_by' => $battery->updated_by,
+                    'created_at' => $battery->created_at,
+                    'updated_at' => $battery->updated_at,
+                ],
+            ];
+        }
+
+        // If no battery is found, return the distribution data with null battery details
+        return [
+            'id' => $distribution->id,
+            'dealer_id' => $distribution->dealer_id,
+            'specification_no' => $distribution->specification_no,
+            'battery_details' => $battery, // No matching battery found
+        ];
+    });
+
+    return response()->json([
+        'status' => 200,
+        'data' => $data, // Return the mapped data
+    ], 200);
+}
+
+
+public function AssignBatteryDealer($dealer_id)
+{
+    // Retrieve all distribution records for the specified dealer
+    $distributions = DistributionBatteryModel::where('dealer_id', $dealer_id)->get();
+
+    // Check if there are any records in the distribution model for the dealer
+    if ($distributions->isEmpty()) {
+        return response()->json([
+            'status' => 404,
+            'message' => 'No Distributions Found for this Dealer',
+        ], 404);
+    }
+
+    // Return only the distribution data
+    return response()->json([
+        'status' => 200,
+        'data' => $distributions, // Returning the distribution data only
+    ], 200);
+}
 
 }

@@ -17,4 +17,9 @@ class DistributionBatteryModel extends Model
         'created_by',
         'updated_by'
     ];
+
+    public function battery()
+    {
+        return $this->belongsTo(BatteryMastModel::class, 'specification_no', 'serial_no','MFD');
+    }
 }
