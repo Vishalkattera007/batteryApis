@@ -113,7 +113,7 @@ class BatteryRegController extends Controller
                 'BPD' => $request->BPD,
                 'VRN' => $request->VRN,
                 'warranty' => $request->warranty,
-                'created_by' => 'Backend Developer',
+                'created_by' => $request->created_by,
             ]);
 
             // Check if the battery was recently created

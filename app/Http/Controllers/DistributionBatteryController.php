@@ -198,24 +198,24 @@ class DistributionBatteryController extends Controller
 
 
 
-public function AssignBatteryDealer($dealer_id)
-{
-    // Retrieve all distribution records for the specified dealer
-    $distributions = DistributionBatteryModel::where('dealer_id', $dealer_id)->get();
+// public function AssignBatteryDealer($dealer_id)
+// {
+//     // Retrieve all distribution records for the specified dealer
+//     $distributions = DistributionBatteryModel::where('dealer_id', $dealer_id)->get();
 
-    // Check if there are any records in the distribution model for the dealer
-    if ($distributions->isEmpty()) {
-        return response()->json([
-            'status' => 404,
-            'message' => 'No Distributions Found for this Dealer',
-        ], 404);
-    }
+//     // Check if there are any records in the distribution model for the dealer
+//     if ($distributions->isEmpty()) {
+//         return response()->json([
+//             'status' => 404,
+//             'message' => 'No Distributions Found for this Dealer',
+//         ], 404);
+//     }
 
-    // Return only the distribution data
-    return response()->json([
-        'status' => 200,
-        'data' => $distributions, // Returning the distribution data only
-    ], 200);
-}
+//     // Return only the distribution data
+//     return response()->json([
+//         'status' => 200,
+//         'data' => $distributions, // Returning the distribution data only
+//     ], 200);
+// }
 
 }
