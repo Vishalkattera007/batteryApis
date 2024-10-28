@@ -74,7 +74,7 @@ class subCategoryController extends Controller
         $subcategory = SubCategoryModel::firstOrCreate([
             'categoryId' => $request->categoryId,
             'sub_category_name' => $request->sub_category_name,
-            'shortcode' => $request->shortCode,
+            'shortcode' => $request->shortcode,
             'created_by' => "Backend Developer",
         ]);
 
@@ -84,7 +84,7 @@ class subCategoryController extends Controller
             'data' => [
                 'categoryId' => $subcategory->categoryId,
                 'sub_category_name' => $subcategory->sub_category_name,
-                'shortcode' => $subcategory->short_code, // Access the correct property
+                'shortcode' => $subcategory->shortcode, // Access the correct property
                 'created_by' => $subcategory->created_by,
                 'updated_at' => $subcategory->updated_at,
                 'created_at' => $subcategory->created_at,
