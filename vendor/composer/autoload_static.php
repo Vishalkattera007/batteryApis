@@ -642,13 +642,10 @@ class ComposerStaticInit589cc0f65c3aaa7d4e9024d545bc1974
         'App\\Http\\Controllers\\Controller' => __DIR__ . '/../..' . '/app/Http/Controllers/Controller.php',
         'App\\Http\\Controllers\\DistributionBatteryController' => __DIR__ . '/../..' . '/app/Http/Controllers/DistributionBatteryController.php',
         'App\\Imports\\BatteryMasterImport' => __DIR__ . '/../..' . '/app/Imports/BatteryMasterImport.php',
-<<<<<<< HEAD
-=======
         'App\\Models\\AssignBatteryModel' => __DIR__ . '/../..' . '/app/Models/AssignBatteryModel.php',
         'App\\Models\\BatteryMastModel' => __DIR__ . '/../..' . '/app/Models/BatteryMastModel.php',
         'App\\Models\\BatteryRegModel' => __DIR__ . '/../..' . '/app/Models/BatteryRegModel.php',
         'App\\Models\\DealerModel' => __DIR__ . '/../..' . '/app/Models/DealerModel.php',
->>>>>>> 2dd55f6e3b9134ddf34dd4bfbc9a5d5bde261009
         'App\\Models\\DistributionBatteryModel' => __DIR__ . '/../..' . '/app/Models/DistributionBatteryModel.php',
         'App\\Models\\User' => __DIR__ . '/../..' . '/app/Models/User.php',
         'App\\Models\\categoryModel' => __DIR__ . '/../..' . '/app/Models/categoryModel.php',
