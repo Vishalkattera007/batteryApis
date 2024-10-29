@@ -1,22 +1,33 @@
 <?php
 
+use App\Exports\TestExport;
+use Illuminate\Http\Request;
+use Maatwebsite\Excel\Facades\Excel;
+use Illuminate\Support\Facades\Route;
+// use Maatwebsite\Excel\Excel as ExcelType;
 use App\Http\Controllers\Api\AdminController;
-use App\Http\Controllers\Api\AssignBatteryController;
-use App\Http\Controllers\Api\BatteryRegController;
 use App\Http\Controllers\Api\DealerController;
 use App\Http\Controllers\Api\categoryController;
-use App\Http\Controllers\Api\subCategoryController;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Api\BatteryRegController;
 // use App\Http\Controllers\AuthController;
 use App\Http\Controllers\Api\BatteryMastController;
 use App\Http\Controllers\Api\ExcelUploadController;
+use App\Http\Controllers\Api\subCategoryController;
+use App\Http\Controllers\Api\AssignBatteryController;
 use App\Http\Controllers\DistributionBatteryController;
 
 // Route::get('/admin', function (Request $request) {
 //     return $request->user();
 // })->middleware('auth:sanctum');
 
+Route::get('/test-excel', function () {
+    $data = [
+        ['Header 1', 'Header 2', 'Header 3'],
+        ['Row 1 Col 1', 'Row 1 Col 2', 'Row 1 Col 3'],
+    ];
+
+    return Excel::download(new TestExport($data), 'test.xlsx');
+});
 // Route for Admin
 Route::get('admin/{id?}', [AdminController::class, 'index']);
 Route::post('admin', [AdminController::class, 'create']);
