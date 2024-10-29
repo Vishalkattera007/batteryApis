@@ -19,6 +19,8 @@ class BatteryMasterImport implements ToModel, WithHeadingRow
     public function model(array $row)
     {
         Log::info('Importing row:', $row);
+
+        
         return new BatteryMastModel([
             
             //
