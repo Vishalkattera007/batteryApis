@@ -170,6 +170,11 @@ class DistributionBatteryController extends Controller
 
         // Only include distribution data if battery details are found
         if ($battery) {
+
+            // Fetch category and subcategory names
+            $categoryName = CategoryModel::where('id', $battery->categoryId)->value('name');
+            $subCategoryName = SubCategoryModel::where('id', $battery->sub_category)->value('sub_category_name');
+
             return [
                 'id' => $distribution->id,
                 'dealer_id' => $distribution->dealer_id,
@@ -177,8 +182,8 @@ class DistributionBatteryController extends Controller
                 'battery_details' => [
                     'id' => $battery->id,
                     'serial_no' => $battery->serial_no,
-                    'categoryId' => $battery->categoryId,
-                    'sub_category' => $battery->sub_category,
+                    'categoryId' => $categoryName,
+                    'sub_category' => $subCategoryName,
                     'MFD' => $battery->MFD,
                     'warranty_period' => $battery->warranty_period,
                     'created_by' => $battery->created_by,
