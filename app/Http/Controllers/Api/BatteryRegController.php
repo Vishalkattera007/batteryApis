@@ -197,7 +197,7 @@ class BatteryRegController extends Controller
     {
         $customer_mno = $request->cmno;
 
-        $check_cmno = BatteryRegModel::where('mobileNumber', $customer_mno)->get(['serialNo', 'firstName', 'lastName', 'BPD', 'warranty']);
+        $check_cmno = BatteryRegModel::where('mobileNumber', $customer_mno)->get(['serialNo', 'type', 'firstName', 'lastName', 'BPD', 'warranty']);
 
         if ($check_cmno->isNotEmpty()) {
             $current_date = Carbon::now();
@@ -214,6 +214,7 @@ class BatteryRegController extends Controller
 
                 return [
                     'serialNo' => $customer->serialNo,
+                    'type' => $customer->type,
                     'firstName' => $customer->firstName,
                     'lastName' => $customer->lastName,
                     'BPD' => $customer->BPD,
