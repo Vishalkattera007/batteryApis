@@ -90,3 +90,4 @@ Route::post('batteryAssign', [AssignBatteryController::class, 'create']);
 Route::put('batteryAssign/{id}', [AssignBatteryController::class, 'update']);
 Route::delete('deleteAssign/{id}', [AssignBatteryController::class, 'delete']);
 Route::get('customerList/{id}', [AssignBatteryController::class, 'customerList']);
+Route::post('checkCustomer', [AssignBatteryController::class, 'checkCustomer']);
