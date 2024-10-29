@@ -10,6 +10,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 // use App\Http\Controllers\AuthController;
 use App\Http\Controllers\Api\BatteryMastController;
+use App\Http\Controllers\Api\ExcelUploadController;
 use App\Http\Controllers\DistributionBatteryController;
 
 // Route::get('/admin', function (Request $request) {
@@ -90,3 +91,6 @@ Route::post('batteryAssign', [AssignBatteryController::class, 'create']);
 Route::put('batteryAssign/{id}', [AssignBatteryController::class, 'update']);
 Route::delete('deleteAssign/{id}', [AssignBatteryController::class, 'delete']);
 Route::get('customerList/{id}', [AssignBatteryController::class, 'customerList']);
+
+//Excel upload
+Route::post('upload/excel', [ExcelUploadController::class, 'uploadExcel']);
