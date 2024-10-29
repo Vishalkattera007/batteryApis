@@ -630,6 +630,7 @@ class ComposerStaticInit589cc0f65c3aaa7d4e9024d545bc1974
     );
 
     public static $classMap = array (
+        'App\\Exports\\TestExport' => __DIR__ . '/../..' . '/app/Exports/TestExport.php',
         'App\\Http\\Controllers\\Api\\AdminController' => __DIR__ . '/../..' . '/app/Http/Controllers/Api/AdminController.php',
         'App\\Http\\Controllers\\Api\\AssignBatteryController' => __DIR__ . '/../..' . '/app/Http/Controllers/Api/AssignBatteryController.php',
         'App\\Http\\Controllers\\Api\\BatteryMastController' => __DIR__ . '/../..' . '/app/Http/Controllers/Api/BatteryMastController.php',
@@ -640,9 +641,13 @@ class ComposerStaticInit589cc0f65c3aaa7d4e9024d545bc1974
         'App\\Http\\Controllers\\Api\\subCategoryController' => __DIR__ . '/../..' . '/app/Http/Controllers/Api/subCategoryController.php',
         'App\\Http\\Controllers\\Controller' => __DIR__ . '/../..' . '/app/Http/Controllers/Controller.php',
         'App\\Http\\Controllers\\DistributionBatteryController' => __DIR__ . '/../..' . '/app/Http/Controllers/DistributionBatteryController.php',
+        'App\\Imports\\BatteryMasterImport' => __DIR__ . '/../..' . '/app/Imports/BatteryMasterImport.php',
+        'App\\Models\\AssignBatteryModel' => __DIR__ . '/../..' . '/app/Models/AssignBatteryModel.php',
+        'App\\Models\\BatteryMastModel' => __DIR__ . '/../..' . '/app/Models/BatteryMastModel.php',
+        'App\\Models\\BatteryRegModel' => __DIR__ . '/../..' . '/app/Models/BatteryRegModel.php',
+        'App\\Models\\DealerModel' => __DIR__ . '/../..' . '/app/Models/DealerModel.php',
         'App\\Models\\DistributionBatteryModel' => __DIR__ . '/../..' . '/app/Models/DistributionBatteryModel.php',
         'App\\Models\\User' => __DIR__ . '/../..' . '/app/Models/User.php',
-        'App\\Models\\adminModel' => __DIR__ . '/../..' . '/app/Models/adminModel.php',
         'App\\Models\\categoryModel' => __DIR__ . '/../..' . '/app/Models/categoryModel.php',
         'App\\Models\\subCategoryModel' => __DIR__ . '/../..' . '/app/Models/subCategoryModel.php',
         'App\\Providers\\AppServiceProvider' => __DIR__ . '/../..' . '/app/Providers/AppServiceProvider.php',
