@@ -15,7 +15,8 @@ class DistributionBatteryModel extends Model
         'specification_no',
         'type_of_distribution',
         'created_by',
-        'updated_by'
+        'updated_by',
+        'status'
     ];
 
     public function battery()

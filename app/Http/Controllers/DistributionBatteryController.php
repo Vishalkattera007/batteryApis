@@ -153,7 +153,9 @@ class DistributionBatteryController extends Controller
     public function dealerLogin($dealer_id)
 {
     // Fetch distribution data for the dealer
-    $distributions = DistributionBatteryModel::where('dealer_id', $dealer_id)->get();
+    $distributions = DistributionBatteryModel::where('dealer_id', $dealer_id)
+    ->where('status', '0')
+    ->get();
 
     // Check if any distributions exist
     if ($distributions->isEmpty()) {
