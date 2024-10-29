@@ -14,7 +14,7 @@ class ExcelUploadController extends Controller
     //
     public function uploadExcel(Request $request)
     {
-        Log::info('Importing row:', $request);
+        // Log::info('Importing row:', $request);
         try {
             $request->validate([
                 'file' => 'required|file|mimes:xlsx,xls,csv',
