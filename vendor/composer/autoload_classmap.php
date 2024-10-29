@@ -6,6 +6,7 @@ $vendorDir = dirname(__DIR__);
 $baseDir = dirname($vendorDir);
 
 return array(
+    'App\\Exports\\TestExport' => $baseDir . '/app/Exports/TestExport.php',
     'App\\Http\\Controllers\\Api\\AdminController' => $baseDir . '/app/Http/Controllers/Api/AdminController.php',
     'App\\Http\\Controllers\\Api\\AssignBatteryController' => $baseDir . '/app/Http/Controllers/Api/AssignBatteryController.php',
     'App\\Http\\Controllers\\Api\\BatteryMastController' => $baseDir . '/app/Http/Controllers/Api/BatteryMastController.php',
@@ -16,6 +17,7 @@ return array(
     'App\\Http\\Controllers\\Api\\subCategoryController' => $baseDir . '/app/Http/Controllers/Api/subCategoryController.php',
     'App\\Http\\Controllers\\Controller' => $baseDir . '/app/Http/Controllers/Controller.php',
     'App\\Http\\Controllers\\DistributionBatteryController' => $baseDir . '/app/Http/Controllers/DistributionBatteryController.php',
+    'App\\Imports\\BatteryMasterImport' => $baseDir . '/app/Imports/BatteryMasterImport.php',
     'App\\Models\\DistributionBatteryModel' => $baseDir . '/app/Models/DistributionBatteryModel.php',
     'App\\Models\\User' => $baseDir . '/app/Models/User.php',
     'App\\Models\\adminModel' => $baseDir . '/app/Models/adminModel.php',
