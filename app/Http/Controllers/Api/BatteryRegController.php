@@ -124,10 +124,8 @@ class BatteryRegController extends Controller
 
                 $update_statusOf_batteryDist = DistributionBatteryModel::where('dealer_id', $bat_soldBy)->where('specification_no', $bat_serialNo)->update(['status' => 1]);
 
-                if ($update_statusOf_batteryDist > 0) {
-                    $update_statusOf_batteryMaster = BatteryMastModel::where('serial_no', $bat_serialNo)
-                        ->update(['status' => 1]);
-                }
+                $update_statusOf_batteryMaster = BatteryMastModel::where('serial_no', $request->serialNo)
+                    ->update(['status' => 1]);
 
                 return response()->json([
                     'status' => 201,
