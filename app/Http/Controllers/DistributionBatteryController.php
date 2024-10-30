@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Models\batteryMastModel;
-use App\Models\BatteryRegModel;
 use App\Models\categoryModel;
 use App\Models\DistributionBatteryModel;
 use App\Models\subCategoryModel;
@@ -151,87 +150,87 @@ class DistributionBatteryController extends Controller
     }
 
     public function dealerLogin($dealer_id)
-{
-    // Fetch distribution data for the dealer
-    $distributions = DistributionBatteryModel::where('dealer_id', $dealer_id)
-    ->where('status', '0')
-    ->get();
+    {
+        // Fetch distribution data for the dealer
+        $distributions = DistributionBatteryModel::where('dealer_id', $dealer_id)
+            ->where('status', '0')
+            ->get();
 
-    // Check if any distributions exist
-    if ($distributions->isEmpty()) {
+        // Check if any distributions exist
+        if ($distributions->isEmpty()) {
+            return response()->json([
+                'status' => 404,
+                'message' => 'No Distributions Found',
+            ], 404);
+        }
+
+        // Map and filter results to include only those with matching battery details
+        $data = $distributions->map(function ($distribution) {
+            // Find the battery details based on the specification_no
+            $battery = BatteryMastModel::where('serial_no', $distribution->specification_no)->first();
+
+            // Only include distribution data if battery details are found
+            if ($battery) {
+
+                // Fetch category and subcategory names
+                $categoryName = CategoryModel::where('id', $battery->categoryId)->value('name');
+                $subCategoryName = SubCategoryModel::where('id', $battery->sub_category)->value('sub_category_name');
+
+                return [
+                    'id' => $distribution->id,
+                    'dealer_id' => $distribution->dealer_id,
+                    'specification_no' => $distribution->specification_no,
+                    'status' => $distribution->status,
+                    'battery_details' => [
+                        'id' => $battery->id,
+                        'serial_no' => $battery->serial_no,
+                        'categoryId' => $categoryName,
+                        'sub_category' => $subCategoryName,
+                        'MFD' => $battery->MFD,
+                        'warranty_period' => $battery->warranty_period,
+                        'created_by' => $battery->created_by,
+                        'updated_by' => $battery->updated_by,
+                        'created_at' => $battery->created_at,
+                        'updated_at' => $battery->updated_at,
+                    ],
+                ];
+            }
+            // Return null if no battery details were found
+            return null;
+        })->filter()->values(); // Filter out null values and reindex array
+
         return response()->json([
-            'status' => 404,
-            'message' => 'No Distributions Found',
-        ], 404);
+            'status' => 200,
+            'data' => $data,
+        ], 200);
     }
 
-    // Map and filter results to include only those with matching battery details
-    $data = $distributions->map(function ($distribution) {
-        // Find the battery details based on the specification_no
-        $battery = BatteryMastModel::where('serial_no', $distribution->specification_no)->first();
+    public function categorySubcategoryId($categoryId, $subcategoryId)
+    {
+        $batteries = BatteryMastModel::where('categoryId', $categoryId)
+            ->where('sub_category', $subcategoryId)
+            ->where('status', "1")
+            ->get();
 
-        // Only include distribution data if battery details are found
-        if ($battery) {
-
-            // Fetch category and subcategory names
-            $categoryName = CategoryModel::where('id', $battery->categoryId)->value('name');
-            $subCategoryName = SubCategoryModel::where('id', $battery->sub_category)->value('sub_category_name');
-
-            return [
-                'id' => $distribution->id,
-                'dealer_id' => $distribution->dealer_id,
-                'specification_no' => $distribution->specification_no,
-                'status'=> $distribution->status,
-                'battery_details' => [
+        // Check if any records were found
+        if ($batteries->isNotEmpty()) {
+            // Collect id and serial_no for each matching record
+            $batteryDetails = $batteries->map(function ($battery) {
+                return [
                     'id' => $battery->id,
                     'serial_no' => $battery->serial_no,
-                    'categoryId' => $categoryName,
-                    'sub_category' => $subCategoryName,
-                    'MFD' => $battery->MFD,
-                    'warranty_period' => $battery->warranty_period,
-                    'created_by' => $battery->created_by,
-                    'updated_by' => $battery->updated_by,
-                    'created_at' => $battery->created_at,
-                    'updated_at' => $battery->updated_at,
-                ],
-            ];
+                ];
+            });
+
+            return response()->json([
+                'message' => 'Category and Subcategory matched',
+                'battery_details' => $batteryDetails,
+            ]);
+        } else {
+            return response()->json([
+                'message' => 'Category and Subcategory do not match',
+            ], 404);
         }
-        // Return null if no battery details were found
-        return null;
-    })->filter()->values(); // Filter out null values and reindex array
-
-    return response()->json([
-        'status' => 200,
-        'data' => $data,
-    ], 200);
-}
-
-public function categorySubcategoryId($categoryId, $subcategoryId)
-{
-    // Fetch all records where categoryId and sub_category match the provided IDs
-    $batteries = batteryMastModel::where('categoryId', $categoryId)
-                ->where('sub_category', $subcategoryId)
-                ->get();
-
-    // Check if any records were found
-    if ($batteries->isNotEmpty()) {
-        // Collect id and serial_no for each matching record
-        $batteryDetails = $batteries->map(function ($battery) {
-            return [
-                'id' => $battery->id,
-                'serial_no' => $battery->serial_no
-            ];
-        });
-
-        return response()->json([
-            'message' => 'Category and Subcategory matched',
-            'battery_details' => $batteryDetails
-        ]);
-    } else {
-        return response()->json([
-            'message' => 'Category and Subcategory do not match'
-        ], 404);
     }
-}
 
 }
