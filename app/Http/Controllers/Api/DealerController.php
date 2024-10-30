@@ -77,6 +77,7 @@ class DealerController extends Controller
     $dealers->firmRegNo = $request->firmRegNo;
     $dealers->pancard = $request->pancard;
     $dealers->profileImage = $path; // Store the path of the uploaded image if exists
+    $dealers->created_by=$request->created_by;
 
     // Save the dealer record
     $dealers->save();
