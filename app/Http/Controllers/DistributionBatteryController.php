@@ -69,7 +69,7 @@ class DistributionBatteryController extends Controller
         $dealerId = $request->dealer_id;
         $typeOfDistribution = $request->type_of_distribution;
         $specifications = $request->specification_no; // Array from frontend
-        $createdBy = "Backend Developer";
+        $createdBy = $request->created_by;
 
         $successfullyDistributed = [];
         $alreadyDistributed = [];

@@ -16,6 +16,7 @@ class BatteryMastModel extends Model
         'sub_category',
         'MFD',                // Manufacturer's Date
         'warranty_period',
+        'status',
         'created_by',
         'updated_by',
     ];

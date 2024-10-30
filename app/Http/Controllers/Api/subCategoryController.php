@@ -80,7 +80,7 @@ class subCategoryController extends Controller
         'sub_category_name' => $request->sub_category_name,
     ], [
         'shortcode' => $request->shortcode,  // Use the shortcode from the request
-        'created_by' => "Backend Developer",
+        'created_by' => $request->created_by,
     ]);
 
     return response()->json([
