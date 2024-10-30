@@ -209,7 +209,7 @@ class DistributionBatteryController extends Controller
     {
         $batteries = BatteryMastModel::where('categoryId', $categoryId)
             ->where('sub_category', $subcategoryId)
-            ->where('status', "1")
+            ->where('status', "0")
             ->get();
 
         // Check if any records were found
