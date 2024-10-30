@@ -118,6 +118,13 @@ class BatteryRegController extends Controller
 
             // Check if the battery was recently created
             if ($battery_create->wasRecentlyCreated) {
+
+                $bat_serialNo = $request->serialNo;
+                $bat_soldBy = $request->created_by;
+
+                $update_statusOf_batteryDist = DistributionBatteryModel::where('dealer_id',$bat_soldBy)->where('specification_no', $bat_serialNo)->update(['status' => 1]);
+                
+
                 return response()->json([
                     'status' => 200,
                     'message' => 'Battery Registered successfully',
@@ -254,7 +261,7 @@ class BatteryRegController extends Controller
     {
         // Fetch dealer details
         $dealer = DealerModel::find($id);
-    
+
         // Check if dealer exists
         if (!$dealer) {
             return response()->json([
@@ -262,24 +269,24 @@ class BatteryRegController extends Controller
                 'message' => 'Dealer not found.',
             ], 404);
         }
-    
+
         // Fetch all customers created by the dealer with the given ID
         $customers = BatteryRegModel::where('created_by', $id)->get();
-    
+
         // Prepare the response data
         $response = [
             'status' => $customers->isEmpty() ? 404 : 200,
             'dealer' => $dealer,
             'data' => $customers->isEmpty() ? [] : $customers,
         ];
-    
+
         if ($customers->isEmpty()) {
             // $response['message'] = 'No customers found for this dealer.';
         } else {
             $response['message'] = 'Customer details retrieved successfully.';
         }
-    
+
         return response()->json($response, $response['status']);
     }
-    
+
 }
