@@ -15,6 +15,7 @@ class BatteryRegModel extends Model
             'type',
             'firstName',
             'lastName',
+            'email',
             'pincode',
             'mobileNumber',
             'BPD',//Battery Purchased Date
