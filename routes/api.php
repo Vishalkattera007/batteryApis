@@ -75,8 +75,8 @@ Route::delete('deletebattery/{id}', [BatteryMastController::class, 'delete']);
 Route::get('batteries/count', [BatteryMastController::class, 'count']);
 
 
-//find battery specification
 
+//find battery specification
 Route::get('findSpec/{shortcode}',[DistributionBatteryController::class, 'find']);
 Route::get('dist/{id?}', [DistributionBatteryController::class, 'index']);
 Route::post('dist', [DistributionBatteryController::class, 'create']);
@@ -84,6 +84,8 @@ Route::put('dist/{id}', [DistributionBatteryController::class, 'update']);
 Route::delete('distdelete/{id}', [DistributionBatteryController::class, 'delete']);
 Route::get('dealerbattery/{dealer_id}', [DistributionBatteryController::class, 'dealerLogin']);
 Route::get('find/{categoryId}/{subcategoryId}', [DistributionBatteryController::class, 'categorySubcategoryId']);
+//Find remaining batteries with status 0
+Route::get('remainingdelaerbatteries/{id}', [DistributionBatteryController::class, 'findRemaining']);
 
 // Battery Assign
 Route::get('batteryAssign/{id?}', [AssignBatteryController::class, 'index']);

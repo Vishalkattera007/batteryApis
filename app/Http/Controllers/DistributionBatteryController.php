@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\batteryMastModel;
 use App\Models\categoryModel;
+use App\Models\DealerModel;
 use App\Models\DistributionBatteryModel;
 use App\Models\subCategoryModel;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
@@ -61,6 +62,36 @@ class DistributionBatteryController extends Controller
                 ], 404);
             }
         }
+    }
+
+    //Find the no of remaining batteries with dealer id and status 0
+
+    public function findRemaining($id)
+    {
+
+        $check_dealer_exist = DealerModel::find($id);
+
+        if ($check_dealer_exist) {
+            $find_remaining_batteries = DistributionBatteryModel::where('dealer_id', $id)->where('status', "0")->get();
+
+            if ($find_remaining_batteries) {
+                return response()->json([
+                    'status' => 200,
+                    'data' => $find_remaining_batteries,
+                ], 200);
+            } else {
+                return response()->json([
+                    'status' => 404,
+                    'message' => "No Batteries Data Found For This Dealer",
+                ], 404);
+            }
+        } else {
+            return response()->json([
+                'status' => 404,
+                'message' => 'Dealer not found',
+            ], 404);
+        }
+
     }
 
     public function create(Request $request)
