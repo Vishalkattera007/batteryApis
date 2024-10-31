@@ -23,4 +23,6 @@ class DistributionBatteryModel extends Model
     {
         return $this->belongsTo(BatteryMastModel::class, 'specification_no', 'serial_no','MFD');
     }
+
+    
 }

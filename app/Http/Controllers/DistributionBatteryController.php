@@ -2,13 +2,14 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\batteryMastModel;
-use App\Models\categoryModel;
+use Carbon\Carbon;
 use App\Models\DealerModel;
-use App\Models\DistributionBatteryModel;
-use App\Models\subCategoryModel;
-use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
+use App\Models\categoryModel;
+use App\Models\batteryMastModel;
+use App\Models\subCategoryModel;
+use App\Models\DistributionBatteryModel;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 class DistributionBatteryController extends Controller
 {
@@ -77,18 +78,32 @@ class DistributionBatteryController extends Controller
                 'message' => 'Dealer not found',
             ], 404);
         }
-        $remainingBatteries = DistributionBatteryModel::where('dealer_id', $id)
+        $remainingBatteries = DistributionBatteryModel::with(['battery.category', 'battery.subCategory'])
+            ->where('dealer_id', $id)
             ->where('status', '0')
-            ->get();
+            ->get(['specification_no', 'created_at']);
+
         if ($remainingBatteries->isEmpty()) {
             return response()->json([
                 'status' => 404,
                 'message' => 'No remaining batteries found for this dealer',
             ], 404);
         }
+
+        $batteryData = $remainingBatteries->map(function ($battery) {
+            return [
+                'created_at' => Carbon::parse($battery->created_at)->format('Y-m-d'),
+                'specification_no' => $battery->specification_no,
+                'categoryName' => $battery->battery->category ? $battery->battery->category->name : null,
+                'sub_categoryName' => $battery->battery->subcategory ? $battery->battery->subcategory->sub_category_name : null,
+                'MFD' => $battery->battery->MFD,
+                'warranty_period' => $battery->battery->warranty_period,
+            ];
+        });
+
         return response()->json([
             'status' => 200,
-            'data' => $remainingBatteries,
+            'data' => $batteryData,
         ], 200);
 
     }

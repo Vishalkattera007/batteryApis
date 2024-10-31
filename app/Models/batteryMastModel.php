@@ -28,7 +28,7 @@ class BatteryMastModel extends Model
 
     public function subCategory()
     {
-        return $this->belongsTo(subCategoryModel::class, 'sub_category');
+        return $this->belongsTo(subCategoryModel::class, 'sub_category', 'id');
     }
 
 }
