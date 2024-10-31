@@ -69,28 +69,27 @@ class DistributionBatteryController extends Controller
     public function findRemaining($id)
     {
 
-        $check_dealer_exist = DealerModel::find($id);
+        $dealer = DealerModel::find($id);
 
-        if ($check_dealer_exist) {
-            $find_remaining_batteries = DistributionBatteryModel::where('dealer_id', $id)->where('status', "0")->get();
-
-            if ($find_remaining_batteries) {
-                return response()->json([
-                    'status' => 200,
-                    'data' => $find_remaining_batteries,
-                ], 200);
-            } else {
-                return response()->json([
-                    'status' => 404,
-                    'message' => "No Batteries Data Found For This Dealer",
-                ], 404);
-            }
-        } else {
+        if (!$dealer) {
             return response()->json([
                 'status' => 404,
                 'message' => 'Dealer not found',
             ], 404);
         }
+        $remainingBatteries = DistributionBatteryModel::where('dealer_id', $id)
+            ->where('status', '0')
+            ->get();
+        if ($remainingBatteries->isEmpty()) {
+            return response()->json([
+                'status' => 404,
+                'message' => 'No remaining batteries found for this dealer',
+            ], 404);
+        }
+        return response()->json([
+            'status' => 200,
+            'data' => $remainingBatteries,
+        ], 200);
 
     }
 
