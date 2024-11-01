@@ -86,6 +86,7 @@ Route::get('dealerbattery/{dealer_id}', [DistributionBatteryController::class, '
 Route::get('find/{categoryId}/{subcategoryId}', [DistributionBatteryController::class, 'categorySubcategoryId']);
 //Find remaining batteries with status 0
 Route::get('remainingdelaerbatteries/{id}', [DistributionBatteryController::class, 'findRemaining']);
+Route::get('distdealercount/{id}',[DistributionBatteryController::class, 'batterydistcount']);
 
 // Battery Assign
 Route::get('batteryAssign/{id?}', [AssignBatteryController::class, 'index']);

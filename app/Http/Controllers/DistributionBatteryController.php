@@ -290,4 +290,14 @@ class DistributionBatteryController extends Controller
         }
     }
 
+    public function batterydistcount($dealerId)
+    {
+        $count = DistributionBatteryModel::where('dealer_id',$dealerId)->count();
+         // Return a JSON response with the count
+         return response()->json([
+            'status' => 'success',
+            'count' => $count,
+        ], 200);
+
+    }
 }
