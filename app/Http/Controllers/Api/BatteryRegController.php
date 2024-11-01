@@ -291,4 +291,16 @@ class BatteryRegController extends Controller
         return response()->json($response, $response['status']);
     }
 
+
+    public function Dealercount($dealerId)
+    {
+        $dealerRegCount = BatteryRegModel::where('created_by', $dealerId)->count();
+
+        // Return a JSON response with the count
+        return response()->json([
+            'status' => 'success',
+            'count' => $dealerRegCount,
+        ], 200);
+    }
+
 }
