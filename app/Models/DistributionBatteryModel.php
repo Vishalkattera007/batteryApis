@@ -24,5 +24,10 @@ class DistributionBatteryModel extends Model
         return $this->belongsTo(BatteryMastModel::class, 'specification_no', 'serial_no','MFD');
     }
 
+    public function dealer()
+{
+    return $this->belongsTo(DealerModel::class, 'dealer_id');
+}
+
     
 }

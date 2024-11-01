@@ -34,36 +34,48 @@ class DistributionBatteryController extends Controller
     }
 
     public function index($id = null)
-    {
-        if ($id !== null) {
-            try {
-                $dist_data = DistributionBatteryModel::findOrFail($id);
-            } catch (ModelNotFoundException $e) {
-                return response()->json([
-                    'status' => 404,
-                    'message' => "Given Id is not available",
-                ], 404);
-            }
+{
+    if ($id !== null) {
+        try {
+            $dist_data = DistributionBatteryModel::with('dealer:FirstName,LastName,id')->findOrFail($id);
+        } catch (ModelNotFoundException $e) {
+            return response()->json([
+                'status' => 404,
+                'message' => "Given Id is not available",
+            ], 404);
+        }
 
+        return response()->json([
+            'status' => 200,
+            'data' => [
+                'distribution' => $dist_data,
+                'dealer_name' => $dist_data->dealer->FirstName ?? 'N/A', // to handle cases where dealer might be null
+                'dealer_LastName' => $distribution->dealer->LastName ?? 'N/A',
+            ],
+        ], 200);
+    } else {
+        $dist_data = DistributionBatteryModel::with('dealer:FirstName,LastName,id')->get();
+        if ($dist_data->count() > 0) {
             return response()->json([
                 'status' => 200,
-                'data' => $dist_data,
+                'data' => $dist_data->map(function ($distribution) {
+                    return [
+                        'distribution' => $distribution,
+                        'dealer_FirstName' => $distribution->dealer->FirstName ?? 'N/A',
+                        'dealer_LastName' => $distribution->dealer->LastName ?? 'N/A',
+
+                    ];
+                }),
             ], 200);
         } else {
-            $dist_data = DistributionBatteryModel::all();
-            if ($dist_data->count() > 0) {
-                return response()->json([
-                    'status' => 200,
-                    'data' => $dist_data,
-                ], 200);
-            } else {
-                return response()->json([
-                    'status' => 404,
-                    'message' => "No distributions Found",
-                ], 404);
-            }
+            return response()->json([
+                'status' => 404,
+                'message' => "No distributions Found",
+            ], 404);
         }
     }
+}
+
 
     //Find the no of remaining batteries with dealer id and status 0
 
