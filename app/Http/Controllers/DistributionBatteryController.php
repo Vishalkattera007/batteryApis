@@ -239,6 +239,7 @@ class DistributionBatteryController extends Controller
                     'dealer_id' => $distribution->dealer_id,
                     'specification_no' => $distribution->specification_no,
                     'status' => $distribution->status,
+                    'created_at' => $distribution->created_at,
                     'battery_details' => [
                         'id' => $battery->id,
                         'serial_no' => $battery->serial_no,
