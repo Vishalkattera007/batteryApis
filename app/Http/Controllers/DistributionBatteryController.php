@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\BatteryRegModel;
 use Carbon\Carbon;
 use App\Models\DealerModel;
 use Illuminate\Http\Request;
@@ -234,6 +235,10 @@ class DistributionBatteryController extends Controller
                 $categoryName = CategoryModel::where('id', $battery->categoryId)->value('name');
                 $subCategoryName = SubCategoryModel::where('id', $battery->sub_category)->value('sub_category_name');
 
+                // Fetch battery purchase date from BatteryRegModel
+                $batteryReg = BatteryRegModel::where('serialNo', $battery->serial_no)->first();
+                $batteryPurchaseDate = $batteryReg ? $batteryReg->BPD : null;
+
                 return [
                     'id' => $distribution->id,
                     'dealer_id' => $distribution->dealer_id,
@@ -251,6 +256,8 @@ class DistributionBatteryController extends Controller
                         'updated_by' => $battery->updated_by,
                         'created_at' => $battery->created_at,
                         'updated_at' => $battery->updated_at,
+                        'battery_purchase_date' => $batteryPurchaseDate, // Include Battery Purchase Date (BPD)
+
                     ],
                 ];
             }
