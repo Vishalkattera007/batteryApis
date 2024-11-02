@@ -151,6 +151,7 @@ class DistributionBatteryController extends Controller
             'message' => 'Distribution process completed',
             'successfully_distributed' => $successfullyDistributed,
             'already_distributed' => $alreadyDistributed,
+            'created_by' => $createdBy
         ], 200);
     }
 

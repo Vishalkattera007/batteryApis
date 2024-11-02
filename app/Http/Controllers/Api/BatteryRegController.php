@@ -206,7 +206,7 @@ class BatteryRegController extends Controller
     {
         $customer_mno = $request->cmno;
 
-        $check_cmno = BatteryRegModel::where('mobileNumber', $customer_mno)->get(['serialNo', 'type', 'firstName', 'lastName', 'BPD', 'warranty']);
+        $check_cmno = BatteryRegModel::where('mobileNumber', $customer_mno)->get(['serialNo', 'type', 'firstName', 'lastName', 'BPD', 'warranty','created_by']);
 
         if ($check_cmno->isNotEmpty()) {
             $current_date = Carbon::now();
@@ -231,6 +231,7 @@ class BatteryRegController extends Controller
                     'remaining_warranty_days' => $remaining_warranty_days > 0 ? round($remaining_warranty_days) : 0,
                     'days_since_purchase' => round($days_since_purchase),
                     'warranty_status' => $warranty_status,
+                    'created_by'=> $customer->created_by
                 ];
             });
 
