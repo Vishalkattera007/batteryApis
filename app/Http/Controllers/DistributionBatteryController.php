@@ -146,7 +146,7 @@ class DistributionBatteryController extends Controller
             $batteryMaster = BatteryMastModel::where('serial_no', $specification)->first();
             if ($batteryMaster) {
                 // Update the status to 1 if a match is found
-                $batteryMaster->update(['status' => 1]);
+                $batteryMaster->update(['status' => "1"]);
             }
         } else {
             $alreadyDistributed[] = $specification;
