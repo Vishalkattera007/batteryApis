@@ -4,7 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Models\categoryModel;
-use App\Models\SubCategoryModel;
+use App\Models\subCategoryModel;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
 
@@ -151,7 +151,7 @@ class categoryController extends Controller
     public function filterCate(int $id)
     {
 
-        $subcategory_data = SubCategoryModel::where('categoryId', $id)->get(['id', 'sub_category_name', 'shortcode']);
+        $subcategory_data = subCategoryModel::where('categoryId', $id)->get(['id', 'sub_category_name', 'shortcode']);
 
         if ($subcategory_data->count() > 0) {
             return response()->json([
