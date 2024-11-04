@@ -2,14 +2,14 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\BatteryRegModel;
 use Carbon\Carbon;
 use App\Models\DealerModel;
 use Illuminate\Http\Request;
 use App\Models\categoryModel;
-use App\Models\batteryMastModel;
+use App\Models\BatteryMastModel;
 use App\Models\subCategoryModel;
 use App\Models\DistributionBatteryModel;
+use App\Models\BatteryRegModel;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 class DistributionBatteryController extends Controller
