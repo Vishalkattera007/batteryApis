@@ -141,7 +141,6 @@ class DistributionBatteryController extends Controller
             if ($addDist->wasRecentlyCreated) {
                 $successfullyDistributed[] = $specification;
 
-
             // Check in BatteryMasterModel for a matching serial number
             $batteryMaster = BatteryMastModel::where('serial_no', $specification)->first();
             if ($batteryMaster) {
