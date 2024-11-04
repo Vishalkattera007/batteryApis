@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
-use App\Models\SubCategoryModel;
+use App\Models\subCategoryModel;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
@@ -17,7 +17,7 @@ class subCategoryController extends Controller
     {
         if ($id) {
             try {
-                $subcategory = SubCategoryModel::with('category')->findOrFail($id);
+                $subcategory = subCategoryModel::with('category')->findOrFail($id);
             } catch (ModelNotFoundException $e) {
                 return response()->json([
                     'status' => Response::HTTP_NOT_FOUND,
@@ -30,7 +30,7 @@ class subCategoryController extends Controller
                 'data' => $subcategory,
             ], Response::HTTP_OK);
         } else {
-            $allSubCategories = SubCategoryModel::with('category')->get();
+            $allSubCategories = subCategoryModel::with('category')->get();
             if ($allSubCategories->count() > 0) {
 
                 return response()->json([
@@ -62,7 +62,7 @@ class subCategoryController extends Controller
     public function create(Request $request)
 {
     // Check for duplicates based on categoryId and sub_category_name
-    $subcategory_check_duplicate = SubCategoryModel::where('categoryId', $request->categoryId)
+    $subcategory_check_duplicate = subCategoryModel::where('categoryId', $request->categoryId)
         ->where('sub_category_name', $request->sub_category_name)
         ->first();
 
@@ -75,7 +75,7 @@ class subCategoryController extends Controller
     }
 
     // Create a new subcategory with a dynamic shortcode value from the request
-    $subcategory = SubCategoryModel::firstOrCreate([
+    $subcategory = subCategoryModel::firstOrCreate([
         'categoryId' => $request->categoryId,
         'sub_category_name' => $request->sub_category_name,
     ], [
@@ -103,7 +103,7 @@ class subCategoryController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $subcategory = SubCategoryModel::find($id);
+        $subcategory = subCategoryModel::find($id);
 
         if (!$subcategory) {
             return response()->json([
@@ -130,7 +130,7 @@ class subCategoryController extends Controller
      */
     public function delete($id)
     {
-        $subcategory = SubCategoryModel::find($id);
+        $subcategory = subCategoryModel::find($id);
 
         if (!$subcategory) {
             return response()->json([
