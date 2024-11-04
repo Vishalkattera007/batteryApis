@@ -82,7 +82,7 @@ return [
         ],
         'dealers' => [
             'driver' => 'eloquent',
-            'model' => App\Models\dealerModel::class, // Correctly referencing your model
+            'model' => App\Models\DealerModel::class, // Correctly referencing your model
         ],
 
 
