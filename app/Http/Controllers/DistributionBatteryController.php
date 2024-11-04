@@ -2,16 +2,16 @@
 
 namespace App\Http\Controllers;
 
-use Carbon\Carbon;
-use App\Models\DealerModel;
-use Illuminate\Http\Request;
-use App\Models\categoryModel;
-use App\Models\BatteryRegModel;
 use App\Models\BatteryMastModel;
-use App\Models\subCategoryModel;
-use Illuminate\Support\Facades\Log;
+use App\Models\BatteryRegModel;
+use App\Models\categoryModel;
+use App\Models\DealerModel;
 use App\Models\DistributionBatteryModel;
+use App\Models\subCategoryModel;
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 
 class DistributionBatteryController extends Controller
 {
@@ -19,7 +19,7 @@ class DistributionBatteryController extends Controller
     public function find($shortcode)
     {
 
-        $find_spec_code = batteryMastModel::where('serial_no', 'LIKE', $shortcode . '%')->get(['id', 'serial_no']);
+        $find_spec_code = BatteryMastModel::where('serial_no', 'LIKE', $shortcode . '%')->get(['id', 'serial_no']);
 
         if ($find_spec_code->count() > 0) {
             return response()->json([
@@ -36,48 +36,47 @@ class DistributionBatteryController extends Controller
     }
 
     public function index($id = null)
-{
-    if ($id !== null) {
-        try {
-            $dist_data = DistributionBatteryModel::with('dealer:FirstName,LastName,id')->findOrFail($id);
-        } catch (ModelNotFoundException $e) {
-            return response()->json([
-                'status' => 404,
-                'message' => "Given Id is not available",
-            ], 404);
-        }
+    {
+        if ($id !== null) {
+            try {
+                $dist_data = DistributionBatteryModel::with('dealer:FirstName,LastName,id')->findOrFail($id);
+            } catch (ModelNotFoundException $e) {
+                return response()->json([
+                    'status' => 404,
+                    'message' => "Given Id is not available",
+                ], 404);
+            }
 
-        return response()->json([
-            'status' => 200,
-            'data' => [
-                'distribution' => $dist_data,
-                'dealer_name' => $dist_data->dealer->FirstName ?? 'N/A', // to handle cases where dealer might be null
-                'dealer_LastName' => $distribution->dealer->LastName ?? 'N/A',
-            ],
-        ], 200);
-    } else {
-        $dist_data = DistributionBatteryModel::with('dealer:FirstName,LastName,id')->get();
-        if ($dist_data->count() > 0) {
             return response()->json([
                 'status' => 200,
-                'data' => $dist_data->map(function ($distribution) {
-                    return [
-                        'distribution' => $distribution,
-                        'dealer_FirstName' => $distribution->dealer->FirstName ?? 'N/A',
-                        'dealer_LastName' => $distribution->dealer->LastName ?? 'N/A',
-
-                    ];
-                }),
+                'data' => [
+                    'distribution' => $dist_data,
+                    'dealer_name' => $dist_data->dealer->FirstName ?? 'N/A', // to handle cases where dealer might be null
+                    'dealer_LastName' => $distribution->dealer->LastName ?? 'N/A',
+                ],
             ], 200);
         } else {
-            return response()->json([
-                'status' => 404,
-                'message' => "No distributions Found",
-            ], 404);
+            $dist_data = DistributionBatteryModel::with('dealer:FirstName,LastName,id')->get();
+            if ($dist_data->count() > 0) {
+                return response()->json([
+                    'status' => 200,
+                    'data' => $dist_data->map(function ($distribution) {
+                        return [
+                            'distribution' => $distribution,
+                            'dealer_FirstName' => $distribution->dealer->FirstName ?? 'N/A',
+                            'dealer_LastName' => $distribution->dealer->LastName ?? 'N/A',
+
+                        ];
+                    }),
+                ], 200);
+            } else {
+                return response()->json([
+                    'status' => 404,
+                    'message' => "No distributions Found",
+                ], 404);
+            }
         }
     }
-}
-
 
     //Find the no of remaining batteries with dealer id and status 0
 
@@ -139,20 +138,26 @@ class DistributionBatteryController extends Controller
                 'type_of_distribution' => $typeOfDistribution,
                 'created_by' => $createdBy,
             ]);
+
             if ($addDist->wasRecentlyCreated) {
                 $successfullyDistributed[] = $specification;
 
-            // Check in BatteryMasterModel for a matching serial number
-            $batteryMaster = BatteryMastModel::where('serial_no', $specification)->first();
-            if ($batteryMaster) {
-                // Update the status to 1 if a match is found
-                Log::info('Importing row:', $batteryMaster);
-                $batteryMaster->update(['status' => "1"]);
+                // Check in BatteryMasterModel for a matching serial number
+                $batteryMaster = BatteryMastModel::where('serial_no', $specification)->first();
+                if ($batteryMaster) {
+                    // Log the information as an array for the context
+                    Log::info('Battery Master found for specification: ' . $specification, [
+                        'battery_master' => $batteryMaster->toArray(),
+                    ]);
+                    // Update the status to 1 if a match is found
+                    $batteryMaster->update(['status' => "1"]);
+                } else {
+                    // Log a warning if no match is found
+                    Log::warning('No Battery Master found for specification: ' . $specification);
+                }
+            } else {
+                $alreadyDistributed[] = $specification;
             }
-        } else {
-            $alreadyDistributed[] = $specification;
-        }
-            
         }
 
         // Return response after the loop completes
@@ -161,7 +166,7 @@ class DistributionBatteryController extends Controller
             'message' => 'Distribution process completed',
             'successfully_distributed' => $successfullyDistributed,
             'already_distributed' => $alreadyDistributed,
-            'created_by' => $createdBy
+            'created_by' => $createdBy,
         ], 200);
     }
 
@@ -221,7 +226,7 @@ class DistributionBatteryController extends Controller
     {
         // Fetch distribution data for the dealer
         $distributions = DistributionBatteryModel::where('dealer_id', $dealer_id)
-            // ->where('status', '0')
+        // ->where('status', '0')
             ->get();
 
         // Check if any distributions exist
@@ -241,8 +246,8 @@ class DistributionBatteryController extends Controller
             if ($battery) {
 
                 // Fetch category and subcategory names
-                $categoryName = CategoryModel::where('id', $battery->categoryId)->value('name');
-                $subCategoryName = SubCategoryModel::where('id', $battery->sub_category)->value('sub_category_name');
+                $categoryName = categoryModel::where('id', $battery->categoryId)->value('name');
+                $subCategoryName = subCategoryModel::where('id', $battery->sub_category)->value('sub_category_name');
 
                 // Fetch battery purchase date from BatteryRegModel
                 $batteryReg = BatteryRegModel::where('serialNo', $battery->serial_no)->first();
@@ -310,9 +315,9 @@ class DistributionBatteryController extends Controller
 
     public function batterydistcount($dealerId)
     {
-        $count = DistributionBatteryModel::where('dealer_id',$dealerId)->count();
-         // Return a JSON response with the count
-         return response()->json([
+        $count = DistributionBatteryModel::where('dealer_id', $dealerId)->count();
+        // Return a JSON response with the count
+        return response()->json([
             'status' => 'success',
             'count' => $count,
         ], 200);
