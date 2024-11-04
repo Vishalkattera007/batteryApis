@@ -6,8 +6,6 @@ use Illuminate\Database\Eloquent\Model;
 
 class BatteryRegModel extends Model
 {
-    //
-
     protected $table = "battery_reg";
 
     protected $fillable = [
