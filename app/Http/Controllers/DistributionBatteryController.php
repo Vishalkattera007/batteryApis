@@ -6,10 +6,11 @@ use Carbon\Carbon;
 use App\Models\DealerModel;
 use Illuminate\Http\Request;
 use App\Models\categoryModel;
+use App\Models\BatteryRegModel;
 use App\Models\BatteryMastModel;
 use App\Models\subCategoryModel;
+use Illuminate\Support\Facades\Log;
 use App\Models\DistributionBatteryModel;
-use App\Models\BatteryRegModel;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 class DistributionBatteryController extends Controller
@@ -146,6 +147,7 @@ class DistributionBatteryController extends Controller
             $batteryMaster = BatteryMastModel::where('serial_no', $specification)->first();
             if ($batteryMaster) {
                 // Update the status to 1 if a match is found
+                Log::info('Importing row:', $batteryMaster);
                 $batteryMaster->update(['status' => "1"]);
             }
         } else {
