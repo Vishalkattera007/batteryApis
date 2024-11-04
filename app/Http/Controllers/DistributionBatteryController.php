@@ -138,12 +138,20 @@ class DistributionBatteryController extends Controller
                 'type_of_distribution' => $typeOfDistribution,
                 'created_by' => $createdBy,
             ]);
-
             if ($addDist->wasRecentlyCreated) {
                 $successfullyDistributed[] = $specification;
-            } else {
-                $alreadyDistributed[] = $specification;
+
+
+            // Check in BatteryMasterModel for a matching serial number
+            $batteryMaster = BatteryMastModel::where('serial_number', $specification)->first();
+            if ($batteryMaster) {
+                // Update the status to 1 if a match is found
+                $batteryMaster->update(['status' => 1]);
             }
+        } else {
+            $alreadyDistributed[] = $specification;
+        }
+            
         }
 
         // Return response after the loop completes
