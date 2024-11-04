@@ -141,8 +141,9 @@ class DealerController extends Controller
 
         if ($request->hasFile('profileImage')) {
             // Upload and save the profile image
+            $hii = 'File hai';
             $profileImage = $request->file('profileImage');
-            $path = 'uploads/profilePhoto';
+            $path = 'uploads/profilePhoto/';
             $fileName = time() . '_' . uniqid() . '.' . $profileImage->getClientOriginalExtension();
             $profileImage->move($path, $fileName);
             $profileImagePath = $path . $fileName;
@@ -176,6 +177,7 @@ class DealerController extends Controller
             'updated_at' => $dealers->updated_at,
             'created_at' => $dealers->created_at,
             'id' => $dealers->id,
+            $request->hasFile('profileImage')
         ];
 
         // Return success response

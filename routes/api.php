@@ -29,7 +29,7 @@ Route::post('/admin/login', [AdminController::class, 'login']);
 Route::get('dealer', [DealerController::class, 'index']);
 Route::post('dealer', [DealerController::class, 'create']);
 Route::get('dealer/{id}', [DealerController::class, 'show']);
-Route::put('dealer/{id}', [DealerController::class, 'update']);
+Route::post('dealer/{id}', [DealerController::class, 'update']);
 Route::delete('dealer/{id}', [DealerController::class, 'destroy']);
 Route::post('dealer/login', [DealerController::class, 'login']);
 Route::get('dealers/count', [DealerController::class, 'count']);
