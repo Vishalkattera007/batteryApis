@@ -297,36 +297,49 @@ class BatteryRegController extends Controller
             ], 404);
         }
 
+        // Fetch battery records created by the dealer
         $batteryRecords = BatteryRegModel::where('created_by', $id)->get();
 
-        // Collect all unique customer IDs
+        // Collect all unique customer IDs from the battery records
         $customerIds = $batteryRecords->pluck('customer_id')->unique();
 
         // Fetch all customer details using the collected customer IDs
         $customers = CustomerModel::whereIn('id', $customerIds)->get();
 
+        // Prepare an array to hold customers with battery details
+        $customersWithBatteryDetails = $customers->map(function ($customer) use ($batteryRecords) {
+            // Find battery records associated with this customer
+            $batteriesForCustomer = $batteryRecords->where('customer_id', $customer->id);
+
+            // If there are battery records, add the first record's details to the customer
+            if ($batteriesForCustomer->isNotEmpty()) {
+                $battery = $batteriesForCustomer->first();
+                $customer->serialNo = $battery->serialNo;
+                $customer->type = $battery->type;
+                $customer->BPD = $battery->BPD;
+                $customer->VRN = $battery->VRN;
+                $customer->warranty = $battery->warranty;
+                $customer->Acceptance = $battery->Acceptance;
+            } else {
+                // If no battery records, add null values
+                $customer->serialNo = null;
+                $customer->type = null;
+                $customer->BPD = null;
+                $customer->VRN = null;
+                $customer->warranty = null;
+                $customer->Acceptance = null;
+            }
+
+            return $customer;
+        });
+
         // Prepare the response
         return response()->json([
             'status' => 200,
             'dealer' => $dealer,
-            'customers' => $customers,
-            'batteryRecords'=>$batteryRecords,
+            'customers' => $customersWithBatteryDetails,
             'message' => 'Customer details retrieved successfully.',
         ], 200);
-
-        // $response = [
-        //     'status' => $customers->isEmpty() ? 404 : 200,
-        //     'dealer' => $dealer,
-        //     'data' => $customers->isEmpty() ? [] : $customers,
-        // ];
-
-        // if ($customers->isEmpty()) {
-        //     // $response['message'] = 'No customers found for this dealer.';
-        // } else {
-        //     $response['message'] = 'Customer details retrieved successfully.';
-        // }
-
-        // return response()->json($response, $response['status']);
     }
 
     public function Dealercount($dealerId)
