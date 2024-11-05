@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\BatteryMastModel;
 use App\Models\BatteryRegModel;
 use App\Models\categoryModel;
+use App\Models\CustomerModel;
 use App\Models\DealerModel;
 use App\Models\DistributionBatteryModel;
 use Carbon\Carbon;
@@ -101,20 +102,44 @@ class BatteryRegController extends Controller
 
     public function create(Request $request)
     {
+
         try {
-            // Create or find the battery registration
-            $battery_create = BatteryRegModel::firstOrCreate([
-                'serialNo' => $request->serialNo,
-                'type' => $request->type,
+
+            $create_customer_master = CustomerModel::firstOrCreate([
                 'firstName' => $request->firstName,
                 'lastName' => $request->lastName,
+                'email' => $request->email,
+                'phoneNumber' => $request->phoneNumber,
                 'pincode' => $request->pincode,
-                'mobileNumber' => $request->mobileNumber,
-                'BPD' => $request->BPD,
-                'VRN' => $request->VRN,
-                'warranty' => $request->warranty,
                 'created_by' => $request->created_by,
             ]);
+            $insertedId = $create_customer_master->id;
+
+            if ($create_customer_master->wasRecentlyCreated) {
+                $battery_create = BatteryRegModel::firstOrCreate([
+                    'serialNo' => $request->serialNo,
+                    'type' => $request->type,
+                    'BPD' => $request->BPD,
+                    'VRN' => $request->VRN,
+                    'warranty' => $request->warranty,
+                    'customer_id' => $insertedId,
+                    'created_by' => $request->created_by,
+                ]);
+            }
+
+            // Create or find the battery registration
+            // $battery_create = BatteryRegModel::firstOrCreate([
+            //     'serialNo' => $request->serialNo,
+            //     'type' => $request->type,
+            //     'firstName' => $request->firstName,
+            //     'lastName' => $request->lastName,
+            //     'pincode' => $request->pincode,
+            //     'mobileNumber' => $request->mobileNumber,
+            //     'BPD' => $request->BPD,
+            //     'VRN' => $request->VRN,
+            //     'warranty' => $request->warranty,
+            //     'created_by' => $request->created_by,
+            // ]);
 
             // Check if the battery was recently created
             if ($battery_create->wasRecentlyCreated) {
@@ -206,7 +231,7 @@ class BatteryRegController extends Controller
     {
         $customer_mno = $request->cmno;
 
-        $check_cmno = BatteryRegModel::where('mobileNumber', $customer_mno)->get(['serialNo', 'type', 'firstName', 'lastName','mobileNumber', 'BPD', 'warranty','created_by']);
+        $check_cmno = BatteryRegModel::where('mobileNumber', $customer_mno)->get(['serialNo', 'type', 'firstName', 'lastName', 'mobileNumber', 'BPD', 'warranty', 'created_by']);
 
         if ($check_cmno->isNotEmpty()) {
             $current_date = Carbon::now();
@@ -232,7 +257,7 @@ class BatteryRegController extends Controller
                     'remaining_warranty_days' => $remaining_warranty_days > 0 ? round($remaining_warranty_days) : 0,
                     'days_since_purchase' => round($days_since_purchase),
                     'warranty_status' => $warranty_status,
-                    'created_by'=> $customer->created_by
+                    'created_by' => $customer->created_by,
                 ];
             });
 
@@ -263,10 +288,8 @@ class BatteryRegController extends Controller
 
     public function getDealerCustomerDetails(Request $request, int $id)
     {
-        // Fetch dealer details
         $dealer = DealerModel::find($id);
 
-        // Check if dealer exists
         if (!$dealer) {
             return response()->json([
                 'status' => 404,
@@ -274,25 +297,37 @@ class BatteryRegController extends Controller
             ], 404);
         }
 
-        // Fetch all customers created by the dealer with the given ID
-        $customers = BatteryRegModel::where('created_by', $id)->get();
+        $batteryRecords = BatteryRegModel::where('created_by', $id)->get();
 
-        // Prepare the response data
-        $response = [
-            'status' => $customers->isEmpty() ? 404 : 200,
+        // Collect all unique customer IDs
+        $customerIds = $batteryRecords->pluck('customer_id')->unique();
+
+        // Fetch all customer details using the collected customer IDs
+        $customers = CustomerModel::whereIn('id', $customerIds)->get();
+
+        // Prepare the response
+        return response()->json([
+            'status' => 200,
             'dealer' => $dealer,
-            'data' => $customers->isEmpty() ? [] : $customers,
-        ];
+            'customers' => $customers,
+            'batteryRecords'=>$batteryRecords,
+            'message' => 'Customer details retrieved successfully.',
+        ], 200);
 
-        if ($customers->isEmpty()) {
-            // $response['message'] = 'No customers found for this dealer.';
-        } else {
-            $response['message'] = 'Customer details retrieved successfully.';
-        }
+        // $response = [
+        //     'status' => $customers->isEmpty() ? 404 : 200,
+        //     'dealer' => $dealer,
+        //     'data' => $customers->isEmpty() ? [] : $customers,
+        // ];
 
-        return response()->json($response, $response['status']);
+        // if ($customers->isEmpty()) {
+        //     // $response['message'] = 'No customers found for this dealer.';
+        // } else {
+        //     $response['message'] = 'Customer details retrieved successfully.';
+        // }
+
+        // return response()->json($response, $response['status']);
     }
-
 
     public function Dealercount($dealerId)
     {
