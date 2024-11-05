@@ -11,9 +11,6 @@ use Illuminate\Http\Request;
 class categoryController extends Controller
 {
 
-    
-
-
     public function index($id = null)
     {
         if ($id !== null) {
