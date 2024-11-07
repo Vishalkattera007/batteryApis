@@ -113,21 +113,18 @@ class BatteryRegController extends Controller
                 'pincode' => $request->pincode,
                 'created_by' => $request->created_by,
             ]);
+        
             $insertedId = $create_customer_master->id;
-
-            if ($create_customer_master->wasRecentlyCreated) {
-                $insertedId = $create_customer_master->id;
-
-                $battery_create = BatteryRegModel::firstOrCreate([
-                    'serialNo' => $request->serialNo,
-                    'type' => $request->type,
-                    'BPD' => $request->BPD,
-                    'VRN' => $request->VRN,
-                    'warranty' => $request->warranty,
-                    'customer_id' => $insertedId,
-                    'created_by' => $request->created_by,
-                ]);
-            }
+        
+            $battery_create = BatteryRegModel::firstOrCreate([
+                'serialNo' => $request->serialNo,
+                'type' => $request->type,
+                'BPD' => $request->BPD,
+                'VRN' => $request->VRN,
+                'warranty' => $request->warranty,
+                'customer_id' => $insertedId,  // Always pass the customer ID
+                'created_by' => $request->created_by,
+            ]);
 
             // Check if the battery was recently created
             if ($battery_create->wasRecentlyCreated) {
