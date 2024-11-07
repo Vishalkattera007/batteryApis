@@ -107,3 +107,7 @@ Route::post('upload/SubCategoryExcel', [ExcelUploadController::class, 'uploadSub
 Route::post('batteries/report', [ReportController::class, 'generateReport']);
 Route::post('customers/bydate', [ReportController::class, 'getCustomerListByDateRange']);
 Route::post('batteries/statusreport', [ReportController::class, 'getBatteryStatusReport']);
+
+//sales report
+
+Route::Get('todaySales/{dealerId?}', [ReportController::class, 'todaySales']);

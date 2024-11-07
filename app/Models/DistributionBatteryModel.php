@@ -16,28 +16,27 @@ class DistributionBatteryModel extends Model
         'type_of_distribution',
         'created_by',
         'updated_by',
-        'status'
+        'status',
     ];
 
     public function battery()
     {
-        return $this->belongsTo(BatteryMastModel::class, 'specification_no', 'serial_no','MFD');
+        return $this->belongsTo(BatteryMastModel::class, 'specification_no', 'serial_no', 'MFD');
     }
 
     public function dealer()
-{
-    return $this->belongsTo(DealerModel::class, 'dealer_id');
-}
+    {
+        return $this->belongsTo(DealerModel::class, 'dealer_id');
+    }
 
-public function batteryRegs()
+    public function batteryRegs()
     {
         return $this->hasMany(BatteryRegModel::class, 'serialNo');
     }
 
     public function batteryMast()
-{
-    return $this->belongsTo(BatteryMastModel::class, 'specification_no', 'serial_no');
-}
+    {
+        return $this->belongsTo(BatteryMastModel::class, 'specification_no', 'serial_no');
+    }
 
-    
 }

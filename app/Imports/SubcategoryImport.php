@@ -18,7 +18,7 @@ class SubcategoryImport implements ToModel, WithHeadingRow
         Log::info('Importing Row:', $row);
 
         return new subCategoryModel([
-            'categoryId' => 1,
+            'categoryId' => "1",
             'sub_category_name' => $row['sub_category_name'] ?? null,
         ]);
     }
