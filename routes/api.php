@@ -100,10 +100,10 @@ Route::post('checkCustomer', [AssignBatteryController::class, 'checkCustomer']);
 
 //Excel upload
 Route::post('upload/excel', [ExcelUploadController::class, 'uploadExcel']);
-
+Route::post('upload/CategoryExcel', [ExcelUploadController::class, 'uploadCategoryExcel']);
+Route::post('upload/SubCategoryExcel', [ExcelUploadController::class, 'uploadSubCategory']);
 
 // Report Route
 Route::post('batteries/report', [ReportController::class, 'generateReport']);
 Route::post('customers/bydate', [ReportController::class, 'getCustomerListByDateRange']);
 Route::post('batteries/statusreport', [ReportController::class, 'getBatteryStatusReport']);
-
