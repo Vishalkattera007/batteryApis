@@ -29,5 +29,15 @@ class DistributionBatteryModel extends Model
     return $this->belongsTo(DealerModel::class, 'dealer_id');
 }
 
+public function batteryRegs()
+    {
+        return $this->hasMany(BatteryRegModel::class, 'serialNo');
+    }
+
+    public function batteryMast()
+{
+    return $this->belongsTo(BatteryMastModel::class, 'specification_no', 'serial_no');
+}
+
     
 }

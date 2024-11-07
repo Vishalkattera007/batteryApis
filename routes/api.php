@@ -6,6 +6,7 @@ use App\Http\Controllers\Api\BatteryRegController;
 use App\Http\Controllers\Api\DealerController;
 use App\Http\Controllers\Api\categoryController;
 use App\Http\Controllers\Api\subCategoryController;
+use App\Http\Controllers\Api\ReportController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 // use App\Http\Controllers\AuthController;
@@ -99,3 +100,10 @@ Route::post('checkCustomer', [AssignBatteryController::class, 'checkCustomer']);
 
 //Excel upload
 Route::post('upload/excel', [ExcelUploadController::class, 'uploadExcel']);
+
+
+// Report Route
+Route::post('batteries/report', [ReportController::class, 'generateReport']);
+Route::post('customers/bydate', [ReportController::class, 'getCustomerListByDateRange']);
+Route::post('batteries/statusreport', [ReportController::class, 'getBatteryStatusReport']);
+

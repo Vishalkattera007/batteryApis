@@ -29,4 +29,8 @@ class BatteryRegModel extends Model
         return $this->belongsTo(CustomerModel::class, 'customer_id');
     }
 
+    public function distribution()
+    {
+        return $this->belongsTo(DistributionBatteryModel::class, 'specification_no', 'serialNo');
+    }
 }
