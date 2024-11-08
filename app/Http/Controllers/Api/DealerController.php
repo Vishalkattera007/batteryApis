@@ -100,8 +100,8 @@ class DealerController extends Controller
         $dealers->password = Hash::make($request->password);
         $dealers->phone_number = $request->phone_number;
         $dealers->address = $request->address;
-        $dealers->address = $request->state;
-        $dealers->address = $request->pincode;
+        $dealers->state = $request->state;
+        $dealers->pincode = $request->pincode;
         $dealers->firmRegNo = $request->firmRegNo;
         $dealers->pancard = $request->pancard;
         $dealers->profileImage = $path; // Store the path of the uploaded image if exists

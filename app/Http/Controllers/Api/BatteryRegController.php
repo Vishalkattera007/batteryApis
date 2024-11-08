@@ -9,6 +9,7 @@ use App\Models\categoryModel;
 use App\Models\CustomerModel;
 use App\Models\DealerModel;
 use App\Models\DistributionBatteryModel;
+use App\Models\subCategoryModel;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
@@ -71,6 +72,7 @@ class BatteryRegController extends Controller
 
                 if ($match_in_battery_master) {
                     $category_id = $match_in_battery_master->categoryId;
+                    $sub_category = $match_in_battery_master->sub_category;
                     $warranty_period = $match_in_battery_master->warranty_period;
                     $prowarranty_period = $match_in_battery_master->prowarranty_period;
 
@@ -78,11 +80,15 @@ class BatteryRegController extends Controller
                     $fetch_cat_name = categoryModel::where('id', $category_id)->first();
                     $cat_name = $fetch_cat_name ? $fetch_cat_name->name : 'Unknown';
 
+                    $fetch_sub_cat_name = subCategoryModel::where('id', $sub_category)->first();
+                    $sub_cat_name = $fetch_sub_cat_name ? $fetch_sub_cat_name->sub_category_name : 'Unknown';
+
                     return response()->json([
                         'status' => 200,
                         'message' => 'Battery found',
                         'data' => [
                             'categoryName' => $cat_name,
+                            'modelNumber' => $sub_cat_name,
                             'warranty_period' => $warranty_period,
                             'prowarranty_period' => $prowarranty_period,
                         ],
@@ -123,6 +129,7 @@ class BatteryRegController extends Controller
 
             $battery_create = batteryRegModel::firstOrCreate([
                 'serialNo' => $request->serialNo,
+                'modelNumber'=>$request->modelNumber,
                 'type' => $request->type,
                 'BPD' => $request->BPD,
                 'VRN' => $request->VRN,
@@ -225,7 +232,7 @@ class BatteryRegController extends Controller
 
         $check_cmno = CustomerModel::where('phoneNumber', $customer_mno)
             ->with(['batteries' => function ($query) {
-                $query->select('customer_id', 'serialNo', 'type', 'BPD', 'warranty', 'created_by');
+                $query->select('customer_id', 'serialNo', 'type','modelNumber', 'BPD', 'warranty', 'created_by');
             }])
             ->get(['id', 'firstName', 'lastName', 'phoneNumber']);
 
@@ -244,6 +251,7 @@ class BatteryRegController extends Controller
                     return [
                         'serialNo' => $battery->serialNo,
                         'type' => $battery->type,
+                        'modelNumber'=>$battery->modelNumber,
                         'firstName' => $customer->firstName,
                         'lastName' => $customer->lastName,
                         'mobileNumber' => $customer->phoneNumber,
