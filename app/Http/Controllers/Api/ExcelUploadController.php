@@ -20,7 +20,10 @@ class ExcelUploadController extends Controller
                 'file' => 'required|file|mimes:xlsx,xls,csv',
             ]);
 
-            Excel::import(new BatteryMasterImport, $request->file('file'));
+            $category_id = $request->category_id;
+            $subcategory_id = $request->subcategory_id;
+
+            Excel::import(new BatteryMasterImport($category_id, $subcategory_id), $request->file('file'));
 
             return response()->json([
                 'status' => 200,
@@ -36,88 +39,87 @@ class ExcelUploadController extends Controller
             }
 
             Log::error('Error importing file: ' . $e->getMessage());
-            return response()->json(['status' => 500,'message' => 'An error occurred while importing the file.'], 500);
+            return response()->json(['status' => 500, 'message' => 'An error occurred while importing the file.'], 500);
         } catch (\Exception $e) {
             Log::error('Error importing file: ' . $e->getMessage());
-            return response()->json(['status' => 500,'message' => $e->getMessage()], 500);
+            return response()->json(['status' => 500, 'message' => $e->getMessage()], 500);
         }
     }
 
-    public function uploadCategoryExcel(Request $request){
-        try{
+    public function uploadCategoryExcel(Request $request)
+    {
+        try {
             $request->validate([
-                'file'=>'required|file|mimes:xlsx,xls,csv',
+                'file' => 'required|file|mimes:xlsx,xls,csv',
             ]);
 
             Excel::import(new CategoryImport, $request->file('file'));
 
             return response()->json([
-                'status'=>200,
-                'message'=>"Category Sheet Uploaded Successfully"
-            ],200);
+                'status' => 200,
+                'message' => "Category Sheet Uploaded Successfully",
+            ], 200);
 
+        } catch (QueryException $e) {
 
-        }catch(QueryException $e){
-
-            if($e->getCode()==23000){
+            if ($e->getCode() == 23000) {
                 return response()->json([
-                    'status'=>409,
-                    'message'=>"Duplicate Entry Found. Kindly Check"
-                ],409);
+                    'status' => 409,
+                    'message' => "Duplicate Entry Found. Kindly Check",
+                ], 409);
             }
 
             Log::error('Error importing file:' . $e->getMessage());
             return response()->json([
-                'status'=>500,
-                'message'=>"An error occured while uploading the sheet"
-            ],500);
+                'status' => 500,
+                'message' => "An error occured while uploading the sheet",
+            ], 500);
 
-        }catch(\Exception $e){
+        } catch (\Exception $e) {
             Log::error('Error importing file:' . $e->getMessage());
             return response()->json([
-                'status'=>500,
-                'message'=>$e->getMessage()
-            ],500);
+                'status' => 500,
+                'message' => $e->getMessage(),
+            ], 500);
         }
     }
 
-
-    public function uploadSubCategory(Request $request){
-        try{
+    public function uploadSubCategory(Request $request)
+    {
+        try {
             $request->validate([
-                'file'=>'required|file|mimes:xlsx,xls,csv',
+                'file' => 'required|file|mimes:xlsx,xls,csv',
             ]);
             $category_id = $request->category_id;
 
             Excel::import(new SubcategoryImport($category_id), $request->file('file'));
             // Log::info("importing data", $category_id);
             return response()->json([
-                'status'=>200,
-                'message'=>"SubCategory Sheet Uploaded Successfully"
-            ],200);
+                'status' => 200,
+                'message' => "SubCategory Sheet Uploaded Successfully",
+            ], 200);
 
+        } catch (QueryException $e) {
 
-        }catch(QueryException $e){
-
-            if($e->getCode()==23000){
+            if ($e->getCode() == 23000) {
                 return response()->json([
-                    'status'=>409,
-                    'message'=>"Duplicate Entry Found. Kindly Check"
-                ],409);
+                    'status' => 409,
+                    'message' => "Duplicate Entry Found. Kindly Check",
+                ], 409);
             }
 
             Log::error('Error importing file:' . $e->getMessage());
             return response()->json([
-                'status'=>500,
-                'message'=>"An error occured while uploading the sheet"
-            ],500);
+                'status' => 500,
+                'message' => "An error occured while uploading the sheet",
+            ], 500);
 
-        }catch(\Exception $e){
+        } catch (\Exception $e) {
             Log::error('Error importing file:' . $e->getMessage());
             return response()->json([
-                'status'=>500,
-                'message'=>$e->getMessage()
-            ],500);
+                'status' => 500,
+                'message' => $e->getMessage(),
+            ], 500);
         }
     }
 }

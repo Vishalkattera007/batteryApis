@@ -16,12 +16,15 @@ class DealerModel extends Model implements AuthenticatableContract
 
     protected $table = 'dealer_master';
     protected $fillable = [
+        'dealerId',
         'FirstName',
         'LastName',
         'email',
         'password',
         'phone_number',
         'address',
+        'state',
+        'pincode',
         'firmRegNo',
         'pancard',
         'profileImage',

@@ -38,6 +38,24 @@ class DealerController extends Controller
             ], 422);
         }
 
+        $lastDealer =DealerModel::latest('id')->first();
+        $lastInsertedId = $lastDealer->id ?? null;
+        $state_name = $request->state;
+
+        $intoWords = explode(' ', $state_name);
+
+        if (count($intoWords) == 1) {
+            $shortState = substr($intoWords[0], 0, 2);
+        } else {
+            $shortState = '';
+            foreach ($intoWords as $words) {
+                $shortState .= substr($words, 0, 1);
+            }
+        }
+
+
+        $uniqueDealerId =  $shortState.'00'.($lastInsertedId+1);
+
         // Initialize the path variable
         $path = null;
 
@@ -75,12 +93,15 @@ class DealerController extends Controller
         $dealers = new DealerModel();
 
         // Set the dealer attributes
+        $dealers->dealerId = $uniqueDealerId;
         $dealers->FirstName = $request->FirstName;
         $dealers->LastName = $request->LastName;
         $dealers->email = $request->email;
         $dealers->password = Hash::make($request->password);
         $dealers->phone_number = $request->phone_number;
         $dealers->address = $request->address;
+        $dealers->address = $request->state;
+        $dealers->address = $request->pincode;
         $dealers->firmRegNo = $request->firmRegNo;
         $dealers->pancard = $request->pancard;
         $dealers->profileImage = $path; // Store the path of the uploaded image if exists
