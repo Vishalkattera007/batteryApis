@@ -3,8 +3,9 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Log;
 use App\Models\batteryMastModel;
-use App\Models\BatteryRegModel;
+use App\Models\batteryRegModel;
 use App\Models\categoryModel;
 use App\Models\CustomerModel;
 use App\Models\DealerModel;
@@ -22,7 +23,7 @@ class BatteryRegController extends Controller
 
         if (!$id == null) {
             try {
-                $battery_reg_id = BatteryRegModel::findOrFail($id);
+                $battery_reg_id = batteryRegModel::findOrFail($id);
             } catch (ModelNotFoundException $e) {
                 return response()->json([
                     'status' => 404,
@@ -35,7 +36,7 @@ class BatteryRegController extends Controller
                 'data' => $battery_reg_id,
             ], 200);
         } else {
-            $battery_registrations = BatteryRegModel::all();
+            $battery_registrations = batteryRegModel::all();
 
             if ($battery_registrations->count() > 0) {
                 return response()->json([
@@ -105,6 +106,8 @@ class BatteryRegController extends Controller
     public function create(Request $request)
     {
 
+        Log::info('Importing row:', $request->all());
+
         try {
 
             $create_customer_master = CustomerModel::firstOrCreate([
@@ -118,7 +121,7 @@ class BatteryRegController extends Controller
         
             $insertedId = $create_customer_master->id;
         
-            $battery_create = BatteryRegModel::firstOrCreate([
+            $battery_create = batteryRegModel::firstOrCreate([
                 'serialNo' => $request->serialNo,
                 'type' => $request->type,
                 'BPD' => $request->BPD,
@@ -151,6 +154,8 @@ class BatteryRegController extends Controller
                 ], 409);
             }
         } catch (\Exception $e) {
+
+            Log::error('Error Occured', ['message'=>$e->getMessage()]);
             // Catch any unexpected error and return a 500 error
             return response()->json([
                 'status' => 500,
@@ -163,7 +168,7 @@ class BatteryRegController extends Controller
     public function update(Request $request, int $id)
     {
 
-        $battery_update = BatteryRegModel::find($id);
+        $battery_update = batteryRegModel::find($id);
         $dateOfRegistration = $battery_update->BPD;
         $calculated_date = Carbon::parse($dateOfRegistration)->addMonth(12);
         $warranty_date = $calculated_date->toDateString();
@@ -198,7 +203,7 @@ class BatteryRegController extends Controller
 
     public function delete(Request $request, int $id)
     {
-        $battery_reg_id = BatteryRegModel::find($id);
+        $battery_reg_id = batteryRegModel::find($id);
 
         if (!$battery_reg_id) {
             return response()->json([
@@ -218,7 +223,7 @@ class BatteryRegController extends Controller
     {
         $customer_mno = $request->cmno;
 
-        $check_cmno = BatteryRegModel::where('mobileNumber', $customer_mno)->get(['serialNo', 'type', 'firstName', 'lastName', 'mobileNumber', 'BPD', 'warranty', 'created_by']);
+        $check_cmno = batteryRegModel::where('mobileNumber', $customer_mno)->get(['serialNo', 'type', 'firstName', 'lastName', 'mobileNumber', 'BPD', 'warranty', 'created_by']);
 
         if ($check_cmno->isNotEmpty()) {
             $current_date = Carbon::now();
@@ -264,7 +269,7 @@ class BatteryRegController extends Controller
     public function count()
     {
         // Use the count method on the dealerModel to get the total number of dealers
-        $totalBatteryReg = BatteryRegModel::get();
+        $totalBatteryReg = batteryRegModel::get();
 
         // Return the count in a JSON response
         return response()->json([
@@ -285,7 +290,7 @@ class BatteryRegController extends Controller
         }
 
         // Fetch battery records created by the dealer
-        $batteryRecords = BatteryRegModel::where('created_by', $id)->get();
+        $batteryRecords = batteryRegModel::where('created_by', $id)->get();
 
         // Collect all unique customer IDs from the battery records
         $customerIds = $batteryRecords->pluck('customer_id')->unique();
@@ -331,7 +336,7 @@ class BatteryRegController extends Controller
 
     public function Dealercount($dealerId)
     {
-        $dealerRegCount = BatteryRegModel::where('created_by', $dealerId)->count();
+        $dealerRegCount = batteryRegModel::where('created_by', $dealerId)->count();
 
         // Return a JSON response with the count
         return response()->json([
