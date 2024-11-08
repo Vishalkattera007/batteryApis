@@ -14,7 +14,7 @@ class BatteryMastModel extends Model
         'serial_no',
         'categoryId',
         'sub_category',
-        'MFD',                // Manufacturer's Date
+        'MFD',                
         'warranty_period',
         'prowarranty_period',
         'status',
