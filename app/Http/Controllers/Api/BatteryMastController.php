@@ -54,6 +54,7 @@ class BatteryMastController extends Controller
                         'sub_category' => $battery->subCategory ? $battery->subCategory->sub_category_name : 'N/A', // Handle null case
                         'MFD' => $battery->MFD,
                         'warranty_period' => $battery->warranty_period,
+                        'prowarranty_period' => $battery->prowarranty_period,
                     ];
                 });
 
@@ -78,6 +79,7 @@ class BatteryMastController extends Controller
             'sub_category' => $request->sub_category,
             'MFD' => $request->MFD,
             'warranty_period' => $request->warranty_period,
+            'prowarranty_period' => $request->prowarranty_period,
             'created_by' => $request->created_by,
         ]);
 
@@ -106,6 +108,7 @@ class BatteryMastController extends Controller
                 'sub_category' => $request->sub_category,
                 'MFD' => $manufacture_date->toDateString(),
                 'warranty_period' => $request->warranty_period,
+                'prowarranty_period' => $request->prowarranty_period,
                 'updated_by' => $request->updated_by,
             ]);
 
@@ -152,7 +155,5 @@ class BatteryMastController extends Controller
             'count' => $totalBattery,
         ], 200);
     }
-
-    
 
 }
