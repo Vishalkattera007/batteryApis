@@ -21,7 +21,7 @@ class DistributionBatteryModel extends Model
 
     public function battery()
     {
-        return $this->belongsTo(BatteryMastModel::class, 'specification_no', 'serial_no', 'MFD');
+        return $this->belongsTo(batteryMastModel::class, 'specification_no', 'serial_no', 'MFD');
     }
 
     public function dealer()
@@ -36,7 +36,7 @@ class DistributionBatteryModel extends Model
 
     public function batteryMast()
     {
-        return $this->belongsTo(BatteryMastModel::class, 'specification_no', 'serial_no');
+        return $this->belongsTo(batteryMastModel::class, 'specification_no', 'serial_no');
     }
 
 }

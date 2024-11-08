@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\BatteryMastModel;
+use App\Models\batteryMastModel;
 use App\Models\BatteryRegModel;
 use App\Models\categoryModel;
 use App\Models\DealerModel;
@@ -19,7 +19,7 @@ class DistributionBatteryController extends Controller
     public function find($shortcode)
     {
 
-        $find_spec_code = BatteryMastModel::where('serial_no', 'LIKE', $shortcode . '%')->get(['id', 'serial_no']);
+        $find_spec_code = batteryMastModel::where('serial_no', 'LIKE', $shortcode . '%')->get(['id', 'serial_no']);
 
         if ($find_spec_code->count() > 0) {
             return response()->json([
@@ -111,6 +111,7 @@ class DistributionBatteryController extends Controller
                 'sub_categoryName' => $battery->battery->subcategory ? $battery->battery->subcategory->sub_category_name : null,
                 'MFD' => $battery->battery->MFD,
                 'warranty_period' => $battery->battery->warranty_period,
+                'prowarranty_period' => $battery->battery->prowarranty_period,
             ];
         });
 
@@ -143,7 +144,7 @@ class DistributionBatteryController extends Controller
                 $successfullyDistributed[] = $specification;
 
                 // Check in BatteryMasterModel for a matching serial number
-                $batteryMaster = BatteryMastModel::where('serial_no', $specification)->first();
+                $batteryMaster = batteryMastModel::where('serial_no', $specification)->first();
                 if ($batteryMaster) {
                     // Log the information as an array for the context
                     Log::info('Battery Master found for specification: ' . $specification, [
@@ -240,7 +241,7 @@ class DistributionBatteryController extends Controller
         // Map and filter results to include only those with matching battery details
         $data = $distributions->map(function ($distribution) {
             // Find the battery details based on the specification_no
-            $battery = BatteryMastModel::where('serial_no', $distribution->specification_no)->first();
+            $battery = batteryMastModel::where('serial_no', $distribution->specification_no)->first();
 
             // Only include distribution data if battery details are found
             if ($battery) {
@@ -266,6 +267,7 @@ class DistributionBatteryController extends Controller
                         'sub_category' => $subCategoryName,
                         'MFD' => $battery->MFD,
                         'warranty_period' => $battery->warranty_period,
+                        'prowarranty_period' => $battery->prowarranty_period,
                         'created_by' => $battery->created_by,
                         'updated_by' => $battery->updated_by,
                         'created_at' => $battery->created_at,
@@ -287,7 +289,7 @@ class DistributionBatteryController extends Controller
 
     public function categorySubcategoryId($categoryId, $subcategoryId)
     {
-        $batteries = BatteryMastModel::where('categoryId', $categoryId)
+        $batteries = batteryMastModel::where('categoryId', $categoryId)
             ->where('sub_category', $subcategoryId)
             ->where('status', "0")
             ->get();

@@ -27,6 +27,7 @@ class BatteryMastController extends Controller
                         'sub_category' => $battery_info->subCategory ? $battery_info->subCategory->sub_category_name : 'N/A', // Handle null case
                         'MFD' => $battery_info->MFD,
                         'warranty_period' => $battery_info->warranty_period,
+                        'prowarranty_period'=>$battery_info->prowarranty_period,
                     ],
                 ], 200);
             } catch (ModelNotFoundException $e) {

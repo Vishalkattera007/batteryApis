@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
-use App\Models\BatteryMastModel;
+use App\Models\batteryMastModel;
 use App\Models\BatteryRegModel;
 use App\Models\categoryModel;
 use App\Models\CustomerModel;
@@ -66,11 +66,12 @@ class BatteryRegController extends Controller
             // Check if the specification number matches
             if ($spec_no === $bat_sp_no) {
                 // Fetch battery details from BatteryMastModel
-                $match_in_battery_master = BatteryMastModel::where('serial_no', $bat_sp_no)->first();
+                $match_in_battery_master = batteryMastModel::where('serial_no', $bat_sp_no)->first();
 
                 if ($match_in_battery_master) {
                     $category_id = $match_in_battery_master->categoryId;
                     $warranty_period = $match_in_battery_master->warranty_period;
+                    $prowarranty_period = $match_in_battery_master->prowarranty_period;
 
                     // Fetch category name
                     $fetch_cat_name = categoryModel::where('id', $category_id)->first();
@@ -81,7 +82,8 @@ class BatteryRegController extends Controller
                         'message' => 'Battery found',
                         'data' => [
                             'categoryName' => $cat_name,
-                            'warranty_period' => $warranty_period, // corrected typo
+                            'warranty_period' => $warranty_period,
+                            'prowarranty_period'=> $prowarranty_period,
                         ],
                     ]);
                 } else {
@@ -134,7 +136,7 @@ class BatteryRegController extends Controller
 
                 $update_statusOf_batteryDist = DistributionBatteryModel::where('dealer_id', $bat_soldBy)->where('specification_no', $bat_serialNo)->update(['status' => 1]);
 
-                $update_statusOf_batteryMaster = BatteryMastModel::where('serial_no', $request->serialNo)
+                $update_statusOf_batteryMaster = batteryMastModel::where('serial_no', $request->serialNo)
                     ->update(['status' => 1]);
 
                 return response()->json([

@@ -3,7 +3,7 @@
 namespace App\Imports;
 
 
-use App\Models\BatteryMastModel;
+use App\Models\batteryMastModel;
 use Illuminate\Support\Facades\Log;
 use Maatwebsite\Excel\Concerns\ToModel;
 use PhpOffice\PhpSpreadsheet\Shared\Date;
@@ -29,6 +29,7 @@ class BatteryMasterImport implements ToModel, WithHeadingRow
             'sub_category'     => $row['sub_category'] ?? null,
             'MFD'              => Date::excelToDateTimeObject($row['mfd'])->format('Y-m-d'),
             'warranty_period'  => $row['warranty_period'] ?? null,
+            'prowarranty_period'  => $row['prowarranty_period'] ?? null,
             // 'created_by'       => auth()->id(),             // Or another value if not using auth
             // 'updated_by'       => auth()->id(),    
         ]);

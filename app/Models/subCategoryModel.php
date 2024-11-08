@@ -27,6 +27,6 @@ class subCategoryModel extends Model
     // Define the relationship with BatteryMastModel
     public function batteries()
     {
-        return $this->hasMany(BatteryMastModel::class, 'sub_category', 'id');
+        return $this->hasMany(batteryMastModel::class, 'sub_category', 'id');
     }
 }
