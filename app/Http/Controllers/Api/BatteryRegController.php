@@ -3,7 +3,6 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
-use Illuminate\Support\Facades\Log;
 use App\Models\batteryMastModel;
 use App\Models\batteryRegModel;
 use App\Models\categoryModel;
@@ -13,6 +12,7 @@ use App\Models\DistributionBatteryModel;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 
 class BatteryRegController extends Controller
 {
@@ -84,7 +84,7 @@ class BatteryRegController extends Controller
                         'data' => [
                             'categoryName' => $cat_name,
                             'warranty_period' => $warranty_period,
-                            'prowarranty_period'=> $prowarranty_period,
+                            'prowarranty_period' => $prowarranty_period,
                         ],
                     ]);
                 } else {
@@ -118,16 +118,16 @@ class BatteryRegController extends Controller
                 'pincode' => $request->pincode,
                 'created_by' => $request->created_by,
             ]);
-        
+
             $insertedId = $create_customer_master->id;
-        
+
             $battery_create = batteryRegModel::firstOrCreate([
                 'serialNo' => $request->serialNo,
                 'type' => $request->type,
                 'BPD' => $request->BPD,
                 'VRN' => $request->VRN,
                 'warranty' => $request->warranty,
-                'customer_id' => $insertedId,  // Always pass the customer ID
+                'customer_id' => $insertedId, // Always pass the customer ID
                 'created_by' => $request->created_by,
             ]);
 
@@ -155,7 +155,7 @@ class BatteryRegController extends Controller
             }
         } catch (\Exception $e) {
 
-            Log::error('Error Occured', ['message'=>$e->getMessage()]);
+            Log::error('Error Occured', ['message' => $e->getMessage()]);
             // Catch any unexpected error and return a 500 error
             return response()->json([
                 'status' => 500,
@@ -223,40 +223,46 @@ class BatteryRegController extends Controller
     {
         $customer_mno = $request->cmno;
 
-        $check_cmno = batteryRegModel::where('mobileNumber', $customer_mno)->get(['serialNo', 'type', 'firstName', 'lastName', 'mobileNumber', 'BPD', 'warranty', 'created_by']);
+        $check_cmno = CustomerModel::where('phoneNumber', $customer_mno)
+            ->with(['batteries' => function ($query) {
+                $query->select('customer_id', 'serialNo', 'type', 'BPD', 'warranty', 'created_by');
+            }])
+            ->get(['id', 'firstName', 'lastName', 'phoneNumber']);
 
         if ($check_cmno->isNotEmpty()) {
             $current_date = Carbon::now();
 
-            $battery_data = $check_cmno->map(function ($customer) use ($current_date) {
-                $warranty_date = Carbon::parse($customer->warranty);
-                $purchase_date = Carbon::parse($customer->BPD);
+            $customer_data = $check_cmno->map(function ($customer) use ($current_date) {
+                $batteries_data = $customer->batteries->map(function ($battery) use ($current_date, $customer) {
+                    $warranty_date = Carbon::parse($battery->warranty);
+                    $purchase_date = Carbon::parse($battery->BPD);
 
-                $remaining_warranty_days = $current_date->diffInDays($warranty_date, false);
+                    $remaining_warranty_days = $current_date->diffInDays($warranty_date, false);
+                    $days_since_purchase = $purchase_date->diffInDays($current_date);
+                    $warranty_status = $remaining_warranty_days > 0 ? 'Valid' : 'Expired';
 
-                $days_since_purchase = $purchase_date->diffInDays($current_date);
+                    return [
+                        'serialNo' => $battery->serialNo,
+                        'type' => $battery->type,
+                        'firstName' => $customer->firstName,
+                        'lastName' => $customer->lastName,
+                        'mobileNumber' => $customer->phoneNumber,
+                        'BPD' => $battery->BPD,
+                        'warranty' => $battery->warranty,
+                        'remaining_warranty_days' => $remaining_warranty_days > 0 ? round($remaining_warranty_days) : 0,
+                        'days_since_purchase' => round($days_since_purchase),
+                        'warranty_status' => $warranty_status,
+                        'created_by' => $battery->created_by,
+                    ];
+                });
 
-                $warranty_status = $remaining_warranty_days > 0 ? 'Valid' : 'Expired';
-
-                return [
-                    'serialNo' => $customer->serialNo,
-                    'type' => $customer->type,
-                    'firstName' => $customer->firstName,
-                    'lastName' => $customer->lastName,
-                    'mobileNumber' => $customer->mobileNumber,
-                    'BPD' => $customer->BPD,
-                    'warranty' => $customer->warranty,
-                    'remaining_warranty_days' => $remaining_warranty_days > 0 ? round($remaining_warranty_days) : 0,
-                    'days_since_purchase' => round($days_since_purchase),
-                    'warranty_status' => $warranty_status,
-                    'created_by' => $customer->created_by,
-                ];
-            });
+                return $batteries_data;
+            })->flatten(1);
 
             return response()->json([
                 'status' => 200,
                 'message' => 'Customer found',
-                'data' => $battery_data,
+                'data' => $customer_data,
             ], 200);
         } else {
             return response()->json([
