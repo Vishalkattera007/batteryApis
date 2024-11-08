@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\batteryMastModel;
-use App\Models\BatteryRegModel;
+use App\Models\batteryRegModel;
 use App\Models\categoryModel;
 use App\Models\DealerModel;
 use App\Models\DistributionBatteryModel;
@@ -251,7 +251,7 @@ class DistributionBatteryController extends Controller
                 $subCategoryName = subCategoryModel::where('id', $battery->sub_category)->value('sub_category_name');
 
                 // Fetch battery purchase date from BatteryRegModel
-                $batteryReg = BatteryRegModel::where('serialNo', $battery->serial_no)->first();
+                $batteryReg = batteryRegModel::where('serialNo', $battery->serial_no)->first();
                 $batteryPurchaseDate = $batteryReg ? $batteryReg->BPD : null;
 
                 return [

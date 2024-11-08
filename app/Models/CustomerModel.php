@@ -22,7 +22,7 @@ class CustomerModel extends Model
 
 
     public function batteries(){
-        return $this->hasMany(BatteryRegModel::class, 'customer_id');
+        return $this->hasMany(batteryRegModel::class, 'customer_id');
     }
 
    

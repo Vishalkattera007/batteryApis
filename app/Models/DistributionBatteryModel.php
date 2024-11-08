@@ -31,7 +31,7 @@ class DistributionBatteryModel extends Model
 
     public function batteryRegs()
     {
-        return $this->hasMany(BatteryRegModel::class, 'serialNo');
+        return $this->hasMany(batteryRegModel::class, 'serialNo');
     }
 
     public function batteryMast()

@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
-use App\Models\BatteryRegModel;
+use App\Models\batteryRegModel;
 use App\Models\DealerModel;
 use App\Models\DistributionBatteryModel;
 use Illuminate\Http\Request;
@@ -37,7 +37,7 @@ class ReportController extends Controller
         $fromDate = $request->input('fromDate');
         $toDate = $request->input('toDate');
 
-        $customers = BatteryRegModel::whereDate('created_at', '>=', $fromDate)
+        $customers = batteryRegModel::whereDate('created_at', '>=', $fromDate)
             ->whereDate('created_at', '<=', $toDate)
             ->get();
 

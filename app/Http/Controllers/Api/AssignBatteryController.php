@@ -4,7 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Models\AssignBatteryModel;
-use App\Models\BatteryRegModel;
+use App\Models\batteryRegModel;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
 
@@ -202,7 +202,7 @@ public function checkCustomer(Request $request)
     {
    
         // Retrieve the customer based on the mobile number
-        $customer = BatteryRegModel::where('mobileNumber', $request->mobileNumber)->first(); // Adjust the column name accordingly
+        $customer = batteryRegModel::where('mobileNumber', $request->mobileNumber)->first(); // Adjust the column name accordingly
 
         if (!$customer) {
             return response()->json(['message' => 'Customer not found'], 404);
