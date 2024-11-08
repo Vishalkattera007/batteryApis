@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Imports\BatteryMasterImport;
 use App\Imports\CategoryImport;
+use App\Imports\DistributionImport;
 use App\Imports\SubcategoryImport;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
@@ -122,4 +123,43 @@ class ExcelUploadController extends Controller
             ], 500);
         }
     }
+
+
+    //dist upload
+
+    public function distuploadExcel(Request $request)
+    {
+        try {
+            $request->validate([
+                'file' => 'required|file|mimes:xlsx,xls,csv',
+            ]);
+            $dealer_id = $request->dealer_id;
+            $type_dist = $request->type_dist;
+            $created_by = $request->created_by;
+            // $subcategory_id = $request->subcategory_id;
+
+            Excel::import(new DistributionImport($dealer_id, $created_by, $type_dist), $request->file('file'));
+
+            return response()->json([
+                'status' => 200,
+                // 'data' => $request->file('file'),
+                'message' => 'Data imported successfully'], 200);
+        } catch (QueryException $e) {
+            // Check if the error is a duplicate entry
+            if ($e->getCode() == 23000) {
+                return response()->json([
+                    'status' => 409,
+                    'message' => "Duplicate entry found kindly check",
+                ], 409);
+            }
+
+            Log::error('Error importing file: ' . $e->getMessage());
+            return response()->json(['status' => 500, 'message' => 'An error occurred while importing the file.'], 500);
+        } catch (\Exception $e) {
+            Log::error('Error importing file: ' . $e->getMessage());
+            return response()->json(['status' => 500, 'message' => $e->getMessage()], 500);
+        }
+    }
+
+
 }

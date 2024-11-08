@@ -102,6 +102,8 @@ Route::post('checkCustomer', [AssignBatteryController::class, 'checkCustomer']);
 Route::post('upload/excel', [ExcelUploadController::class, 'uploadExcel']);
 Route::post('upload/CategoryExcel', [ExcelUploadController::class, 'uploadCategoryExcel']);
 Route::post('upload/SubCategoryExcel', [ExcelUploadController::class, 'uploadSubCategory']);
+Route::post('upload/DistributionExcel', [ExcelUploadController::class, 'distuploadExcel']);
+
 
 // Report Route
 Route::post('batteries/report', [ReportController::class, 'generateReport']);
