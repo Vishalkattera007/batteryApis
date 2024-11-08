@@ -274,11 +274,11 @@ class BatteryRegController extends Controller
 
     public function count()
     {
-        $totalBatteryReg = batteryRegModel::with('distribution')->get();
-
+        $totalBatteryReg = batteryRegModel::get();
+        
         return response()->json([
             'status' => 200,
-            'count' => $totalBatteryReg->distribution->created_by,
+            'count' => $totalBatteryReg,
         ], 200);
     }
 

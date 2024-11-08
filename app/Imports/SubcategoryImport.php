@@ -10,7 +10,7 @@ use Maatwebsite\Excel\Concerns\WithHeadingRow;
 
 class SubcategoryImport implements ToModel, WithHeadingRow
 {
-   
+
     protected $category_id;
 
     public function __construct($category_id)
@@ -22,8 +22,17 @@ class SubcategoryImport implements ToModel, WithHeadingRow
     {
         Log::info('Importing Row:', $row);
 
+        $existingSubCategory = subCategoryModel::where('categoryId', $this->category_id)
+            ->where('sub_category_name', $row['sub_category_name'])
+            ->first();
+
+        if ($existingSubCategory) {
+            Log::warning('Duplicate Entry Skipped:', $row);
+            return null; 
+        }
+
         return new subCategoryModel([
-            'categoryId' => $this->category_id,
+            'categoryId' => $this->category_id ?? null,
             'sub_category_name' => $row['sub_category_name'] ?? null,
         ]);
     }

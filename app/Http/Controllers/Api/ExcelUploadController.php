@@ -90,7 +90,7 @@ class ExcelUploadController extends Controller
             $category_id = $request->category_id;
 
             Excel::import(new SubcategoryImport($category_id), $request->file('file'));
-
+            // Log::info("importing data", $category_id);
             return response()->json([
                 'status'=>200,
                 'message'=>"SubCategory Sheet Uploaded Successfully"
