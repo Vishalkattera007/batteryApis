@@ -87,8 +87,9 @@ class ExcelUploadController extends Controller
             $request->validate([
                 'file'=>'required|file|mimes:xlsx,xls,csv',
             ]);
+            $category_id = $request->category_id;
 
-            Excel::import(new SubcategoryImport, $request->file('file'));
+            Excel::import(new SubcategoryImport($category_id), $request->file('file'));
 
             return response()->json([
                 'status'=>200,
