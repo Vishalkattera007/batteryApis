@@ -11,6 +11,7 @@ class BatteryRegModel extends Model
     protected $fillable = [
             'serialNo',
             'type',
+            'modelNumber',
             // 'firstName',
             // 'lastName',
             // 'email',
