@@ -262,7 +262,7 @@ class BatteryRegController extends Controller
     public function count()
     {
         // Use the count method on the dealerModel to get the total number of dealers
-        $totalBatteryReg = BatteryRegModel::count();
+        $totalBatteryReg = BatteryRegModel::get();
 
         // Return the count in a JSON response
         return response()->json([

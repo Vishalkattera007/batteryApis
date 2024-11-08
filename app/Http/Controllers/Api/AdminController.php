@@ -157,4 +157,8 @@ class AdminController extends Controller
             );
         }
     }
+
+    //count of sales today
+
+    
 }
