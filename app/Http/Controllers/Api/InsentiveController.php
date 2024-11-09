@@ -44,19 +44,22 @@ class InsentiveController extends Controller
     {
 
         $typeOfInsetive = $request->typeOfIncetive;
-        $dealerId = $request->dealerId;
+        $dealerIds = $request->dealerId; // An array of dealer IDs (e.g., ["TE001", "TE003"])
         $message = $request->message;
 
-        $response = [];
+        $responses = [];
 
-        foreach ($dealerId as $dId) {
+        // Loop through each dealerId in the dealerId array
+        foreach ($dealerIds as $dealerId) {
+            // Check if the incentive record already exists for the current dealerId
             $insertData = InsentiveListModel::firstOrCreate([
                 'typeOfInsetive' => $typeOfInsetive,
-                'dealerId' => $dealerId,
+                'dealerId' => $dealerId, // Correctly passing each dealerId as a string
                 'message' => $message,
             ]);
 
             if ($insertData->wasRecentlyCreated) {
+                // If the record was successfully created
                 $responses[] = [
                     'dealerId' => $dealerId,
                     'status' => 200,
@@ -64,13 +67,13 @@ class InsentiveController extends Controller
                     'data' => $insertData,
                 ];
             } else {
+                // If the record already exists for the current dealer
                 $responses[] = [
                     'dealerId' => $dealerId,
                     'status' => 409,
                     'message' => 'Incentive Record Already Exists',
                 ];
             }
-
         }
 
         return response()->json($responses, 200);

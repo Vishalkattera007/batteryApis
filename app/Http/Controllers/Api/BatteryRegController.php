@@ -346,4 +346,7 @@ class BatteryRegController extends Controller
         ], 200);
     }
 
+
+    
+
 }
