@@ -129,7 +129,7 @@ class BatteryRegController extends Controller
 
             $battery_create = batteryRegModel::firstOrCreate([
                 'serialNo' => $request->serialNo,
-                'modelNumber'=>$request->modelNumber,
+                'modelNumber' => $request->modelNumber,
                 'type' => $request->type,
                 'BPD' => $request->BPD,
                 'VRN' => $request->VRN,
@@ -232,7 +232,7 @@ class BatteryRegController extends Controller
 
         $check_cmno = CustomerModel::where('phoneNumber', $customer_mno)
             ->with(['batteries' => function ($query) {
-                $query->select('customer_id', 'serialNo', 'type','modelNumber', 'BPD', 'warranty', 'created_by');
+                $query->select('customer_id', 'serialNo', 'type', 'modelNumber', 'BPD', 'warranty', 'created_by');
             }])
             ->get(['id', 'firstName', 'lastName', 'phoneNumber']);
 
@@ -251,7 +251,7 @@ class BatteryRegController extends Controller
                     return [
                         'serialNo' => $battery->serialNo,
                         'type' => $battery->type,
-                        'modelNumber'=>$battery->modelNumber,
+                        'modelNumber' => $battery->modelNumber,
                         'firstName' => $customer->firstName,
                         'lastName' => $customer->lastName,
                         'mobileNumber' => $customer->phoneNumber,
@@ -283,7 +283,7 @@ class BatteryRegController extends Controller
     public function count()
     {
         $totalBatteryReg = batteryRegModel::get();
-        
+
         return response()->json([
             'status' => 200,
             'count' => $totalBatteryReg,
@@ -301,43 +301,33 @@ class BatteryRegController extends Controller
             ], 404);
         }
 
-        // Fetch battery records created by the dealer
         $batteryRecords = batteryRegModel::where('created_by', $id)->get();
 
-        // Collect all unique customer IDs from the battery records
-        $customerIds = $batteryRecords->pluck('customer_id')->unique();
+        $customerIds = $batteryRecords->pluck('customer_id');
 
-        // Fetch all customer details using the collected customer IDs
         $customers = CustomerModel::whereIn('id', $customerIds)->get();
 
-        // Prepare an array to hold customers with battery details
         $customersWithBatteryDetails = $customers->map(function ($customer) use ($batteryRecords) {
-            // Find battery records associated with this customer
             $batteriesForCustomer = $batteryRecords->where('customer_id', $customer->id);
 
-            // If there are battery records, add the first record's details to the customer
-            if ($batteriesForCustomer->isNotEmpty()) {
-                $battery = $batteriesForCustomer->first();
-                $customer->serialNo = $battery->serialNo;
-                $customer->type = $battery->type;
-                $customer->BPD = $battery->BPD;
-                $customer->VRN = $battery->VRN;
-                $customer->warranty = $battery->warranty;
-                $customer->Acceptance = $battery->Acceptance;
-            } else {
-                // If no battery records, add null values
-                $customer->serialNo = null;
-                $customer->type = null;
-                $customer->BPD = null;
-                $customer->VRN = null;
-                $customer->warranty = null;
-                $customer->Acceptance = null;
+            $batteryDetails = [];
+
+            foreach ($batteriesForCustomer as $battery) {
+                $batteryDetails[] = [
+                    'serialNo' => $battery->serialNo,
+                    'type' => $battery->type,
+                    'BPD' => $battery->BPD,
+                    'VRN' => $battery->VRN,
+                    'warranty' => $battery->warranty,
+                    'Acceptance' => $battery->Acceptance,
+                ];
             }
+
+            $customer->batteryDetails = $batteryDetails;
 
             return $customer;
         });
 
-        // Prepare the response
         return response()->json([
             'status' => 200,
             'dealer' => $dealer,
@@ -350,7 +340,6 @@ class BatteryRegController extends Controller
     {
         $dealerRegCount = batteryRegModel::where('created_by', $dealerId)->count();
 
-        // Return a JSON response with the count
         return response()->json([
             'status' => 'success',
             'count' => $dealerRegCount,
