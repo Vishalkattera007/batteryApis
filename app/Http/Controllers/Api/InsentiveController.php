@@ -47,41 +47,42 @@ class InsentiveController extends Controller
         $dealerId = $request->dealerId;
         $message = $request->message;
 
-        // if ($status == 1) {
-        //     $updateStatus = InsentiveListModel::where('dealerId', $dealerId)
-        //         ->where('typeOfInsetive', $typeOfInsetive)
-        //         ->update(['status' => $status]);
-        // }else{
-        //     $status= null;
-        //     return $status;
-        // }
+        $response = [];
 
-        $insertData = InsentiveListModel::firstOrCreate([
-            'typeOfInsetive' => $typeOfInsetive,
-            'dealerId' => $dealerId,
-            'message' => $message,
-        ]);
+        foreach ($dealerId as $dId) {
+            $insertData = InsentiveListModel::firstOrCreate([
+                'typeOfInsetive' => $typeOfInsetive,
+                'dealerId' => $dealerId,
+                'message' => $message,
+            ]);
 
-        if ($insertData->wasRecentlyCreated) {
-            return response()->json([
-                'status' => 200,
-                'message' => 'Incentive Enrty Done successfully',
-                'data' => $insertData,
-            ], 200);
-        } else {
-            return response()->json([
-                'status' => 409, // 409 Conflict indicates that the resource already exists
-                'message' => 'Incentive Record Already Exists',
-            ], 409);
+            if ($insertData->wasRecentlyCreated) {
+                $responses[] = [
+                    'dealerId' => $dealerId,
+                    'status' => 200,
+                    'message' => 'Incentive Entry Done successfully',
+                    'data' => $insertData,
+                ];
+            } else {
+                $responses[] = [
+                    'dealerId' => $dealerId,
+                    'status' => 409,
+                    'message' => 'Incentive Record Already Exists',
+                ];
+            }
+
         }
+
+        return response()->json($responses, 200);
 
     }
 
-    public function updateStatus(Request $request){
+    public function updateStatus(Request $request)
+    {
 
         $status = $request->status;
         $dealerId = $request->dealerId;
-         if ($status == 1) {
+        if ($status == 1) {
             $updateStatus = InsentiveListModel::where('dealerId', $dealerId)->update(['status' => $status]);
             return response()->json([
                 'status' => 200,
