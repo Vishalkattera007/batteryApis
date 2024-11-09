@@ -12,6 +12,7 @@ use Illuminate\Support\Facades\Route;
 // use App\Http\Controllers\AuthController;
 use App\Http\Controllers\Api\BatteryMastController;
 use App\Http\Controllers\Api\ExcelUploadController;
+use App\Http\Controllers\API\InsentiveController;
 use App\Http\Controllers\DistributionBatteryController;
 
 // Route::get('/admin', function (Request $request) {
@@ -113,3 +114,7 @@ Route::post('batteries/statusreport', [ReportController::class, 'getBatteryStatu
 //sales report
 
 Route::Get('todaySales/{dealerId?}', [ReportController::class, 'todaySales']);
+
+//Insentives
+
+Route::Post('insentive/BatteryInsentive', [InsentiveController::class, 'batteryInsetive']);

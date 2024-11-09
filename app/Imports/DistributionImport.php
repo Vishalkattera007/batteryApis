@@ -39,8 +39,12 @@ class DistributionImport implements ToModel, WithHeadingRow
         Log::info('Importing row:', $row);
 
         $existing_serial_no = batteryMastModel::where('serial_no', $row['serial_no'])->first();
-
+        
         if ($existing_serial_no) {
+            Log::info('Battery Master found for specification: ' . $row['serial_no'], [
+                'battery_master' => $existing_serial_no->toArray(),
+            ]);
+            $existing_serial_no->update(['status' => "1"]);
 
             return new DistributionBatteryModel([
 
@@ -52,8 +56,14 @@ class DistributionImport implements ToModel, WithHeadingRow
             ]);
            
         }else{
-            Log::error('Serial is not already existing', ['serial_no' => $row['serial_no']]);
-            return null;
+
+            return response()->json([
+                'status'=>409,
+                'message'=>'Cannot Insert New serial No', ['serial_no' => $row['serial_no']]
+            ],409);
+
+            // Log::error('Cannot Insert New serial No', ['serial_no' => $row['serial_no']]);
+            // return null;
         }
 
         
