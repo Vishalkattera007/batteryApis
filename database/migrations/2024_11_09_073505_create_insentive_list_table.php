@@ -13,7 +13,8 @@ return new class extends Migration
     {
         Schema::create('insentive_list', function (Blueprint $table) {
             $table->id();
-            
+            $table ->string('typeOfInsetive');
+            $table->string('dealerId');
             $table->timestamps();
         });
     }
