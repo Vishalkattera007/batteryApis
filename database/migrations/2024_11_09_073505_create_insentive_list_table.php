@@ -15,6 +15,8 @@ return new class extends Migration
             $table->id();
             $table ->string('typeOfInsetive');
             $table->string('dealerId');
+            $table->integer('created_by');
+            $table->integer('updated_by');
             $table->timestamps();
         });
     }

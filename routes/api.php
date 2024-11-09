@@ -117,4 +117,8 @@ Route::Get('todaySales/{dealerId?}', [ReportController::class, 'todaySales']);
 
 //Insentives
 
-Route::Get('insentive/BatteryInsentive', [InsentiveController::class, 'batteryInsetive']);
+Route::GET('insentive/BatteryInsentive', [InsentiveController::class, 'batteryInsetive']);
+Route::POST('insentive/Battery', [InsentiveController::class, 'postIncetive']);
+Route::POST('insentive/statusUpdate', [InsentiveController::class, 'updateStatus']);
+
+
