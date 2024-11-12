@@ -96,6 +96,7 @@ class subCategoryController extends Controller
             'id' => $subcategory->id,
         ],
     ], 200);
+    
 }
 
     /**
