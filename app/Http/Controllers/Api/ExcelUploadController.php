@@ -15,37 +15,41 @@ use Maatwebsite\Excel\Facades\Excel;
 class ExcelUploadController extends Controller
 {
     public function uploadExcel(Request $request)
-    {
-        try {
-            $request->validate([
-                'file' => 'required|file|mimes:xlsx,xls,csv',
-            ]);
+{
+    try {
+        $request->validate([
+            'file' => 'required|file|mimes:xlsx,xls,csv',
+        ]);
 
-            $category_id = $request->category_id;
-            $subcategory_id = $request->subcategory_id;
+        $category_id = $request->category_id;
+        $subcategory_id = $request->subcategory_id;
 
-            Excel::import(new BatteryMasterImport($category_id, $subcategory_id), $request->file('file'));
+        // Handle file import
+        Excel::import(new BatteryMasterImport($category_id, $subcategory_id), $request->file('file'));
 
+        return response()->json([
+            'status' => 200,
+            'message' => 'Data imported successfully'
+        ], 200);
+
+    } catch (\Exception $e) {
+        // Catch any exception thrown during the import process
+        Log::error('Error importing file: ' . $e->getMessage());
+
+        // Check if the exception is a custom "duplicate entry" exception
+        if (strpos($e->getMessage(), 'Duplicate entry') !== false) {
             return response()->json([
-                'status' => 200,
-                // 'data' => $request->file('file'),
-                'message' => 'Data imported successfully'], 200);
-        } catch (QueryException $e) {
-            // Check if the error is a duplicate entry
-            if ($e->getCode() == 23000) {
-                return response()->json([
-                    'status' => 409,
-                    'message' => "Duplicate entry found kindly check",
-                ], 409);
-            }
-
-            Log::error('Error importing file: ' . $e->getMessage());
-            return response()->json(['status' => 500, 'message' => 'An error occurred while importing the file.'], 500);
-        } catch (\Exception $e) {
-            Log::error('Error importing file: ' . $e->getMessage());
-            return response()->json(['status' => 500, 'message' => $e->getMessage()], 500);
+                'status' => 409,
+                'message' => "Duplicate entry found. Kindly check."
+            ], 409);
         }
+
+        return response()->json([
+            'status' => 500,
+            'message' => "An error occurred while importing the file."
+        ], 500);
     }
+}
 
     public function uploadCategoryExcel(Request $request)
     {

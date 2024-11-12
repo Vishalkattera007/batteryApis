@@ -11,7 +11,6 @@ use PhpOffice\PhpSpreadsheet\Shared\Date;
 
 class BatteryMasterImport implements ToModel, WithHeadingRow
 {
-
     protected $category_id;
     protected $subcategory_id;
 
@@ -25,13 +24,16 @@ class BatteryMasterImport implements ToModel, WithHeadingRow
     {
         Log::info('Importing row:', $row);
 
+        // Check for duplicate serial number before proceeding
         $existing_serial_no = batteryMastModel::where('serial_no', $row['serial_no'])->first();
 
         if ($existing_serial_no) {
-            Log::info('Serial no is already existing', ['serial_no' => $row['serial_no']]);
-            return null;
+            // Log the duplicate and throw a custom exception
+            Log::info('Duplicate serial number found', ['serial_no' => $row['serial_no']]);
+            throw new Exception("Duplicate entry found for serial number: " . $row['serial_no']);
         }
 
+        // Continue with the rest of the logic
         $mfdcheck = null; // Initialize $mfdcheck to null
 
         if (isset($row['mfd'])) {
@@ -53,14 +55,12 @@ class BatteryMasterImport implements ToModel, WithHeadingRow
         }
 
         return new batteryMastModel([
-
             'categoryId' => $this->category_id,
             'sub_category' => $this->subcategory_id,
             'serial_no' => $row['serial_no'] ?? null,
             'MFD' => $mfdcheck,
             'warranty_period' => $row['warranty_period'] ?? null,
             'prowarranty_period' => $row['prowarranty_period'] ?? null,
-
         ]);
     }
 }

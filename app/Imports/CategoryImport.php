@@ -18,6 +18,13 @@ class CategoryImport implements ToModel, WithHeadingRow
     {
         Log::info('Importing Row: ', $row);
 
+        $existingCategory = categoryModel::where('name', $row['name'])->first();
+
+        // If a duplicate category is found, throw an exception
+        if ($existingCategory) {
+            throw new \Exception("Duplicate entry found, Kindle Check.");
+        }
+
         return new categoryModel([
             'name'=> $row['name']??null,
         ]);

@@ -28,7 +28,7 @@ class SubcategoryImport implements ToModel, WithHeadingRow
         
 
         if ($existingSubcategory) {
-            throw new \Exception("Duplicate entry found.Kindly Check");
+            throw new \Exception("Duplicate entry found, Kindle Check.");
            
         }
 
