@@ -28,7 +28,7 @@ class SubcategoryImport implements ToModel, WithHeadingRow
         
 
         if ($existingSubcategory) {
-            throw new \Exception("Duplicate entry found for subcategory name: " . $row['sub_category_name']);
+            throw new \Exception("Duplicate entry found.Kindly Check");
            
         }
 
