@@ -62,7 +62,7 @@ class DistributionBatteryController extends Controller
                     'status' => 200,
                     'data' => $dist_data->map(function ($distribution) {
                         return [
-                            'distribution' => $distribution,
+                            'distribution' => $distribution->specification_no,
                             'dealer_FirstName' => $distribution->dealer->FirstName ?? 'N/A',
                             'dealer_LastName' => $distribution->dealer->LastName ?? 'N/A',
 

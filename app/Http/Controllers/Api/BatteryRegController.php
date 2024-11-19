@@ -316,6 +316,7 @@ class BatteryRegController extends Controller
                 $batteryDetails[] = [
                     'serialNo' => $battery->serialNo,
                     'type' => $battery->type,
+                    'modelNumber'=>$battery->modelNumber,
                     'BPD' => $battery->BPD,
                     'VRN' => $battery->VRN,
                     'warranty' => $battery->warranty,
