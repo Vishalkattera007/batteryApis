@@ -11,6 +11,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 // use App\Http\Controllers\AuthController;
 use App\Http\Controllers\Api\BatteryMastController;
+use App\Http\Controllers\Api\ComplaintMasterController;
 use App\Http\Controllers\Api\ExcelUploadController;
 use App\Http\Controllers\Api\InsentiveController;
 use App\Http\Controllers\DistributionBatteryController;
@@ -122,3 +123,6 @@ Route::POST('insentive/Battery', [InsentiveController::class, 'postIncetive']);
 Route::POST('insentive/statusUpdate', [InsentiveController::class, 'updateStatus']);
 
 
+//complaint routes
+Route::get('complaints/{id?}', [ComplaintMasterController::class, 'index']);
+Route::post('complaints', [ComplaintMasterController::class, 'create']);
