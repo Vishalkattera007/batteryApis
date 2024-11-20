@@ -16,7 +16,11 @@ class ComplaintMasterController extends Controller
     {
         if ($id !== null) {
             try {
-                $complaintsDataById = ComplaintMasterModel::findOrFail($id);
+                $complaintsDataById = ComplaintMasterModel::with([
+                    'customer:firstName,lastName,phoneNumber,id',
+                    'batteryReg:id,serialNo,type,modelNumber,BPD,warranty',
+                    'dealer:id,dealerId,FirstName,LastName,email,phone_number,profileImage,state,pincode'
+                ])->findOrFail($id);
 
                 return response()->json([
                     'status' => 200,
