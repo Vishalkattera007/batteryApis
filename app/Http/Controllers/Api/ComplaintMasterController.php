@@ -34,7 +34,8 @@ class ComplaintMasterController extends Controller
             try {
                 $comlpaintsData = ComplaintMasterModel::with([
                     'customer:firstName,lastName,phoneNumber,id',
-                    'batteryReg'
+                    'batteryReg:id,serialNo,type,modelNumber,BPD,warranty',
+                    'dealer:id,FirstName,LastName,email'
                 ])->get();
                 if ($comlpaintsData->count() > 0) {
                     return response()->json([
