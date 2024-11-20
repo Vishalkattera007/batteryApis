@@ -32,7 +32,10 @@ class ComplaintMasterController extends Controller
         } else {
 
             try {
-                $comlpaintsData = ComplaintMasterModel::all();
+                $comlpaintsData = ComplaintMasterModel::with([
+                    'customer:firstName,lastName,phoneNumber,id',
+                    'batteryReg'
+                ])->get();
                 if ($comlpaintsData->count() > 0) {
                     return response()->json([
                         'status' => 200,
