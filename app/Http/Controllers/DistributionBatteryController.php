@@ -56,15 +56,19 @@ class DistributionBatteryController extends Controller
                 ],
             ], 200);
         } else {
-            $dist_data = DistributionBatteryModel::with('dealer:FirstName,LastName,id')->get();
+            $dist_data = DistributionBatteryModel::with([
+                'dealer:FirstName,LastName,id',
+                'battery:categoryId,sub_category,serial_no',
+                'battery.category:id,name',
+                'battery.subCategory:id,sub_category_name'])->get();
             if ($dist_data->count() > 0) {
                 return response()->json([
                     'status' => 200,
                     'data' => $dist_data->map(function ($distribution) {
                         return [
                             'distribution' => $distribution,
-                            'dealer_FirstName' => $distribution->dealer->FirstName ?? 'N/A',
-                            'dealer_LastName' => $distribution->dealer->LastName ?? 'N/A',
+                            // 'dealer_FirstName' => $distribution->dealer->FirstName ?? 'N/A',
+                            // 'dealer_LastName' => $distribution->dealer->LastName ?? 'N/A',
 
                         ];
                     }),
