@@ -22,6 +22,6 @@ class ComplaintMasterModel extends Model
     }
 
     public function batteryReg(){
-        return $this->belongsTo(BatteryRegModel::class, 'Registered_battery_id', 'id');
+        return $this->belongsTo(batteryRegModel::class, 'Registered_battery_id', 'id');
     }
 }
