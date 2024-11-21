@@ -9,11 +9,15 @@ class ComplaintMasterModel extends Model
     protected $table = 'complaint_master';
 
     protected $fillable= [
+        'complaintId',
         'customer_id',
         'Registered_battery_id',
         'complaint_raised_on',
         'complaint',
         'created_by',
+        'resolve_Status',
+        'resolved_By',
+        'resolved_On',
         'updated_by'
     ];
 

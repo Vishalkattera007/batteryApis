@@ -314,6 +314,7 @@ class BatteryRegController extends Controller
 
             foreach ($batteriesForCustomer as $battery) {
                 $batteryDetails[] = [
+                    'batteryId'=> $battery->id,
                     'serialNo' => $battery->serialNo,
                     'type' => $battery->type,
                     'modelNumber'=>$battery->modelNumber,

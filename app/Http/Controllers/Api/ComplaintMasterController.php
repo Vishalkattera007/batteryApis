@@ -2,11 +2,12 @@
 
 namespace App\Http\Controllers\Api;
 
-use Exception;
-use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Models\ComplaintMasterModel;
+use Carbon\Carbon;
+use Exception;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Illuminate\Http\Request;
 
 class ComplaintMasterController extends Controller
 {
@@ -19,7 +20,7 @@ class ComplaintMasterController extends Controller
                 $complaintsDataById = ComplaintMasterModel::with([
                     'customer:firstName,lastName,phoneNumber,id',
                     'batteryReg:id,serialNo,type,modelNumber,BPD,warranty',
-                    'dealer:id,dealerId,FirstName,LastName,email,phone_number,profileImage,state,pincode'
+                    'dealer:id,dealerId,FirstName,LastName,email,phone_number,profileImage,state,pincode',
                 ])->findOrFail($id);
 
                 return response()->json([
@@ -39,14 +40,14 @@ class ComplaintMasterController extends Controller
                 $comlpaintsData = ComplaintMasterModel::with([
                     'customer:firstName,lastName,phoneNumber,id',
                     'batteryReg:id,serialNo,type,modelNumber,BPD,warranty',
-                    'dealer:id,dealerId,FirstName,LastName,email'
+                    'dealer:id,dealerId,FirstName,LastName,email',
                 ])->get();
                 if ($comlpaintsData->count() > 0) {
                     return response()->json([
                         'status' => 200,
                         'data' => $comlpaintsData,
                     ], 200);
-                }else{
+                } else {
                     return response()->json([
                         'status' => 404,
                         'message' => 'No Complaints Found At All',
@@ -65,13 +66,21 @@ class ComplaintMasterController extends Controller
 
     public function create(Request $request)
     {
+
+        $lastComplaint = ComplaintMasterModel::latest('id')->first(); //2
+        $lastComplaintId = $lastComplaint->id ?? null; //2
+
+        $currentDate = Carbon::now()->format('Ymd');//20241121
+
+        $complaintId = 'C' . $currentDate . str_pad($lastComplaintId + 1, 3, '0', STR_PAD_LEFT);//C20241121(2+1,0,0)//C202411211001
+
         $custmerId = $request->customer_id;
         $registered_batteryId = $request->reg_battery_id;
         $complaint = $request->complaint;
         $complaint_raised_on = $request->complaint_raised_on;
         $createdBy = $request->createdBy;
+        // $complaintId = $complaintId;
         // $updatedBy = $request->updatedBy;
-
 
         try {
             $create_complaints = ComplaintMasterModel::firstOrCreate(
@@ -81,15 +90,18 @@ class ComplaintMasterController extends Controller
                     'complaint' => $complaint,
                 ],
                 [
+                    'complaintId'=>$complaintId,
                     'complaint_raised_on' => $complaint_raised_on,
                     'created_by' => $createdBy,
                 ]
             );
-    
+
             if ($create_complaints->wasRecentlyCreated) {
+
                 return response()->json([
                     'status' => 200,
                     'message' => 'Complaint raised successfully.',
+                    'data' => $create_complaints,
                 ], 200);
             } else {
                 return response()->json([
@@ -101,10 +113,9 @@ class ComplaintMasterController extends Controller
             return response()->json([
                 'status' => 500,
                 'message' => 'Something went wrong on the server.',
-                'error' => $e->getMessage(), 
+                'error' => $e->getMessage(),
             ], 500);
         }
-      
 
     }
 }
