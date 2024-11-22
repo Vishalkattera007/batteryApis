@@ -20,6 +20,7 @@ class BatteryRegModel extends Model
             'BPD',//Battery Purchased Date
             'VRN', //Vehicle Registarion Number
             'warranty',
+            'prowarranty',
             'customer_id',
             'Acceptance',
             'created_by',

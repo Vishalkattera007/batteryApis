@@ -137,6 +137,7 @@ class BatteryRegController extends Controller
                 'BPD' => $request->BPD,
                 'VRN' => $request->VRN,
                 'warranty' => $request->warranty,
+                'proWarDate'=>$request->prowarranty_period,
                 'customer_id' => $insertedId, // Always pass the customer ID
                 'created_by' => $request->created_by,
             ]);
