@@ -70,9 +70,9 @@ class ComplaintMasterController extends Controller
         $lastComplaint = ComplaintMasterModel::latest('id')->first(); //2
         $lastComplaintId = $lastComplaint->id ?? null; //2
 
-        $currentDate = Carbon::now()->format('Ymd');//20241121
+        $currentDate = Carbon::now()->format('Ymd'); //20241121
 
-        $complaintId = 'C' . $currentDate . str_pad($lastComplaintId + 1, 3, '0', STR_PAD_LEFT);//C20241121(2+1,0,0)//C202411211001
+        $complaintId = 'C' . $currentDate . str_pad($lastComplaintId + 1, 3, '0', STR_PAD_LEFT); //C20241121(2+1,0,0)//C202411211001
 
         $custmerId = $request->customer_id;
         $registered_batteryId = $request->reg_battery_id;
@@ -90,7 +90,7 @@ class ComplaintMasterController extends Controller
                     'complaint' => $complaint,
                 ],
                 [
-                    'complaintId'=>$complaintId,
+                    'complaintId' => $complaintId,
                     'complaint_raised_on' => $complaint_raised_on,
                     'created_by' => $createdBy,
                 ]
@@ -109,6 +109,43 @@ class ComplaintMasterController extends Controller
                     'message' => 'Duplicate entry: This complaint already exists.',
                 ], 409);
             }
+        } catch (Exception $e) {
+            return response()->json([
+                'status' => 500,
+                'message' => 'Something went wrong on the server.',
+                'error' => $e->getMessage(),
+            ], 500);
+        }
+
+    }
+
+    public function update(Request $request, $id)
+    {
+
+        try {
+
+            $complaint = ComplaintMasterModel::find($id);
+
+            if (!$complaint) {
+                return response()->json([
+                    'status' => 404,
+                    'message' => 'Complaint not found.',
+                ], 404);
+            }
+            $updatedBy = $request->updatedBy;
+            $resolveStatus = $request->requestStatus;
+            $resolvedOn = $request->resolvedOn;
+            $complaint->update([
+                'resolve_Status' => $resolveStatus,
+                'resolved_By' => $updatedBy,
+                'resolved_On'=>$resolvedOn,
+            ]);
+
+            return response()->json([
+                'status' => 200,
+                'message' => 'Complaint Resolved successfully',
+                'data' => $complaint,
+            ], 200);
         } catch (Exception $e) {
             return response()->json([
                 'status' => 500,
