@@ -252,7 +252,8 @@ class DistributionBatteryController extends Controller
 
                 // Fetch category and subcategory names
                 $categoryName = categoryModel::where('id', $battery->categoryId)->value('name');
-                $subCategoryName = subCategoryModel::where('id', $battery->sub_category)->value('sub_category_name');
+                $subCategoryName = subCategoryModel::where('id', $battery->sub_category)->first();
+                
 
                 // Fetch battery purchase date from BatteryRegModel
                 $batteryReg = batteryRegModel::where('serialNo', $battery->serial_no)->first();
@@ -268,10 +269,10 @@ class DistributionBatteryController extends Controller
                         'id' => $battery->id,
                         'serial_no' => $battery->serial_no,
                         'categoryId' => $categoryName,
-                        'sub_category' => $subCategoryName,
+                        'sub_category' => $subCategoryName->sub_category_name,
                         'MFD' => $battery->MFD,
-                        'warranty_period' => $battery->warranty_period,
-                        'prowarranty_period' => $battery->prowarranty_period,
+                        'warranty_period' => $subCategoryName->warranty_period,
+                        'prowarranty_period' => $subCategoryName->prowarranty_period,
                         'created_by' => $battery->created_by,
                         'updated_by' => $battery->updated_by,
                         'created_at' => $battery->created_at,
