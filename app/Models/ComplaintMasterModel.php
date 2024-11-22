@@ -15,9 +15,10 @@ class ComplaintMasterModel extends Model
         'complaint_raised_on',
         'complaint',
         'created_by',
-        'resolve_Status',
-        'resolved_By',
-        'resolved_On',
+        'status',
+        'remarks',
+        'status_updated_By',
+        'status_updated_On',
         'updated_by'
     ];
 
