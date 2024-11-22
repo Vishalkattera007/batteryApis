@@ -69,7 +69,7 @@ class subCategoryController extends Controller
         if ($subcategory_check_duplicate) {
             return response()->json([
                 'status' => 409,
-                'message' => "Subcategory already existed",
+                'message' => "Model Number already existed",
                 'data' => $subcategory_check_duplicate,
             ], 409);
         }
