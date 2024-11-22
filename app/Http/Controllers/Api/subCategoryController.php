@@ -39,11 +39,14 @@ class subCategoryController extends Controller
                         // Check if category exists to avoid null reference errors
                         $category_name = $subcategory->category ? $subcategory->category->name : null;
                         $subcategory_name = $subcategory->sub_category_name;
-
+                        $warranty_period = $subcategory->warranty_period;
+                        $prowarranty_period = $subcategory->prowarranty_period;
                         return [
                             "id" => $subcategory->id,
                             "category_name" => $category_name,
                             "sub_category_name" => $subcategory_name,
+                            "warranty_period" => $warranty_period,
+                            "prowarranty_period" => $prowarranty_period,
                         ];
                     }),
                 ], 200);
