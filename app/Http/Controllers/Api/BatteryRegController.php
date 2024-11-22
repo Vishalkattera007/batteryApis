@@ -236,7 +236,7 @@ class BatteryRegController extends Controller
 
         $check_cmno = CustomerModel::where('phoneNumber', $customer_mno)
             ->with(['batteries' => function ($query) {
-                $query->select('customer_id', 'serialNo', 'type', 'modelNumber', 'BPD', 'warranty', 'created_by');
+                $query->select('customer_id', 'serialNo', 'type', 'modelNumber', 'BPD', 'warranty','prowarranty', 'created_by');
             }])
             ->get(['id', 'firstName', 'lastName', 'phoneNumber']);
 
@@ -261,6 +261,7 @@ class BatteryRegController extends Controller
                         'mobileNumber' => $customer->phoneNumber,
                         'BPD' => $battery->BPD,
                         'warranty' => $battery->warranty,
+                        'prowarranty' => $battery->prowarranty,
                         'remaining_warranty_days' => $remaining_warranty_days > 0 ? round($remaining_warranty_days) : 0,
                         'days_since_purchase' => round($days_since_purchase),
                         'warranty_status' => $warranty_status,
