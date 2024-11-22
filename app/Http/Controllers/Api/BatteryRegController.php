@@ -82,6 +82,9 @@ class BatteryRegController extends Controller
 
                     $fetch_sub_cat_name = subCategoryModel::where('id', $sub_category)->first();
                     $sub_cat_name = $fetch_sub_cat_name ? $fetch_sub_cat_name->sub_category_name : 'Unknown';
+                    $model_warranty = $fetch_sub_cat_name ? $fetch_sub_cat_name->warranty_period : 'NULL';
+                    $model_prowarranty = $fetch_sub_cat_name ? $fetch_sub_cat_name->prowarranty_period : 'NULL';
+
 
                     return response()->json([
                         'status' => 200,
@@ -89,8 +92,8 @@ class BatteryRegController extends Controller
                         'data' => [
                             'categoryName' => $cat_name,
                             'modelNumber' => $sub_cat_name,
-                            'warranty_period' => $warranty_period,
-                            'prowarranty_period' => $prowarranty_period,
+                            'warranty_period' => $model_warranty,
+                            'prowarranty_period' => $model_prowarranty,
                         ],
                     ]);
                 } else {
