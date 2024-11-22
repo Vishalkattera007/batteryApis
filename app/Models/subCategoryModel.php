@@ -11,6 +11,8 @@ class subCategoryModel extends Model
     protected $fillable = [
         'categoryId',        // Use 'category_id' to match the foreign key in your database
         'sub_category_name',
+        'warranty_period',
+        'prowarranty_period',
         'shortcode',
         'created_by',
         'updated_by',
