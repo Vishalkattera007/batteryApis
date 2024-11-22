@@ -60,44 +60,48 @@ class subCategoryController extends Controller
      * Store a newly created subcategory.
      */
     public function create(Request $request)
-{
-    // Check for duplicates based on categoryId and sub_category_name
-    $subcategory_check_duplicate = subCategoryModel::where('categoryId', $request->categoryId)
-        ->where('sub_category_name', $request->sub_category_name)
-        ->first();
+    {
+        // Check for duplicates based on categoryId and sub_category_name
+        $subcategory_check_duplicate = subCategoryModel::where('categoryId', $request->categoryId)
+            ->where('sub_category_name', $request->sub_category_name)
+            ->first();
 
-    if ($subcategory_check_duplicate) {
+        if ($subcategory_check_duplicate) {
+            return response()->json([
+                'status' => 409,
+                'message' => "Model Number already existed",
+                'data' => $subcategory_check_duplicate,
+            ], 409);
+        }
+
+        // Create a new subcategory with a dynamic shortcode value from the request
+        $subcategory = subCategoryModel::firstOrCreate([
+            'categoryId' => $request->categoryId,
+            'sub_category_name' => $request->sub_category_name,
+            'warranty_period' => $request->warranty_period,
+            'prowarranty_period' => $request->prowarranty_period,
+        ], [
+            'shortcode' => $request->shortcode, // Use the shortcode from the request
+            'created_by' => $request->created_by,
+        ]);
+
         return response()->json([
-            'status' => 409,
-            'message' => "Subcategory already existed",
-            'data' => $subcategory_check_duplicate
-        ], 409);
+            'status' => 200,
+            'message' => 'SubCategory created successfully',
+            'data' => [
+                'id' => $subcategory->id,
+                'categoryId' => $subcategory->categoryId,
+                'sub_category_name' => $subcategory->sub_category_name,
+                'warranty_period' => $subcategory->warranty_period,
+                'prowarranty_period' => $subcategory->prowarranty_period,
+                // 'shortcode' => $subcategory->shortcode,
+                'created_by' => $subcategory->created_by,
+                // 'updated_at' => $subcategory->updated_at,
+                'created_at' => $subcategory->created_at,
+            ],
+        ], 200);
+
     }
-
-    // Create a new subcategory with a dynamic shortcode value from the request
-    $subcategory = subCategoryModel::firstOrCreate([
-        'categoryId' => $request->categoryId,
-        'sub_category_name' => $request->sub_category_name,
-    ], [
-        'shortcode' => $request->shortcode,  // Use the shortcode from the request
-        'created_by' => $request->created_by,
-    ]);
-
-    return response()->json([
-        'status' => 200,
-        'message' => 'SubCategory created successfully',
-        'data' => [
-            'categoryId' => $subcategory->categoryId,
-            'sub_category_name' => $subcategory->sub_category_name,
-            'shortcode' => $subcategory->shortcode, 
-            'created_by' => $subcategory->created_by,
-            'updated_at' => $subcategory->updated_at,
-            'created_at' => $subcategory->created_at,
-            'id' => $subcategory->id,
-        ],
-    ], 200);
-    
-}
 
     /**
      * Update the specified subcategory.

@@ -23,18 +23,20 @@ class SubcategoryImport implements ToModel, WithHeadingRow
         Log::info('Importing Row:', $row);
 
         $existingSubcategory = subCategoryModel::where('sub_category_name', $row['sub_category_name'])
-        ->where('categoryId', $this->category_id)
-        ->exists();
-        
+            ->where('categoryId', $this->category_id)
+            ->exists();
 
         if ($existingSubcategory) {
             throw new \Exception("Duplicate entry found, Kindle Check.");
-           
+
         }
 
         return new subCategoryModel([
             'categoryId' => $this->category_id ?? null,
             'sub_category_name' => $row['sub_category_name'] ?? null,
+            'warranty_period' => $row['warranty_period'] ?? null,
+            'prowarranty_period' => $row['prowarranty_period'] ?? null,
+
         ]);
     }
 }

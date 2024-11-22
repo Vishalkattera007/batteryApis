@@ -133,12 +133,14 @@ class ComplaintMasterController extends Controller
                 ], 404);
             }
             $updatedBy = $request->updatedBy;
-            $resolveStatus = $request->requestStatus;
-            $resolvedOn = $request->resolvedOn;
+            $status = $request->requestStatus;
+            $updatedOn = $request->updatedOn;
+            $remarks = $request->remarks;
             $complaint->update([
-                'resolve_Status' => $resolveStatus,
-                'resolved_By' => $updatedBy,
-                'resolved_On'=>$resolvedOn,
+                'status' => $status,
+                'status_updated_By' => $updatedBy,
+                'status_updated_On'=>$updatedOn,
+                'remarks'=>$remarks
             ]);
 
             return response()->json([
