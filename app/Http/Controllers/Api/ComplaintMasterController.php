@@ -100,7 +100,7 @@ class ComplaintMasterController extends Controller
 
                 return response()->json([
                     'status' => 200,
-                    'message' => 'Complaint raised successfully.',
+                    'message' => 'Complaint Registered successfully.',
                     'data' => $create_complaints,
                 ], 200);
             } else {

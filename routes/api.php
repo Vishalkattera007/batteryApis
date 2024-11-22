@@ -36,7 +36,7 @@ Route::post('dealerupdate/{id}', [DealerController::class, 'update']);
 Route::delete('dealer/{id}', [DealerController::class, 'destroy']);
 Route::post('dealer/login', [DealerController::class, 'login']);
 Route::get('dealers/count', [DealerController::class, 'count']);
-
+Route::get('dealerComplaints/{id}', [DealerController::class, 'getDealerComplaint']);
 
 
 //Battery Reg
