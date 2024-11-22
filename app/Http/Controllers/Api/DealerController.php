@@ -107,7 +107,7 @@ class DealerController extends Controller
         $dealers->longitude = $request->longitude;
         $dealers->bankName = $request->bankName;
         $dealers->accountNumber = $request->accountNumber;
-        $dealers->IFSC = $request->ifscCode;
+        $dealers->IFSC = $request->IFSC;
         $dealers->accountHolderName = $request->accountHolderName;
         $dealers->firmRegNo = $request->firmRegNo;
         $dealers->pancard = $request->pancard;
