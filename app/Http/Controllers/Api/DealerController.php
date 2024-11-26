@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Models\ComplaintMasterModel;
 use App\Models\DealerModel;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
@@ -38,7 +39,7 @@ class DealerController extends Controller
             ], 422);
         }
 
-        $lastDealer =DealerModel::latest('id')->first();
+        $lastDealer = DealerModel::latest('id')->first();
         $lastInsertedId = $lastDealer->id ?? null;
         $state_name = $request->state;
 
@@ -53,8 +54,7 @@ class DealerController extends Controller
             }
         }
 
-
-        $uniqueDealerId =  $shortState.'00'.($lastInsertedId+1);
+        $uniqueDealerId = $shortState . '00' . ($lastInsertedId + 1);
 
         // Initialize the path variable
         $path = null;
@@ -195,15 +195,15 @@ class DealerController extends Controller
             'email' => $request->input('email', $dealers->email), // Update email if provided
             'phone_number' => $request->input('phone_number', $dealers->phone_number),
             'address' => $request->input('address', $dealers->address),
-            'state' => $request->input('state',$dealers->state),
-            'city' => $request->input('city',$dealers->city),
-            'pincode' => $request->input('pincode',$dealers->pincode),
-            'latitude' => $request->input('latitude',$dealers->latitude),
-            'longitude' => $request->input('longitude',$dealers->longitude),
+            'state' => $request->input('state', $dealers->state),
+            'city' => $request->input('city', $dealers->city),
+            'pincode' => $request->input('pincode', $dealers->pincode),
+            'latitude' => $request->input('latitude', $dealers->latitude),
+            'longitude' => $request->input('longitude', $dealers->longitude),
             'bankName' => $request->input('bankName', $dealers->bankName),
             'accountNumber' => $request->input('accountNumber', $dealers->accountNumber),
             'IFCS' => $request->input('IFSC', $dealers->IFCS),
-            'accountHolderName	' => $request->input('accountHolderName	', $dealers->accountHolderName	),
+            'accountHolderName	' => $request->input('accountHolderName	', $dealers->accountHolderName),
             'firmRegNo' => $request->input('firmRegNo', $dealers->firmRegNo),
             'pancard' => $request->input('pancard', $dealers->pancard),
             'profileImage' => $profileImagePath, // Update image path or keep old one
@@ -310,6 +310,16 @@ class DealerController extends Controller
         return response()->json([
             'status' => 200,
             'count' => $totalDealers,
+        ], 200);
+    }
+
+    public function getDealerComplaint($id)
+    {
+        $getComplaints = ComplaintMasterModel::where('created_by', $id)->get();
+
+        return response()->json([
+            'status' => 200,
+            'count' => $getComplaints,
         ], 200);
     }
 
