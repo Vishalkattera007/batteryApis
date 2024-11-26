@@ -47,79 +47,53 @@ class categoryController extends Controller
      * Store a newly created resource in storage.
      */
     public function create(Request $request)
-{
-    // Validate the request inputs, including file (if needed)
-    $validatedData = $request->validate([
-        'name' => 'required|string|max:255', // Ensure 'name' is a valid string
-        'file' => 'nullable|file|mimes:jpg,jpeg,png,pdf|max:2048', // Example for file validation
-    ]);
+    {
 
-    $category_name = $request->name;
+        $category_name = $request->name;
 
-    // Check for valid file
-    if ($request->hasFile('file')) {
-        $file = $request->file('file');
+        $intoWords = explode(' ', $category_name);
 
-        // Check if the file is valid
-        if (!$file->isValid()) {
+        if (count($intoWords) == 1) {
+            $shortcode = substr($intoWords[0], 0, 3);
+        } else {
+            $shortcode = '';
+            foreach ($intoWords as $words) {
+                $shortcode .= substr($words, 0, 1);
+            }
+        }
+
+        $category_duplication = categoryModel::where('name', $category_name)->first();
+
+        if ($category_duplication) {
             return response()->json([
-                'status' => 422, // 422 Unprocessable Entity
-                'message' => 'The uploaded file is invalid.',
-            ], 422);
+                'status' => 409,
+                'message' => "Category already existed",
+                'data' => $category_duplication,
+            ], 409);
         }
 
-        // You can process or save the file if needed
-        $filePath = $file->store('categories');
-    }
+        $category = categoryModel::firstOrCreate([
+            'name' => $category_name,
+            'created_by' => "Backend Develoepr",
+            'shortcode' => $shortcode,
+        ]);
 
-    // Generate shortcode based on category name
-    $intoWords = explode(' ', $category_name);
-
-    if (count($intoWords) == 1) {
-        $shortcode = substr($intoWords[0], 0, 3);
-    } else {
-        $shortcode = '';
-        foreach ($intoWords as $words) {
-            $shortcode .= substr($words, 0, 1);
+        if ($category->wasRecentlyCreated) {
+            return response()->json([
+                'status' => 200,
+                'message' => 'Category created successfully',
+                'data' => [
+                    'category' => $category_name,
+                    'shortcode' => $shortcode,
+                ],
+            ], 200);
+        } else {
+            return response()->json([
+                'status' => 409, // 409 Conflict indicates that the resource already exists
+                'message' => 'Category already exists',
+            ], 409);
         }
     }
-
-    // Check for category duplication
-    $category_duplication = categoryModel::where('name', $category_name)->first();
-
-    if ($category_duplication) {
-        return response()->json([
-            'status' => 409,
-            'message' => "Category already exists",
-            'data' => $category_duplication,
-        ], 409);
-    }
-
-    // Create category
-    $category = categoryModel::firstOrCreate([
-        'name' => $category_name,
-        'created_by' => "Backend Developer",
-        'shortcode' => $shortcode,
-    ]);
-
-    // Check if category was recently created
-    if ($category->wasRecentlyCreated) {
-        return response()->json([
-            'status' => 200,
-            'message' => 'Category created successfully',
-            'data' => [
-                'category' => $category_name,
-                'shortcode' => $shortcode,
-            ],
-        ], 200);
-    } else {
-        return response()->json([
-            'status' => 409, // 409 Conflict
-            'message' => 'Category already exists',
-        ], 409);
-    }
-}
-
 
     /**
      * Display the specified resource.
