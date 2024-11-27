@@ -144,7 +144,7 @@ class DealerController extends Controller
         // Return success response
         return response()->json([
             'status' => 200,
-            'message' => 'Dealer Added successfully',
+            'message' => 'Dealer Added Successfully',
             'data' => $responseData,
         ], 200);
     }
