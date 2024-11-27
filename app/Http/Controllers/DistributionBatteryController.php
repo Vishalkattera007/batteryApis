@@ -51,6 +51,7 @@ class DistributionBatteryController extends Controller
                 'status' => 200,
                 'data' => [
                     'distribution' => $dist_data,
+                    'dealerId' => $dist_data->dealer->dealerId ?? 'N/A',
                     'dealer_name' => $dist_data->dealer->FirstName ?? 'N/A', // to handle cases where dealer might be null
                     'dealer_LastName' => $distribution->dealer->LastName ?? 'N/A',
                 ],
