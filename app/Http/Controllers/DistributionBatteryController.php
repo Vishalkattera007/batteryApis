@@ -39,7 +39,7 @@ class DistributionBatteryController extends Controller
     {
         if ($id !== null) {
             try {
-                $dist_data = DistributionBatteryModel::with('dealer:FirstName,LastName,id')->findOrFail($id);
+                $dist_data = DistributionBatteryModel::with('dealer:FirstName,LastName,id,dealerId')->findOrFail($id);
             } catch (ModelNotFoundException $e) {
                 return response()->json([
                     'status' => 404,
@@ -58,7 +58,7 @@ class DistributionBatteryController extends Controller
             ], 200);
         } else {
             $dist_data = DistributionBatteryModel::with([
-                'dealer:FirstName,LastName,id',
+                'dealer:FirstName,LastName,id,dealerId',
                 'battery:categoryId,sub_category,serial_no',
                 'battery.category:id,name',
                 'battery.subCategory:id,sub_category_name'])->get();
