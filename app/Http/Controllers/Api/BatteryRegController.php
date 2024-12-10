@@ -14,6 +14,8 @@ use Carbon\Carbon;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Mail;
+
 
 class BatteryRegController extends Controller
 {
@@ -153,9 +155,16 @@ class BatteryRegController extends Controller
                 $update_statusOf_batteryMaster = batteryMastModel::where('serial_no', $request->serialNo)
                     ->update(['status' => 1]);
 
+                    // Send Thank You email to customer
+            Mail::raw('Thank you for purchasing the battery. Your battery serial number is: ' . $request->serialNo, function ($message) use ($request) {
+                $message->to($request->email)
+                    ->subject('Thank You for Purchasing the Battery');
+            });
+
+
                 return response()->json([
                     'status' => 201,
-                    'message' => 'Battery Registered successfully',
+                    'message' => 'Battery Registered successfully and email sent',
                     'data' => $battery_create,
                 ], 201);
             } else {
