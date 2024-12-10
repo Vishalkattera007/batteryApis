@@ -259,6 +259,7 @@ class DistributionBatteryController extends Controller
                 // Fetch battery purchase date from BatteryRegModel
                 $batteryReg = batteryRegModel::where('serialNo', $battery->serial_no)->first();
                 $batteryPurchaseDate = $batteryReg ? $batteryReg->BPD : null;
+                $customerId = $batteryReg ? $batteryReg->customer_id : null;
 
                 return [
                     'id' => $distribution->id,
@@ -279,6 +280,7 @@ class DistributionBatteryController extends Controller
                         'created_at' => $battery->created_at,
                         'updated_at' => $battery->updated_at,
                         'battery_purchase_date' => $batteryPurchaseDate, // Include Battery Purchase Date (BPD)
+                        'customerId' => $customerId
 
                     ],
                 ];
