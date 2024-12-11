@@ -23,6 +23,7 @@ class ComplaintMasterController extends Controller
                     'customer:firstName,lastName,phoneNumber,id',
                     'batteryReg:id,serialNo,type,modelNumber,BPD,warranty',
                     'dealer:id,dealerId,FirstName,LastName,email,phone_number,profileImage,state,pincode',
+                    'replaceBattery:id,serialNo,type,modelNumber,BPD,warranty'
                 ])->findOrFail($id);
 
                 return response()->json([
@@ -43,6 +44,7 @@ class ComplaintMasterController extends Controller
                     'customer:firstName,lastName,phoneNumber,id',
                     'batteryReg:id,serialNo,type,modelNumber,BPD,warranty',
                     'dealer:id,dealerId,FirstName,LastName,email',
+                    'replaceBattery:id,serialNo,type,modelNumber,BPD,warranty'
                 ])->get();
                 if ($comlpaintsData->count() > 0) {
                     return response()->json([
@@ -182,7 +184,7 @@ class ComplaintMasterController extends Controller
         ]);
 
         // Check if the battery exists in the BatteryRegModel batter
-        
+
         $batteryReg = BatteryRegModel::find($replacebattery); 
         if ($batteryReg) {
             $serialNo = $batteryReg->serialNo;

@@ -34,4 +34,10 @@ class ComplaintMasterModel extends Model
     public function dealer(){
         return $this->belongsTo(DealerModel::class, 'created_by', 'id');
     }
+
+    
+    public function replaceBattery(){
+        return $this->belongsTo(batteryRegModel::class, 'replaced_battery_id', 'id');
+    }
+    
 }
