@@ -127,5 +127,6 @@ Route::POST('insentive/statusUpdate', [InsentiveController::class, 'updateStatus
 Route::get('complaints/{id?}', [ComplaintMasterController::class, 'index']);
 Route::post('complaints/{id}', [ComplaintMasterController::class, 'update']);
 Route::post('complaints', [ComplaintMasterController::class, 'create']);
+Route::put('replaced/{id}', [ComplaintMasterController::class, 'UpdateReplaced']);
 
 // New completed Events
