@@ -3,7 +3,9 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Models\BatteryRegModel;
 use App\Models\ComplaintMasterModel;
+use App\Models\DistributionBatteryModel;
 use Carbon\Carbon;
 use Exception;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
@@ -158,36 +160,65 @@ class ComplaintMasterController extends Controller
     }
 
     public function UpdateReplaced(Request $request, $id)
-    {
-        try {
+{
+    try {
+        // Find the complaint based on the Registered_battery_id column
+        $complaint = ComplaintMasterModel::where('Registered_battery_id', $id)->first();
 
-            $complaint = ComplaintMasterModel::find('Registered_battery_id', $id);
+        // If no complaint is found, return a 404 response
+        if (!$complaint) {
+            return response()->json([
+                'status' => 404,
+                'message' => 'Complaint not found.',
+            ], 404);
+        }
 
-            if (!$complaint) {
+        // Retrieve the replaced battery ID from the request
+        $replacebattery = $request->replaced_battery_id;
+
+        // Update the complaint record with the replaced battery ID
+        $complaint->update([
+            'replaced_battery_id' => $replacebattery,
+        ]);
+
+        // Check if the battery exists in the BatteryRegModel
+        $batteryReg = BatteryRegModel::find($replacebattery);
+        if ($batteryReg) {
+            $serialNo = $batteryReg->serialNo;
+
+            // Check the DistributionBatteryModel for a matching specification_no
+            $distribution = DistributionBatteryModel::where('specification_no', $serialNo)->first();
+
+            if ($distribution) {
+                // Update the status in the distribution table
+                $distribution->update(['status' => 2]);
+            } else {
                 return response()->json([
                     'status' => 404,
-                    'message' => 'Complaint not found.',
+                    'message' => 'Matching distribution record not found.',
                 ], 404);
             }
-            $replacebattery = $request->replacedBattery;
-          
-            $complaint->update([
-                'replace_battery_id' => $replacebattery,
-              
-            ]);
-
+        } else {
             return response()->json([
-                'status' => 200,
-                'message' => 'Replaced Battery successfully',
-                'data' => $complaint,
-            ], 200);
-        } catch (Exception $e) {
-            return response()->json([
-                'status' => 500,
-                'message' => 'Something went wrong on the server.',
-                'error' => $e->getMessage(),
-            ], 500);
+                'status' => 404,
+                'message' => 'Battery not found in BatteryRegModel.',
+            ], 404);
         }
- 
+
+        // Return a successful response
+        return response()->json([
+            'status' => 200,
+            'message' => 'Replaced Battery successfully and updated distribution status.',
+            'data' => $complaint,
+        ], 200);
+    } catch (Exception $e) {
+        // Handle any exceptions and return a server error response
+        return response()->json([
+            'status' => 500,
+            'message' => 'Something went wrong on the server.',
+            'error' => $e->getMessage(),
+        ], 500);
     }
+}
+
 }
