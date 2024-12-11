@@ -181,8 +181,9 @@ class ComplaintMasterController extends Controller
             'replaced_battery_id' => $replacebattery,
         ]);
 
-        // Check if the battery exists in the BatteryRegModel
-        $batteryReg = BatteryRegModel::find($replacebattery);
+        // Check if the battery exists in the BatteryRegModel batter
+        
+        $batteryReg = BatteryRegModel::find($replacebattery); 
         if ($batteryReg) {
             $serialNo = $batteryReg->serialNo;
 
