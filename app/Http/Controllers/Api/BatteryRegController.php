@@ -53,7 +53,6 @@ class BatteryRegController extends Controller
                 ], 404);
             }
         }
-
     }
 
     public function verifyandfetch(Request $request)
@@ -156,10 +155,10 @@ class BatteryRegController extends Controller
                     ->update(['status' => 1]);
 
                     // Send Thank You email to customer
-            Mail::raw('Thank you for purchasing the battery. Your battery serial number is: ' . $request->serialNo, function ($message) use ($request) {
-                $message->to($request->email)
-                    ->subject('Thank You for Purchasing the Battery');
-            });
+                Mail::raw('Thank you for purchasing the battery. Your battery serial number is: ' . $request->serialNo, function ($message) use ($request) {
+                    $message->to($request->email)
+                        ->subject('Thank You for Purchasing the Battery');
+                });
 
 
                 return response()->json([

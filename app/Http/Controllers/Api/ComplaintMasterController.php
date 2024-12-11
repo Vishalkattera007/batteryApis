@@ -121,7 +121,6 @@ class ComplaintMasterController extends Controller
 
     public function update(Request $request, $id)
     {
-
         try {
 
             $complaint = ComplaintMasterModel::find($id);
@@ -156,5 +155,39 @@ class ComplaintMasterController extends Controller
             ], 500);
         }
 
+    }
+
+    public function UpdateReplaced(Request $request, $id)
+    {
+        try {
+
+            $complaint = ComplaintMasterModel::find('Registered_battery_id', $id);
+
+            if (!$complaint) {
+                return response()->json([
+                    'status' => 404,
+                    'message' => 'Complaint not found.',
+                ], 404);
+            }
+            $replacebattery = $request->replacedBattery;
+          
+            $complaint->update([
+                'replace_battery_id' => $replacebattery,
+              
+            ]);
+
+            return response()->json([
+                'status' => 200,
+                'message' => 'Replaced Battery successfully',
+                'data' => $complaint,
+            ], 200);
+        } catch (Exception $e) {
+            return response()->json([
+                'status' => 500,
+                'message' => 'Something went wrong on the server.',
+                'error' => $e->getMessage(),
+            ], 500);
+        }
+ 
     }
 }
