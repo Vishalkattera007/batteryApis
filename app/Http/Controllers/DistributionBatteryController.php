@@ -260,9 +260,11 @@ class DistributionBatteryController extends Controller
                 $batteryReg = batteryRegModel::where('serialNo', $battery->serial_no)->first();
                 $batteryPurchaseDate = $batteryReg ? $batteryReg->BPD : null;
                 $customerId = $batteryReg ? $batteryReg->customer_id : null;
+                $batterRegId = $batteryReg ? $batteryReg->id : null;
 
                 return [
                     'id' => $distribution->id,
+                    'batteryRegid' => $batterRegId,
                     'dealer_id' => $distribution->dealer_id,
                     'specification_no' => $distribution->specification_no,
                     'status' => $distribution->status,
