@@ -262,7 +262,8 @@ class DistributionBatteryController extends Controller
                 $customerId = $batteryReg ? $batteryReg->customer_id : null;
 
                 return [
-                    'id' => $batteryReg->id,
+                    'id' => $distribution->id,
+                    'batteryRegId' => $batteryReg->id,
                     'dealer_id' => $distribution->dealer_id,
                     'specification_no' => $distribution->specification_no,
                     'status' => $distribution->status,

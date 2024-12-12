@@ -9,6 +9,7 @@ class BatteryRegModel extends Model
     protected $table = "battery_reg";
 
     protected $fillable = [
+            'id',
             'serialNo',
             'type',
             'modelNumber',
