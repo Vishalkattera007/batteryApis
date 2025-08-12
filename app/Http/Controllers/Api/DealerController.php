@@ -248,7 +248,7 @@ class DealerController extends Controller
         if (!$dealer) {
             return response()->json([
                 'status' => 404,
-                'message' => 'Dealer not found',
+                'message' => 'Dealer not found',    
             ], 404);
         }
 
