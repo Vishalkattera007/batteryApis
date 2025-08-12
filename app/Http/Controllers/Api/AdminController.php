@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
-use App\Models\adminModel;
+use App\Models\AdminModel;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
@@ -16,7 +16,7 @@ class AdminController extends Controller
     {
         if ($id !== null) {
             try {
-                $admin = adminModel::findOrFail($id);
+                $admin = AdminModel::findOrFail($id);
             } catch (ModelNotFoundException $e) {
                 return response()->json([
                     'status' => 404,
@@ -29,7 +29,7 @@ class AdminController extends Controller
                 'data' => $admin,
             ], 200);
         } else {
-            $allAdmins = adminModel::all();
+            $allAdmins = AdminModel::all();
             if ($allAdmins->count() > 0) {
                 return response()->json([
                     'status' => 200,
@@ -47,7 +47,7 @@ class AdminController extends Controller
 
     public function create(Request $request)
     {
-        $admin = adminModel::firstOrCreate([
+        $admin = AdminModel::firstOrCreate([
             'name' => $request->name,
             'email' => $request->email,
             'password' => Hash::make($request->password),
@@ -72,7 +72,7 @@ class AdminController extends Controller
     public function update(Request $request, int $id)
     {
 
-        $adminId = adminModel::find($id);
+        $adminId = AdminModel::find($id);
 
         if ($adminId) {
             $adminId->update([
@@ -138,7 +138,7 @@ class AdminController extends Controller
 
     public function delete(Request $request, int $id)
     {
-        $admin_id = adminModel::find($id);
+        $admin_id = AdminModel::find($id);
 
         if (!$admin_id) {
             return response()->json([
