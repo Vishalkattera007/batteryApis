@@ -20,7 +20,7 @@ class AssignBatteryModel extends Model
 
     public function dealer()
     {
-        return $this->belongsTo(dealerModel::class, 'dealer_id');
+        return $this->belongsTo(DealerModel::class, 'dealer_id');
     }
 
     public function category()
